@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cabang', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_lokasi');
+        Schema::create('stokawal', function (Blueprint $table) {
+            $table->string('ID_ROMBONG', 10)->nullable();
+            $table->integer('JUMLAHAWAL')->nullable();
+
+            $table->foreign('ID_ROMBONG')->references('ID_ROMBONG')->on('rombong')->restrictOnDelete()->restrictOnUpdate();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cabang');
+        Schema::dropIfExists('stokawal');
     }
 };

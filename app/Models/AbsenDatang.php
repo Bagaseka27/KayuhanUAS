@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Gaji extends Model
+class AbsenDatang extends Model
 {
-    protected $table = 'gaji';
-    protected $primaryKey = 'ID_GAJI';
-    public $incrementing = false;
+    protected $table = 'absendatang';
     public $timestamps = false;
 
     public function karyawan()

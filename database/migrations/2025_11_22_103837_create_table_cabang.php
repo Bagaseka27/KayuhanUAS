@@ -9,23 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('menu', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_menu', 100);
-            $table->integer('harga_dasar');
-            $table->integer('harga_jual');
-            $table->string('foto_menu', 255)->nullable();
+        Schema::create('cabang', function (Blueprint $table) {
+            $table->string('ID_CABANG', 20)->primary();
+            $table->string('NAMA_LOKASI', 50)->nullable();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('menu');
+        Schema::dropIfExists('cabang');
     }
 };

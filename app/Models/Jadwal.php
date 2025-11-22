@@ -7,15 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Jadwal extends Model
 {
     protected $table = 'jadwal';
-    protected $fillable = ['karyawan_id', 'lokasi_id', 'shift', 'jam_mulai', 'jam_selesai'];
+    protected $primaryKey = 'ID_JADWAL';
+    public $incrementing = false;
+    public $timestamps = false;
 
     public function karyawan()
     {
-        return $this->belongsTo(Karyawan::class);
+        return $this->belongsTo(Karyawan::class, 'EMAIL');
     }
 
     public function cabang()
     {
-        return $this->belongsTo(Lokasi::class);
+        return $this->belongsTo(Cabang::class, 'ID_CABANG');
     }
 }

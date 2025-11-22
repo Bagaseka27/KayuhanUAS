@@ -7,21 +7,48 @@ use Illuminate\Database\Eloquent\Model;
 class Karyawan extends Model
 {
     protected $table = 'karyawan';
-    protected $fillable = ['email', 'username', 'password', 'posisi', 'jabatan_id'];
+    protected $primaryKey = 'EMAIL';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    public $timestamps = false;
 
     public function jabatan()
     {
-        return $this->belongsTo(Jabatan::class);
+        return $this->belongsTo(Jabatan::class, 'ID_JABATAN');
     }
 
-    public function absensi()
+    public function cabang()
     {
-        return $this->hasMany(Absensi::class);
+        return $this->belongsTo(Cabang::class, 'ID_CABANG');
+    }
+
+    public function rombong()
+    {
+        return $this->belongsTo(Rombong::class, 'ID_ROMBONG');
+    }
+
+    public function absenDatang()
+    {
+        return $this->hasMany(AbsenDatang::class, 'EMAIL');
+    }
+
+    public function absenPulang()
+    {
+        return $this->hasMany(AbsenPulang::class, 'EMAIL');
     }
 
     public function gaji()
     {
-        return $this->hasMany(Gaji::class);
+        return $this->hasMany(Gaji::class, 'EMAIL');
+    }
+
+    public function jadwal()
+    {
+        return $this->hasMany(Jadwal::class, 'EMAIL');
+    }
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'EMAIL');
     }
 }
-

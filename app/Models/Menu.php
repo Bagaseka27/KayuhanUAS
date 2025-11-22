@@ -7,10 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Menu extends Model
 {
     protected $table = 'menu';
-    protected $fillable = ['nama_produk', 'harga_dasar', 'harga_jual', 'foto_produk'];
+    protected $primaryKey = 'ID_PRODUK';
+    public $incrementing = false;
+    public $timestamps = false;
 
     public function transaksi()
     {
-        return $this->hasMany(Transaksi::class);
+        return $this->belongsToMany(
+            Transaksi::class,
+            'ID_PRODUK',
+            'ID_TRANSAKSI'
+        );
     }
 }

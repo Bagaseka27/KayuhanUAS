@@ -7,16 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     protected $table = 'transaksi';
-    protected $fillable = ['menu_id', 'jumlah', 'total_harga', 'karyawan_id', 'tanggal_transaksi', 'metode_bayar', 'total_bayar'];
-
-    public function menu()
-    {
-        return $this->belongsTo(Menu::class);
-    }
+    protected $primaryKey = 'ID_TRANSAKSI';
+    public $incrementing = false;
+    public $timestamps = false;
 
     public function karyawan()
     {
-        return $this->belongsTo(Karyawan::class);
+        return $this->belongsTo(Karyawan::class, 'EMAIL');
+    }
+
+    public function menu()
+    {
+        return $this->belongsToMany(
+            Menu::class,
+            'ID_TRANSAKSI',
+            'ID_PRODUK'
+        );
     }
 }
-

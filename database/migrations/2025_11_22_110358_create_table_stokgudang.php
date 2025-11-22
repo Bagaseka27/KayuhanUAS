@@ -10,16 +10,14 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-    {
-        Schema::create('jabatan', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_jabatan');
-            $table->integer('gaji_pokok_per_hari');
-            $table->integer('bonus')->default(0);
-            $table->timestamps();
-        });
-    }
-
+{
+    Schema::create('stokgudang', function (Blueprint $table) {
+        $table->string('ID_BARANG', 10)->primary();
+        $table->string('NAMA_BARANG', 50)->nullable();
+        $table->integer('JUMLAH')->nullable();
+        $table->timestamps();
+    });
+}
 
 
     /**
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jabatan');
+        Schema::dropIfExists('stokgudang');
     }
 };
