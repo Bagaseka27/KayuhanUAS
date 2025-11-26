@@ -11,6 +11,14 @@ class Jadwal extends Model
     public $incrementing = false;
     public $timestamps = false;
 
+    protected $fillable = [
+        'EMAIL',      
+        'ID_CABANG',  
+        'TANGGAL',
+        'JAM_MULAI',
+        'JAM_SELESAI'
+    ];
+
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class, 'EMAIL');
