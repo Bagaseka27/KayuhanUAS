@@ -13,16 +13,12 @@ return new class extends Migration
     {
         Schema::create('karyawan', function (Blueprint $table) {
             $table->string('EMAIL', 50)->primary();
-            $table->integer('ID_JABATAN')->nullable();
-            $table->string('ID_ROMBONG', 10)->nullable();
-            $table->string('ID_CABANG', 20)->nullable();
             $table->string('NAMA', 100)->nullable();
+            $table->integer('ID_JABATAN')->nullable();
+            $table->string('PASSWORD', 20)->nullable();
             $table->string('NO_HP', 12)->nullable();
-            $table->string('POSISI', 20)->nullable();
 
             $table->foreign('ID_JABATAN')->references('ID_JABATAN')->on('jabatan')->restrictOnDelete()->restrictOnUpdate();
-            $table->foreign('ID_ROMBONG')->references('ID_ROMBONG')->on('rombong')->restrictOnDelete()->restrictOnUpdate();
-            $table->foreign('ID_CABANG')->references('ID_CABANG')->on('cabang')->restrictOnDelete()->restrictOnUpdate();
             $table->timestamps();
         });
     }
