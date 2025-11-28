@@ -10,7 +10,15 @@ class Karyawan extends Model
     protected $primaryKey = 'EMAIL';
     public $incrementing = false;
     protected $keyType = 'string';
-    public $timestamps = false;
+    public $timestamps = true;
+
+    protected $fillable = [
+        'EMAIL',
+        'NAMA',
+        'ID_JABATAN',
+        'PASSWORD',
+        'NO_HP',
+    ];
 
     public function jabatan()
     {
@@ -52,3 +60,5 @@ class Karyawan extends Model
         return $this->hasMany(Transaksi::class, 'EMAIL');
     }
 }
+
+
