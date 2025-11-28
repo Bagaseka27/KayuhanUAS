@@ -9,7 +9,18 @@ class Transaksi extends Model
     protected $table = 'transaksi';
     protected $primaryKey = 'ID_TRANSAKSI';
     public $incrementing = false;
-    public $timestamps = false;
+    protected $keyType = 'string';
+    public $timestamps = true;
+
+    protected $fillable = [
+        'ID_TRANSAKSI',
+        'EMAIL',
+        'JUMLAH_ITEM',
+        'HARGA_ITEM',
+        'DATETIME',
+        'TOTAL_BAYAR',
+        'METODE_PEMBAYARAN'
+    ];
 
     public function karyawan()
     {
@@ -20,6 +31,7 @@ class Transaksi extends Model
     {
         return $this->belongsToMany(
             Menu::class,
+            'detail_transaksi',
             'ID_TRANSAKSI',
             'ID_PRODUK'
         );

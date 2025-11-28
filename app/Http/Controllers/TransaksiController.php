@@ -9,20 +9,20 @@ class TransaksiController extends Controller
 {
     public function index()
     {
-        return Transaksi::with('menu')->get();
+        return Transaksi::with('menu', 'karyawan')->get();
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'ID_TRANSAKSI' => 'required|string|max:10',
-            'EMAIL' => 'nullable|string|max:50',
-            'JUMLAH_ITEM' => 'nullable|integer',
-            'HARGA_ITEM' => 'nullable|integer',
-            'DATETIME' => 'nullable|date',
-            'TOTAL_BAYAR' => 'nullable|integer',
-            'METODE_PEMBAYARAN' => 'nullable|string|max:20',
-            'MENU' => 'array' // ID produk
+            'ID_TRANSAKSI' => 'required|string|max:10|unique:transaksi,ID_TRANSAKSI',
+            'EMAIL' => 'required|exists:karyawan,EMAIL',
+            'JUMLAH_ITEM'=> 'required|integer|min:1',
+            'HARGA_ITEM'=> 'required|integer', 
+            'DATETIME'=> 'required|date',
+            'TOTAL_BAYAR'=> 'required|integer',
+            'METODE_PEMBAYARAN'=> 'required|string|max:20',
+            'MENU'=> 'array',           
         ]);
 
         $transaksi = Transaksi::create($validated);
@@ -36,7 +36,7 @@ class TransaksiController extends Controller
 
     public function show($id)
     {
-        return Transaksi::with('menu')->findOrFail($id);
+        return Transaksi::with('menu','karyawan')->find($id);
     }
 
     public function update(Request $request, $id)
