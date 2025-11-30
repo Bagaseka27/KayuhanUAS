@@ -10,7 +10,12 @@ class Cabang extends Model
     protected $primaryKey = 'ID_CABANG';
     public $incrementing = false;
     protected $keyType = 'string';
-    public $timestamps = false;
+    public $timestamps = true;
+
+    protected $fillable = [
+        'ID_CABANG', 
+        'NAMA_LOKASI'
+    ];
 
     public function karyawan()
     {
