@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.login');
 })->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/login', [LoginController::class, 'index'])->name('login.form');
 
 // --- 2. DASHBOARD (Halaman Utama) ---
 Route::get('/dashboard', function () {
