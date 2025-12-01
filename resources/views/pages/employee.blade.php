@@ -3,6 +3,33 @@
 @section('title', 'Manajemen Karyawan - Kayuhan')
 
 @section('content')
+    {{-- 1. DATA DUMMY (Biar tabelnya ada isinya tanpa database dulu) --}}
+    @php
+        $employees = [
+            (object)[
+                'email' => 'budi@kayuhan.com',
+                'name' => 'Budi Santoso',
+                'role' => 'Barista',
+                'cabang' => 'Taman Bungkul',
+                'phone' => '08123456789'
+            ],
+            (object)[
+                'email' => 'siti@kayuhan.com',
+                'name' => 'Siti Aminah',
+                'role' => 'Barista',
+                'cabang' => 'Kampus B',
+                'phone' => '08198765432'
+            ],
+            (object)[
+                'email' => 'admin@kayuhan.com',
+                'name' => 'Andi Wijaya',
+                'role' => 'Admin',
+                'cabang' => 'Pusat',
+                'phone' => '08111122233'
+            ]
+        ];
+    @endphp
+
     <h3 class="fw-bold text-primary-custom mb-4">Data Karyawan, Gaji & Jadwal</h3>
 
     <!-- Navigasi Tab -->
@@ -47,29 +74,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Contoh Data Dummy (Nanti diganti @foreach) -->
+                            {{-- LOOPING YANG BENAR (Perhatikan tanda kurungnya) --}}
+                            @foreach($employees as $emp)
                             <tr>
-                                <td>budi@kayuhan.com</td>
-                                <td class="fw-bold">Budi Santoso</td>
-                                <td><span class="badge bg-success">Barista</span></td>
-                                <td>Taman Bungkul</td>
-                                <td>08123456789</td>
+                                <td>{{ $emp->email }}</td>
+                                <td class="fw-bold">{{ $emp->name }}</td>
+                                <td>
+                                    <span class="badge {{ $emp->role == 'Admin' ? 'bg-primary' : 'bg-success' }}">
+                                        {{ $emp->role }}
+                                    </span>
+                                </td>
+                                <td>{{ $emp->cabang }}</td>
+                                <td>{{ $emp->phone }}</td>
                                 <td class="text-center">
                                     <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>siti@kayuhan.com</td>
-                                <td class="fw-bold">Siti Aminah</td>
-                                <td><span class="badge bg-success">Barista</span></td>
-                                <td>Kampus B</td>
-                                <td>08198765432</td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -170,14 +192,14 @@
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label class="form-label">Posisi</label>
-                            <select name="role" class="form-select">
+                            <select name="jabatan" class="form-select">
                                 <option value="Barista">Barista</option>
                                 <option value="Admin">Admin</option>
                             </select>
                         </div>
                         <div class="col-6 mb-3">
                             <label class="form-label">No HP</label>
-                            <input type="text" name="phone" class="form-control">
+                            <input type="text" name="no_hp" class="form-control">
                         </div>
                     </div>
                 </div>

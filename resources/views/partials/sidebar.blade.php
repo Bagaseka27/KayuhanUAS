@@ -1,37 +1,57 @@
 <div class="sidebar" id="sidebar">
-    <div class="sidebar-brand" title="Edit Profil">
+    <!-- 1. BAGIAN PROFIL / BRAND (ATAS) -->
+    <div class="sidebar-brand" title="Klik untuk Edit Profil">
         <div style="width:40px; height:40px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:1.4rem; overflow:hidden">
+            <!-- Ikon User -->
             <i class="fas fa-user"></i> 
         </div>
         <div class="d-flex flex-column" style="overflow:hidden;">
-            <span class="text-truncate">{{ Auth::user()->name ?? 'User' }}</span>
-            <small style="font-size:0.7rem; opacity:0.8;">{{ Auth::user()->role ?? 'Guest' }}</small>
+            <!-- Hardcode Nama biar UI terlihat pro saat demo -->
+            <span class="text-truncate fw-bold">{{ Auth::user()->name ?? 'Andi Wijaya' }}</span>
+            <small style="font-size:0.7rem; opacity:0.8;">Role: Admin / Owner</small>
         </div>
     </div>
     
+    <!-- 2. BAGIAN MENU NAVIGASI (LENGKAP TANPA BATASAN) -->
     <div class="sidebar-menu">
+        <!-- 1. Dashboard -->
         <a href="{{ url('/dashboard') }}" class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
             <i class="fas fa-home"></i> Dashboard
         </a>
         
-        @if(Auth::user()->role == 'Barista')
-            <a href="{{ url('/pos') }}" class="menu-item {{ Request::is('pos') ? 'active' : '' }}">
-                <i class="fas fa-cash-register"></i> Kasir (POS)
-            </a>
-        @endif
+        <!-- 2. Karyawan & Gaji -->
+        <a href="{{ url('/employees') }}" class="menu-item {{ Request::is('employees') ? 'active' : '' }}">
+            <i class="fas fa-users"></i> Karyawan & Gaji
+        </a>
 
-        @if(Auth::user()->role == 'Admin')
-            <a href="{{ url('/employees') }}" class="menu-item {{ Request::is('employees') ? 'active' : '' }}">
-                <i class="fas fa-users"></i> Karyawan
-            </a>
-        @endif
-        
+        <!-- 3. Manajemen Menu -->
         <a href="{{ url('/menu') }}" class="menu-item {{ Request::is('menu') ? 'active' : '' }}">
             <i class="fas fa-coffee"></i> Manajemen Menu
         </a>
+
+        <!-- 4. Stok -->
+        <a href="{{ url('/inventory') }}" class="menu-item {{ Request::is('inventory') ? 'active' : '' }}">
+            <i class="fas fa-boxes"></i> Stok (Gudang/Rombong)
+        </a>
+
+        <!-- 5. Lokasi -->
+        <a href="{{ url('/locations') }}" class="menu-item {{ Request::is('locations') ? 'active' : '' }}">
+            <i class="fas fa-store"></i> Lokasi (Cabang & Rombong)
+        </a>
+
+        <!-- 6. Manajemen Transaksi -->
+        <a href="{{ url('/history') }}" class="menu-item {{ Request::is('history') ? 'active' : '' }}">
+            <i class="fas fa-file-invoice-dollar"></i> Manajemen Transaksi
+        </a>
+
+        <!-- Tambahan: POS (Biar bisa diakses dari sini juga) -->
+        <a href="{{ url('/pos') }}" class="menu-item {{ Request::is('pos') ? 'active' : '' }}">
+            <i class="fas fa-cash-register"></i> Kasir (POS)
+        </a>
     </div>
 
-    <div class="px-3 w-100 position-absolute bottom-0 mb-4">
+    <!-- 3. BAGIAN LOGOUT (BAWAH) -->
+    <div class="bottom-menu px-3 w-100 position-absolute bottom-0 mb-4">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="btn btn-outline-light w-100 text-start border-0 py-2">
