@@ -43,11 +43,7 @@
         <a href="{{ url('/history') }}" class="menu-item {{ Request::is('history') ? 'active' : '' }}">
             <i class="fas fa-file-invoice-dollar"></i> Manajemen Transaksi
         </a>
-
-        <!-- Tambahan: POS (Biar bisa diakses dari sini juga) -->
-        <a href="{{ url('/pos') }}" class="menu-item {{ Request::is('pos') ? 'active' : '' }}">
-            <i class="fas fa-cash-register"></i> Kasir (POS)
-        </a>
+        
     </div>
 
     <!-- 3. BAGIAN LOGOUT (BAWAH) -->

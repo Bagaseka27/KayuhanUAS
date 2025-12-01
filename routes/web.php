@@ -32,15 +32,6 @@ Route::get('/menu', function () {
     return view('pages.menu');
 })->name('menu');
 
-
-// --------------------
-// POS (Barista)
-// --------------------
-Route::get('/pos', function () {
-    return view('pages.pos');
-})->name('pos');
-
-
 // --------------------
 // DATA KARYAWAN
 // --------------------
@@ -69,7 +60,7 @@ Route::get('/inventory', function () {
 // LOKASI CABANG
 // --------------------
 Route::get('/locations', function () {
-    return view('pages.locations');
+    return view('pages.location');
 
 })->name('locations');
 
