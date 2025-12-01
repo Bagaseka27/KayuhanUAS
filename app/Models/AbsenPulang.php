@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class AbsenPulang extends Model
 {
     protected $table = 'absenpulang';
-    public $timestamps = false;
+    protected $primaryKey = 'EMAIL';
+    protected $keyType = 'string';
+    public $timestamps = true; 
+    
+    protected $fillable = [
+        'EMAIL',
+        'FOTO',
+        'DATETIME_PULANG' 
+    ];
 
     public function karyawan()
     {

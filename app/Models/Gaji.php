@@ -8,8 +8,17 @@ class Gaji extends Model
 {
     protected $table = 'gaji';
     protected $primaryKey = 'ID_GAJI';
-    public $incrementing = false;
-    public $timestamps = false;
+    public $timestamps = true;
+
+    protected $fillable = [
+        'EMAIL', 
+        'PERIODE',
+        'TOTAL_GAJI_POKOK',
+        'TOTAL_BONUS',
+        'TOTAL_KOMPENSASI',
+        'TOTAL_GAJI_AKHIR'
+    ];
+
 
     public function karyawan()
     {
