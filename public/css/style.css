@@ -1,4 +1,4 @@
-/* --- WARNA & FONT --- */
+/* --- 1. WARNA & FONT GLOBAL --- */
 :root {
     --primary: #003D2E;   /* Hijau Tua Kayuhan */
     --secondary: #F5F0E6; /* Cream Latte */
@@ -6,74 +6,17 @@
     --surface: #FFFFFF;
     --danger: #dc3545;
     --success: #198754;
+    --dark-green: #002a20;
 }
 
 body {
     background-color: var(--secondary);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Outfit', sans-serif; 
     color: #333;
     overflow-x: hidden;
 }
 
-/* --- LOGIN PAGE (BAGIAN INI YANG KAMU CARI) --- */
-#view-login {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--primary); /* Background Hijau Full Layar */
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    z-index: 2000;
-}
-
-.login-card {
-    background: var(--secondary);
-    padding: 2.5rem;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 400px; /* Lebar maksimal kartu */
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4); /* Efek bayangan */
-    text-align: center;
-}
-
-/* --- TOMBOL CUSTOM --- */
-.btn-primary-custom {
-    background-color: var(--primary); 
-    color: white; 
-    border: none;
-    padding: 8px 16px; 
-    border-radius: 8px; 
-    transition: 0.3s;
-}
-
-.btn-primary-custom:hover {
-    background-color: #002a20; 
-    color: white;
-}
-
-.btn-accent {
-    background-color: var(--accent); 
-    color: white; 
-    border: none;
-    padding: 12px 20px; 
-    border-radius: 8px;
-    transition: 0.3s;
-}
-
-.btn-accent:hover {
-    background-color: #b59329; 
-    color: white; 
-    transform: translateY(-2px);
-}
-
-.text-primary-custom { 
-    color: var(--primary) !important; 
-}
-
-/* --- SIDEBAR & LAINNYA (Untuk halaman dalam) --- */
+/* --- 2. SIDEBAR (PERBAIKAN FITUR VERTIKAL) --- */
 .sidebar {
     height: 100vh;
     width: 260px;
@@ -85,6 +28,58 @@ body {
     transition: 0.3s;
     z-index: 1000;
     color: white;
+    display: flex;          
+    flex-direction: column; 
+    overflow-y: auto; 
+}
+
+.sidebar-brand {
+    padding: 0 20px 30px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 15px;
+}
+
+.sidebar-menu { 
+    padding: 0 10px; 
+    display: flex;          
+    flex-direction: column; 
+    gap: 8px;               
+}
+
+.menu-item {
+    display: flex; 
+    align-items: center;
+    padding: 12px 15px;
+    color: rgba(255, 255, 255, 0.7) !important;
+    text-decoration: none !important;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: 0.2s;
+    cursor: pointer;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.menu-item:hover, .menu-item.active {
+    background-color: rgba(255,255,255,0.1);
+    color: var(--accent) !important;
+    transform: translateX(5px);
+}
+
+.menu-item i { 
+    width: 25px; 
+    text-align: center; 
+    margin-right: 10px; 
+    font-size: 1.1rem;
+}
+
+.sidebar .bottom-menu {
+    margin-top: auto;
+    padding: 20px;
 }
 
 .main-content {
@@ -93,7 +88,77 @@ body {
     width: calc(100% - 260px); 
 }
 
-/* Supaya responsif di HP */
+/* --- 3. KOMPONEN DASHBOARD (YANG HILANG TADI) --- */
+
+/* Kartu Statistik Putih */
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 25px;
+    height: 100%;
+    transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+
+/* Background Hijau Gradasi (Card Omset) */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--dark-green) 100%);
+    color: white;
+}
+
+/* Tombol Aksi Cepat (Quick Action) */
+.quick-action-btn {
+    background: white; 
+    border: none; 
+    padding: 15px; 
+    border-radius: 12px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    gap: 10px; 
+    width: 100%; 
+    height: 100px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+    transition: 0.3s;
+    color: var(--primary); 
+    font-weight: 600;
+    text-decoration: none; /* Hilangkan garis bawah */
+}
+
+.quick-action-btn:hover { 
+    transform: translateY(-5px); 
+    background: var(--primary); 
+    color: white; 
+}
+
+.quick-action-btn i { 
+    font-size: 1.8rem; 
+    color: var(--accent); 
+}
+
+.quick-action-btn:hover i { 
+    color: white; 
+}
+
+/* --- 4. LOGIN PAGE & UTILITIES --- */
+#view-login {
+    height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background-color: var(--primary);
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
+}
+.login-card {
+    background: var(--secondary); padding: 2.5rem; border-radius: 20px;
+    width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: center;
+}
+.text-primary-custom { color: var(--primary) !important; }
+.btn-accent { background-color: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 8px; transition: 0.3s; }
+.btn-accent:hover { background-color: #b59329; color: white; transform: translateY(-2px); }
+
+/* --- 5. RESPONSIVE (MOBILE) --- */
 @media (max-width: 768px) {
     .sidebar { transform: translateX(-100%); }
     .sidebar.show { transform: translateX(0); }

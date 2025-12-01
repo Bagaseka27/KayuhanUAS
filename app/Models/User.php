@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'jabatan', // <--- WAJIB DITAMBAHKAN
+        'no_hp',   // <--- WAJIB DITAMBAHKAN
     ];
 
     /**
