@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use App\Exports\TransaksiExport; 
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransaksiController extends Controller
 {
@@ -55,4 +57,12 @@ class TransaksiController extends Controller
     {
         return Transaksi::destroy($id);
     }
+
+    public function export()
+    {
+        $namaFile = 'laporan_transaksi_' . date('Y-m-d_H-i-s') . '.xlsx';
+        
+        return Excel::download(new TransaksiExport, $namaFile);
+    }
+
 }
