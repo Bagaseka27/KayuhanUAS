@@ -24,24 +24,12 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
-
-// --------------------
-// DASHBOARD
-// --------------------
 Route::get('/dashboard', function () {
-    return view('pages.dashboard');
+    return view('pages.dashboard.admin');
 })->name('dashboard');
 
-
-// --------------------
-// MANAJEMEN MENU
-// --------------------
 Route::get('/menu', function () {
-<<<<<<< HEAD
     return view('pages.menu');
-=======
-    return view('pages.menu'); 
->>>>>>> 4263384acb60caadc14d568c588c98f714f457ae
 })->name('menu');
 
 
@@ -57,11 +45,7 @@ Route::get('/pos', function () {
 // DATA KARYAWAN
 // --------------------
 Route::get('/employees', function () {
-<<<<<<< HEAD
     return view('pages.employee');
-=======
-    return view('pages.employee'); 
->>>>>>> 4263384acb60caadc14d568c588c98f714f457ae
 })->name('employees');
 
 
@@ -69,11 +53,7 @@ Route::get('/employees', function () {
 // HISTORY TRANSAKSI
 // --------------------
 Route::get('/history', function () {
-<<<<<<< HEAD
     return view('pages.history');
-=======
-    return view('pages.history'); 
->>>>>>> 4263384acb60caadc14d568c588c98f714f457ae
 })->name('history');
 
 
@@ -90,8 +70,6 @@ Route::get('/inventory', function () {
 // --------------------
 Route::get('/locations', function () {
     return view('pages.locations');
-<<<<<<< HEAD
+
 })->name('locations');
-=======
-})->name('locations');
->>>>>>> 4263384acb60caadc14d568c588c98f714f457ae
+
