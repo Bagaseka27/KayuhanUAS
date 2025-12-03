@@ -17,12 +17,16 @@ class AbsensiController extends Controller
     {
         $karyawan = Auth::user(); 
         
-        // 1. Ambil data absensi
+        // 1. Ambil data absensi untuk Riwayat
         $riwayatAbsensi = AbsenDatang::where('EMAIL', $karyawan->email)
                                     ->orderBy('DATETIME_DATANG', 'desc')
                                     ->get();
+
+        // 2. Cek Status Absensi (VARIABEL YANG HILANG)
+        $absenDatangHariIni = AbsenDatang::where('EMAIL', $karyawan->email)->first(); 
+        $absenPulangHariIni = AbsenPulang::where('EMAIL', $karyawan->email)->first();
         
-        // 3. Data Jadwal Shift (Data dummy sederhana)
+        // 3. Data Jadwal Shift
         $jadwal = (object)['jam_masuk' => '08:00', 'jam_pulang' => '16:00']; 
         
         // 🟢 KEMBALIKAN VIEW DENGAN DATA
@@ -33,6 +37,7 @@ class AbsensiController extends Controller
             'jadwal' => $jadwal,
         ]);
     }
+// ...
 
     public function storeDatang(Request $request)
     {
