@@ -1,15 +1,17 @@
-/* --- GLOBAL VARIABLES --- */
+/* ==================================== */
+/* GLOBAL & VARIABLES          */
+/* ==================================== */
 :root {
-    --primary: #003D2E;   /* Hijau Tua Kayuhan */
-    --secondary: #F5F0E6; /* Cream Latte */
-    --accent: #D4AF37;    /* Emas */
-    --surface: #FFFFFF;
+    --primary: #003D2E;      /* Hijau Tua Kayuhan */
+    --secondary: #F5F0E6;    /* Cream Latte (Background Utama) */
+    --accent: #D4AF37;       /* Emas */
+    --surface: #FFFFFF;      /* Putih (Background Card) */
     --danger: #dc3545;
     --success: #198754;
     --dark-green: #002a20;
+    --text-dark: #333333;
 }
 
-/* FIX UTAMA: Pastikan Padding tidak menambah lebar elemen */
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -17,11 +19,19 @@
 body {
     background-color: var(--secondary);
     font-family: 'Outfit', sans-serif; 
-    color: #333;
+    color: var(--text-dark);
     overflow-x: hidden;
 }
 
-/* --- SIDEBAR --- */
+/* --- UTILS --- */
+.text-primary-custom { color: var(--primary) !important; }
+.text-accent { color: var(--accent); }
+.bg-primary { background-color: var(--primary) !important; }
+
+/* ==================================== */
+/* SIDEBAR                 */
+/* ==================================== */
+
 .sidebar {
     height: 100vh;
     width: 260px;
@@ -33,19 +43,19 @@ body {
     transition: 0.3s;
     z-index: 1000;
     color: white;
-    display: flex;          
+    display: flex; 
     flex-direction: column; 
     overflow-y: auto; 
-    overflow-x: hidden; /* Mencegah scroll samping */
+    overflow-x: hidden;
 }
 
-/* Scrollbar tipis cantik */
+/* Scrollbar */
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 .sidebar::-webkit-scrollbar-track { background: transparent; }
 
 .sidebar-brand {
-    padding: 0 20px 30px 20px; /* Jarak lega untuk brand */
+    padding: 0 20px 30px 20px; 
     display: flex;
     align-items: center;
     gap: 12px;
@@ -55,22 +65,22 @@ body {
     width: 100%;
 }
 
-/* --- PROFIL SECTION (Bisa Diklik) --- */
+/* Profil Section (untuk Admin & Barista) */
 .profile-section {
-    padding: 12px 15px;
+    padding: 0 20px 25px 20px; 
     display: flex; align-items: center; gap: 12px;
     margin-bottom: 10px;
-    margin-left: 10px;  /* Memberi jarak dari tepi kiri */
-    margin-right: 10px; /* Memberi jarak dari tepi kanan */
-    width: auto;        /* Otomatis menyesuaikan margin */
-    
-    border-radius: 10px;
-    cursor: pointer;    /* Menunjukkan bisa diklik */
-    transition: 0.2s;
+    width: 100%;
+    /* Styling tambahan dari Barista */
+    box-sizing: border-box;
 }
 
 .profile-section:hover {
-    background-color: rgba(255,255,255,0.1); /* Efek hover transparan */
+    background-color: rgba(255,255,255,0.1); /* Efek hover untuk profil */
+    border-radius: 10px;
+    margin: 0 10px;
+    width: auto;
+    padding: 12px 15px;
 }
 
 .profile-text {
@@ -80,43 +90,44 @@ body {
     max-width: 140px;
 }
 
-/* --- MENU NAVIGATION --- */
+/* Menu Container */
 .sidebar-menu { 
-    padding: 0 10px; /* Memberi jarak container menu dari tepi layar */
-    display: flex;          
+    padding: 0 10px; 
+    display: flex; 
     flex-direction: column; 
-    gap: 8px; /* Jarak antar menu vertikal */
+    gap: 8px; 
     width: 100%; 
 }
 
 .menu-item {
     display: flex; 
     align-items: center;
-    padding: 12px 15px; /* Padding dalam item yang nyaman */
+    padding: 12px 15px; 
     color: rgba(255, 255, 255, 0.7) !important;
     text-decoration: none !important;
-    border-radius: 10px; /* Sudut melengkung */
+    border-radius: 10px; 
     font-weight: 500;
     font-size: 0.95rem; 
     transition: 0.2s;
     cursor: pointer;
     width: 100%; 
-    
-    /* PENTING: Teks turun ke bawah kalau kepanjangan, jadi gak kepotong */
     white-space: normal; 
     line-height: 1.3; 
+    /* Style Barista yang hilang: */
+    margin: 0 10px; 
+    width: auto;
 }
 
 .menu-item:hover, .menu-item.active {
-    background-color: rgba(255,255,255,0.1); /* Background saat aktif/hover */
+    background-color: rgba(255,255,255,0.1); 
     color: var(--accent) !important;
-    transform: translateX(5px); /* Efek geser sedikit */
+    transform: translateX(5px); 
 }
 
 .menu-item i { 
     width: 25px; 
     text-align: center; 
-    margin-right: 12px; /* Jarak ikon ke teks */
+    margin-right: 12px; 
     font-size: 1.1rem;
     flex-shrink: 0; 
 }
@@ -137,29 +148,51 @@ body {
     border-radius: 10px;
 }
 .logout-btn:hover { 
-    background-color: rgba(220, 53, 69, 0.2); /* Efek merah tipis saat hover logout */
+    background-color: rgba(220, 53, 69, 0.2);
     color: #ff6b6b; 
 }
 
-/* --- CONTENT AREA --- */
+/* ==================================== */
+/* CONTENT AREA               */
+/* ==================================== */
+
 .main-content {
     margin-left: 260px;
-    padding: 30px;
+    padding: 40px; /* Ambil padding yang lebih besar dari Barista */
     width: calc(100% - 260px); 
+    min-height: 100vh;
     transition: 0.3s;
 }
 
-/* --- COMPONENTS (Cards, Buttons, etc) --- */
-.stat-card {
-    background: white;
+/* ==================================== */
+/* COMPONENTS               */
+/* ==================================== */
+
+/* 1. KARTU UTAMA (Floating White Card) */
+.card, .card-custom, .stat-card {
+    background: var(--surface); /* #FFFFFF */
     border-radius: 16px;
-    border: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    padding: 25px;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Bayangan modern */
+    padding: 25px; 
     height: 100%;
-    transition: transform 0.2s;
+    transition: 0.3s;
 }
-.stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+
+/* Hover effect untuk Stat/Aksi Cepat */
+.stat-card:hover, .quick-action-btn:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+}
+
+/* Card Header (Pastikan transparan) */
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+
+/* 2. Style Khusus Dashboard/POS */
 
 .bg-gradient-primary {
     background: linear-gradient(135deg, var(--primary) 0%, var(--dark-green) 100%);
@@ -186,17 +219,6 @@ body {
     cursor: pointer;
 }
 
-.quick-action-btn:hover { 
-    transform: translateY(-5px); 
-    background: var(--primary); 
-    color: white; 
-}
-
-/* Efek pencet tombol */
-.quick-action-btn:active, .btn-primary-custom:active, .btn-accent:active {
-    transform: scale(0.98);
-}
-
 .quick-action-btn i { 
     font-size: 1.8rem; 
     color: var(--accent); 
@@ -206,21 +228,22 @@ body {
     color: white; 
 }
 
-/* --- LOGIN PAGE --- */
-#view-login {
-    height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    background-color: var(--primary);
-    position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
+/* Style Item Menu di POS (Menu kecil) */
+.menu-item-card { 
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 15px;
+    transition: 0.2s;
+    text-align: center;
+    cursor: pointer;
 }
-.login-card {
-    background: var(--secondary); padding: 2.5rem; border-radius: 20px;
-    width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: center;
+.menu-item-card:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1); 
 }
 
-/* --- UTILS --- */
-.text-primary-custom { color: var(--primary) !important; }
-.bg-primary { background-color: var(--primary) !important; } /* Mengubah warna default bg-primary bootstrap jadi Hijau */
+/* --- BUTTONS --- */
 
 .btn-primary-custom { 
     background-color: var(--primary); 
@@ -242,6 +265,44 @@ body {
 }
 .btn-accent:hover { background-color: #b59329; color: white; transform: translateY(-2px); }
 
+/* Efek pencet tombol */
+.quick-action-btn:active, .btn-primary-custom:active, .btn-accent:active {
+    transform: scale(0.98);
+}
+
+
+/* ==================================== */
+/* LAIN-LAIN               */
+/* ==================================== */
+
+.table-custom thead th {
+    background: #f8f9fa;
+    color: #888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    padding: 15px;
+}
+.table-custom td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+
+/* --- LOGIN PAGE --- */
+#view-login {
+    height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background-color: var(--primary);
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
+}
+.login-card {
+    background: var(--secondary); padding: 2.5rem; border-radius: 20px;
+    width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: center;
+}
+
 /* --- RESPONSIVE --- */
 /* Style untuk Tombol Menu di Mobile (Hidden di Desktop) */
 .mobile-toggle-btn {
@@ -261,7 +322,7 @@ body {
         position: fixed;
         top: 20px;
         right: 20px;
-        z-index: 1100; /* Di atas segalanya */
+        z-index: 1100;
         background-color: var(--primary);
         color: white;
         border: none;
@@ -272,7 +333,7 @@ body {
         transition: 0.3s;
     }
     
-    /* Bikin semua tombol jadi Full Width di HP biar enak dipencet */
+    /* Bikin semua tombol jadi Full Width di HP */
     .btn-primary-custom, 
     .btn-accent, 
     .quick-action-btn, 

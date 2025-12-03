@@ -65,7 +65,13 @@
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
-        @yield('content')
+        <div class="container-fluid">
+            <div class="white-content-wrapper"> 
+            
+                @yield('content') 
+            
+            </div>
+        </div>
     </div>
 
     <!-- 4. MODAL EDIT PROFIL (POPUP) -->
