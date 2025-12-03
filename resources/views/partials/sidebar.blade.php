@@ -43,6 +43,10 @@
         <a href="{{ url('/history') }}" class="menu-item {{ Request::is('history') ? 'active' : '' }}">
             <i class="fas fa-file-invoice-dollar"></i> Manajemen Transaksi
         </a>
+
+        <a href="{{ url('/absensi-monitoring') }}" class="menu-item {{ Request::is('absensi-monitoring') ? 'active' : '' }}">
+            <i class="fas fa-clipboard-check"></i> Monitoring Absensi
+        </a>
         
     </div>
 

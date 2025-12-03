@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
+use App\Models\AbsenDatang;
+use App\Models\AbsenPulang;
+use App\Models\Karyawan;
+use App\Http\Controllers\AbsensiController;
 use Illuminate\Support\Facades\Auth;
 
 // --------------------
@@ -54,6 +58,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/locations', function () {
         return view('pages.location');
     })->name('locations');
+
+    Route::get('/absensi-monitoring', [App\Http\Controllers\AbsensiController::class, 'indexPulang'])->name('admin.absensi.monitoring');
 });
 
 // --------------------
@@ -80,6 +86,14 @@ Route::prefix('barista')->middleware(['auth', 'barista'])->group(function () {
     Route::get('/riwayat', function () {
         return view('pages.riwayat');
     })->name('barista.riwayat');
+
+    Route::get('/absensi', [AbsensiController::class, 'indexDatang'])->name('barista.absensi.index'); 
+    
+    // Proses Absensi Masuk (POST): Memanggil storeDatang()
+    Route::post('/absensi/datang', [AbsensiController::class, 'storeDatang'])->name('barista.absensi.storeDatang');
+    
+    // Proses Absensi Pulang (POST): Memanggil storePulang()
+    Route::post('/absensi/pulang', [AbsensiController::class, 'storePulang'])->name('barista.absensi.storePulang');
 });
 
 // --------------------
