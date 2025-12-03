@@ -164,3 +164,98 @@ body {
     .sidebar.show { transform: translateX(0); }
     .main-content { margin-left: 0; width: 100%; }
 }
+
+:root {
+    --primary: #003D2E;   /* Kayuhan Green */
+    --secondary: #F5F0E6; /* Cream Background */
+    --accent: #D4AF37;    /* Gold */
+    --surface: #FFFFFF;   /* White Cards */
+    --text-dark: #333333;
+}
+
+body {
+    background-color: var(--secondary);
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* SIDEBAR */
+.sidebar {
+    height: 100vh;
+    width: 260px;
+    position: fixed;
+    top: 0; left: 0;
+    background-color: var(--primary);
+    padding: 20px 0;
+    z-index: 1000;
+    display: flex; flex-direction: column;
+}
+
+.profile-section {
+    padding: 0 25px 30px 25px;
+    display: flex; align-items: center; gap: 15px;
+    margin-bottom: 10px;
+}
+
+.menu-item {
+    padding: 15px 25px;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 15px;
+    font-weight: 500;
+    transition: 0.3s;
+    border-left: 4px solid transparent;
+}
+
+.menu-item:hover, .menu-item.active {
+    background: rgba(255,255,255,0.05);
+    color: var(--accent);
+    border-left: 4px solid var(--accent);
+}
+
+.logout-btn {
+    margin-top: auto;
+    padding: 20px 25px;
+    color: white;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    transition: 0.3s;
+}
+.logout-btn:hover { color: #ff6b6b; }
+
+/* CONTENT AREA */
+.main-content {
+    margin-left: 260px;
+    padding: 40px;
+}
+
+/* CARDS */
+.card-custom {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 25px;
+    border: none;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+    height: 100%;
+}
+
+/* TABLES */
+.table-custom thead th {
+    background: #f8f9fa;
+    color: #888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    padding: 15px;
+}
+.table-custom td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+/* UTILS */
+.text-primary-custom { color: var(--primary); }
+.text-accent { color: var(--accent); }

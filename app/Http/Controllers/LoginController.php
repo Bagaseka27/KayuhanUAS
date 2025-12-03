@@ -16,6 +16,11 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
+    public function index()
+    {
+        return view('auth.login');
+    }
+
     /**
      * Menangani proses login.
      */
@@ -30,10 +35,21 @@ class LoginController extends Controller
         // 2. Coba login
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            
+            // 3. Redirect berdasarkan role
+            $user = Auth::user();
+            
+            if ($user->role == 'admin') {
+                return redirect('/dashboard');
+            } elseif ($user->role == 'barista') {
+                return redirect('/barista/dashboard');
+            }
+            
+            // Default redirect kalau role tidak dikenali
+            return redirect('/');
         }
 
-        // 3. Login gagal
+        // 4. Login gagal
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan salah.',
         ])->onlyInput('email');

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_barista')
 
 @section('title', 'Manajemen Menu - Kayuhan')
 
