@@ -1,14 +1,15 @@
-/* --- admin--- */
+/* --- GLOBAL VARIABLES --- */
 :root {
-    --primary: #003D2E;
-    --secondary: #F5F0E6;
-    --accent: #D4AF37;
+    --primary: #003D2E;   /* Hijau Tua Kayuhan */
+    --secondary: #F5F0E6; /* Cream Latte */
+    --accent: #D4AF37;    /* Emas */
     --surface: #FFFFFF;
     --danger: #dc3545;
     --success: #198754;
     --dark-green: #002a20;
 }
 
+/* FIX UTAMA: Pastikan Padding tidak menambah lebar elemen */
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -20,6 +21,7 @@ body {
     overflow-x: hidden;
 }
 
+/* --- SIDEBAR --- */
 .sidebar {
     height: 100vh;
     width: 260px;
@@ -27,22 +29,23 @@ body {
     top: 0;
     left: 0;
     background-color: var(--primary);
-    padding-top: 25px; 
+    padding-top: 25px;
     transition: 0.3s;
     z-index: 1000;
     color: white;
     display: flex;          
     flex-direction: column; 
     overflow-y: auto; 
-    overflow-x: hidden;
+    overflow-x: hidden; /* Mencegah scroll samping */
 }
 
+/* Scrollbar tipis cantik */
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 .sidebar::-webkit-scrollbar-track { background: transparent; }
 
 .sidebar-brand {
-    padding: 0 20px 30px 20px; 
+    padding: 0 20px 30px 20px; /* Jarak lega untuk brand */
     display: flex;
     align-items: center;
     gap: 12px;
@@ -52,48 +55,68 @@ body {
     width: 100%;
 }
 
+/* --- PROFIL SECTION (Bisa Diklik) --- */
 .profile-section {
-    padding: 0 20px 25px 20px; 
+    padding: 12px 15px;
     display: flex; align-items: center; gap: 12px;
     margin-bottom: 10px;
-    width: 100%;
+    margin-left: 10px;  /* Memberi jarak dari tepi kiri */
+    margin-right: 10px; /* Memberi jarak dari tepi kanan */
+    width: auto;        /* Otomatis menyesuaikan margin */
+    
+    border-radius: 10px;
+    cursor: pointer;    /* Menunjukkan bisa diklik */
+    transition: 0.2s;
 }
 
+.profile-section:hover {
+    background-color: rgba(255,255,255,0.1); /* Efek hover transparan */
+}
+
+.profile-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 140px;
+}
+
+/* --- MENU NAVIGATION --- */
 .sidebar-menu { 
-    padding: 0 10px; 
+    padding: 0 10px; /* Memberi jarak container menu dari tepi layar */
     display: flex;          
     flex-direction: column; 
-    gap: 8px; 
+    gap: 8px; /* Jarak antar menu vertikal */
     width: 100%; 
 }
 
 .menu-item {
     display: flex; 
     align-items: center;
-    padding: 12px 15px; 
+    padding: 12px 15px; /* Padding dalam item yang nyaman */
     color: rgba(255, 255, 255, 0.7) !important;
     text-decoration: none !important;
-    border-radius: 10px; 
+    border-radius: 10px; /* Sudut melengkung */
     font-weight: 500;
     font-size: 0.95rem; 
     transition: 0.2s;
     cursor: pointer;
     width: 100%; 
     
+    /* PENTING: Teks turun ke bawah kalau kepanjangan, jadi gak kepotong */
     white-space: normal; 
     line-height: 1.3; 
 }
 
 .menu-item:hover, .menu-item.active {
-    background-color: rgba(255,255,255,0.1); 
+    background-color: rgba(255,255,255,0.1); /* Background saat aktif/hover */
     color: var(--accent) !important;
-    transform: translateX(5px); 
+    transform: translateX(5px); /* Efek geser sedikit */
 }
 
 .menu-item i { 
     width: 25px; 
     text-align: center; 
-    margin-right: 12px; 
+    margin-right: 12px; /* Jarak ikon ke teks */
     font-size: 1.1rem;
     flex-shrink: 0; 
 }
@@ -104,12 +127,29 @@ body {
     width: 100%;
 }
 
+.logout-btn {
+    padding: 12px 15px;
+    color: white;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    transition: 0.3s;
+    width: 100%;
+    border-radius: 10px;
+}
+.logout-btn:hover { 
+    background-color: rgba(220, 53, 69, 0.2); /* Efek merah tipis saat hover logout */
+    color: #ff6b6b; 
+}
+
+/* --- CONTENT AREA --- */
 .main-content {
     margin-left: 260px;
     padding: 30px;
     width: calc(100% - 260px); 
+    transition: 0.3s;
 }
 
+/* --- COMPONENTS (Cards, Buttons, etc) --- */
 .stat-card {
     background: white;
     border-radius: 16px;
@@ -143,12 +183,18 @@ body {
     color: var(--primary); 
     font-weight: 600;
     text-decoration: none; 
+    cursor: pointer;
 }
 
 .quick-action-btn:hover { 
     transform: translateY(-5px); 
     background: var(--primary); 
     color: white; 
+}
+
+/* Efek pencet tombol */
+.quick-action-btn:active, .btn-primary-custom:active, .btn-accent:active {
+    transform: scale(0.98);
 }
 
 .quick-action-btn i { 
@@ -160,6 +206,7 @@ body {
     color: white; 
 }
 
+/* --- LOGIN PAGE --- */
 #view-login {
     height: 100vh;
     display: flex; align-items: center; justify-content: center;
@@ -170,144 +217,75 @@ body {
     background: var(--secondary); padding: 2.5rem; border-radius: 20px;
     width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: center;
 }
+
+/* --- UTILS --- */
 .text-primary-custom { color: var(--primary) !important; }
-.btn-accent { background-color: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 8px; transition: 0.3s; }
+.bg-primary { background-color: var(--primary) !important; } /* Mengubah warna default bg-primary bootstrap jadi Hijau */
+
+.btn-primary-custom { 
+    background-color: var(--primary); 
+    color: white; 
+    border: none; 
+    padding: 8px 16px; 
+    border-radius: 8px; 
+    transition: 0.3s; 
+}
+.btn-primary-custom:hover { background-color: var(--dark-green); color: white; }
+
+.btn-accent { 
+    background-color: var(--accent); 
+    color: white; 
+    border: none; 
+    padding: 12px 20px; 
+    border-radius: 8px; 
+    transition: 0.3s; 
+}
 .btn-accent:hover { background-color: #b59329; color: white; transform: translateY(-2px); }
+
+/* --- RESPONSIVE --- */
+/* Style untuk Tombol Menu di Mobile (Hidden di Desktop) */
+.mobile-toggle-btn {
+    display: none;
+}
 
 @media (max-width: 768px) {
     .sidebar { transform: translateX(-100%); }
     .sidebar.show { transform: translateX(0); }
-    .main-content { margin-left: 0; width: 100%; }
-}
-
-/* ---barista--- */
-:root {
-    --primary: #003D2E;
-    --secondary: #F5F0E6;
-    --accent: #D4AF37;
-    --surface: #FFFFFF;
-    --text-dark: #333333;
-}
-
-body {
-    background-color: var(--secondary);
-    font-family: 'Outfit', sans-serif;
-    color: var(--text-dark);
-    overflow-x: hidden;
-}
-
-.sidebar {
-    height: 100vh;
-    width: 260px;
-    position: fixed;
-    top: 0; left: 0;
-    background-color: var(--primary);
-    padding: 25px 0; 
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
+    .main-content { margin-left: 0; width: 100%; padding: 20px; }
     
-    overflow-x: hidden; 
-    overflow-y: auto;
-}
-
-.sidebar::-webkit-scrollbar {
-    width: 5px;
-}
-.sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
-.sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-}
-
-.profile-section {
-    padding: 0 20px 25px 20px; 
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 10px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.profile-text {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 140px;
-}
-
-.menu-item {
-    padding: 12px 15px; 
-    color: rgba(255,255,255,0.6);
-    text-decoration: none;
-    display: flex; align-items: center; gap: 12px; 
-    font-weight: 500;
-    transition: 0.3s;
+    /* Tampilkan tombol menu mengambang di kanan atas saat mobile */
+    .mobile-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1100; /* Di atas segalanya */
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
     
-    border-radius: 10px; 
-    margin: 0 10px; 
-    width: auto; 
+    /* Bikin semua tombol jadi Full Width di HP biar enak dipencet */
+    .btn-primary-custom, 
+    .btn-accent, 
+    .quick-action-btn, 
+    .modal-footer .btn {
+        width: 100%;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     
-    box-sizing: border-box;
-    white-space: normal;
-    line-height: 1.3;
+    /* Tabel responsive scroll */
+    .table-responsive {
+        border: 1px solid #eee;
+    }
 }
-
-.menu-item:hover, .menu-item.active {
-    background: rgba(255,255,255,0.1);
-    color: var(--accent);
-    transform: translateX(5px);
-}
-
-.menu-item i { 
-    width: 25px; 
-    text-align: center; 
-    font-size: 1.1rem;
-    flex-shrink: 0; 
-}
-
-.logout-btn {
-    margin-top: auto;
-    padding: 20px 25px;
-    color: white;
-    text-decoration: none;
-    display: flex; align-items: center; gap: 10px;
-    transition: 0.3s;
-    width: 100%;
-    box-sizing: border-box;
-}
-.logout-btn:hover { color: #ff6b6b; }
-
-.main-content {
-    margin-left: 260px;
-    padding: 40px;
-    min-height: 100vh;
-}
-
-.card-custom {
-    background: var(--surface);
-    border-radius: 12px;
-    padding: 25px;
-    border: none;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.03);
-    height: 100%;
-}
-
-.table-custom thead th {
-    background: #f8f9fa;
-    color: #888;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: none;
-    padding: 15px;
-}
-.table-custom td {
-    padding: 15px;
-    vertical-align: middle;
-    border-bottom: 1px solid #eee;
-}
-
-.text-primary-custom { color: var(--primary); }
-.text-accent { color: var(--accent); }

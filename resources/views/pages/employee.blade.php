@@ -1,3 +1,5 @@
+employee.blade.php
+
 @extends('layouts.app')
 
 @section('title', 'Manajemen SDM - Kayuhan')

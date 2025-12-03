@@ -102,3 +102,8 @@ Route::prefix('barista')->middleware(['auth', 'barista'])->group(function () {
 Route::get('/profile', [ProfileController::class, 'index'])
     ->middleware('auth')
     ->name('profile');
+
+Route::middleware('auth')->group(function () {
+    // Route untuk update profil (sesuai action di form modal tadi)
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+});
