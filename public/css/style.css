@@ -1,12 +1,16 @@
-/* --- 1. WARNA & FONT GLOBAL --- */
+/* --- admin--- */
 :root {
-    --primary: #003D2E;   /* Hijau Tua Kayuhan */
-    --secondary: #F5F0E6; /* Cream Latte */
-    --accent: #D4AF37;    /* Emas */
+    --primary: #003D2E;
+    --secondary: #F5F0E6;
+    --accent: #D4AF37;
     --surface: #FFFFFF;
     --danger: #dc3545;
     --success: #198754;
     --dark-green: #002a20;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 body {
@@ -16,7 +20,6 @@ body {
     overflow-x: hidden;
 }
 
-/* --- 2. SIDEBAR (PERBAIKAN FITUR VERTIKAL) --- */
 .sidebar {
     height: 100vh;
     width: 260px;
@@ -24,62 +27,81 @@ body {
     top: 0;
     left: 0;
     background-color: var(--primary);
-    padding-top: 20px;
+    padding-top: 25px; 
     transition: 0.3s;
     z-index: 1000;
     color: white;
     display: flex;          
     flex-direction: column; 
     overflow-y: auto; 
+    overflow-x: hidden;
 }
 
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+
 .sidebar-brand {
-    padding: 0 20px 30px 20px;
+    padding: 0 20px 30px 20px; 
     display: flex;
     align-items: center;
     gap: 12px;
     cursor: pointer;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     margin-bottom: 15px;
+    width: 100%;
+}
+
+.profile-section {
+    padding: 0 20px 25px 20px; 
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+    width: 100%;
 }
 
 .sidebar-menu { 
     padding: 0 10px; 
     display: flex;          
     flex-direction: column; 
-    gap: 8px;               
+    gap: 8px; 
+    width: 100%; 
 }
 
 .menu-item {
     display: flex; 
     align-items: center;
-    padding: 12px 15px;
+    padding: 12px 15px; 
     color: rgba(255, 255, 255, 0.7) !important;
     text-decoration: none !important;
-    border-radius: 10px;
+    border-radius: 10px; 
     font-weight: 500;
+    font-size: 0.95rem; 
     transition: 0.2s;
     cursor: pointer;
-    width: 100%;
-    white-space: nowrap;
+    width: 100%; 
+    
+    white-space: normal; 
+    line-height: 1.3; 
 }
 
 .menu-item:hover, .menu-item.active {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.1); 
     color: var(--accent) !important;
-    transform: translateX(5px);
+    transform: translateX(5px); 
 }
 
 .menu-item i { 
     width: 25px; 
     text-align: center; 
-    margin-right: 10px; 
+    margin-right: 12px; 
     font-size: 1.1rem;
+    flex-shrink: 0; 
 }
 
 .sidebar .bottom-menu {
     margin-top: auto;
     padding: 20px;
+    width: 100%;
 }
 
 .main-content {
@@ -88,9 +110,6 @@ body {
     width: calc(100% - 260px); 
 }
 
-/* --- 3. KOMPONEN DASHBOARD (YANG HILANG TADI) --- */
-
-/* Kartu Statistik Putih */
 .stat-card {
     background: white;
     border-radius: 16px;
@@ -102,13 +121,11 @@ body {
 }
 .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
 
-/* Background Hijau Gradasi (Card Omset) */
 .bg-gradient-primary {
     background: linear-gradient(135deg, var(--primary) 0%, var(--dark-green) 100%);
     color: white;
 }
 
-/* Tombol Aksi Cepat (Quick Action) */
 .quick-action-btn {
     background: white; 
     border: none; 
@@ -125,7 +142,7 @@ body {
     transition: 0.3s;
     color: var(--primary); 
     font-weight: 600;
-    text-decoration: none; /* Hilangkan garis bawah */
+    text-decoration: none; 
 }
 
 .quick-action-btn:hover { 
@@ -143,7 +160,6 @@ body {
     color: white; 
 }
 
-/* --- 4. LOGIN PAGE & UTILITIES --- */
 #view-login {
     height: 100vh;
     display: flex; align-items: center; justify-content: center;
@@ -158,18 +174,18 @@ body {
 .btn-accent { background-color: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 8px; transition: 0.3s; }
 .btn-accent:hover { background-color: #b59329; color: white; transform: translateY(-2px); }
 
-/* --- 5. RESPONSIVE (MOBILE) --- */
 @media (max-width: 768px) {
     .sidebar { transform: translateX(-100%); }
     .sidebar.show { transform: translateX(0); }
     .main-content { margin-left: 0; width: 100%; }
 }
 
+/* ---barista--- */
 :root {
-    --primary: #003D2E;   /* Kayuhan Green */
-    --secondary: #F5F0E6; /* Cream Background */
-    --accent: #D4AF37;    /* Gold */
-    --surface: #FFFFFF;   /* White Cards */
+    --primary: #003D2E;
+    --secondary: #F5F0E6;
+    --accent: #D4AF37;
+    --surface: #FFFFFF;
     --text-dark: #333333;
 }
 
@@ -180,38 +196,75 @@ body {
     overflow-x: hidden;
 }
 
-/* SIDEBAR */
 .sidebar {
     height: 100vh;
     width: 260px;
     position: fixed;
     top: 0; left: 0;
     background-color: var(--primary);
-    padding: 20px 0;
+    padding: 25px 0; 
     z-index: 1000;
-    display: flex; flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    
+    overflow-x: hidden; 
+    overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
 }
 
 .profile-section {
-    padding: 0 25px 30px 25px;
-    display: flex; align-items: center; gap: 15px;
+    padding: 0 20px 25px 20px; 
+    display: flex; align-items: center; gap: 12px;
     margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.profile-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 140px;
 }
 
 .menu-item {
-    padding: 15px 25px;
+    padding: 12px 15px; 
     color: rgba(255,255,255,0.6);
     text-decoration: none;
-    display: flex; align-items: center; gap: 15px;
+    display: flex; align-items: center; gap: 12px; 
     font-weight: 500;
     transition: 0.3s;
-    border-left: 4px solid transparent;
+    
+    border-radius: 10px; 
+    margin: 0 10px; 
+    width: auto; 
+    
+    box-sizing: border-box;
+    white-space: normal;
+    line-height: 1.3;
 }
 
 .menu-item:hover, .menu-item.active {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.1);
     color: var(--accent);
-    border-left: 4px solid var(--accent);
+    transform: translateX(5px);
+}
+
+.menu-item i { 
+    width: 25px; 
+    text-align: center; 
+    font-size: 1.1rem;
+    flex-shrink: 0; 
 }
 
 .logout-btn {
@@ -221,16 +274,17 @@ body {
     text-decoration: none;
     display: flex; align-items: center; gap: 10px;
     transition: 0.3s;
+    width: 100%;
+    box-sizing: border-box;
 }
 .logout-btn:hover { color: #ff6b6b; }
 
-/* CONTENT AREA */
 .main-content {
     margin-left: 260px;
     padding: 40px;
+    min-height: 100vh;
 }
 
-/* CARDS */
 .card-custom {
     background: var(--surface);
     border-radius: 12px;
@@ -240,7 +294,6 @@ body {
     height: 100%;
 }
 
-/* TABLES */
 .table-custom thead th {
     background: #f8f9fa;
     color: #888;
@@ -256,6 +309,5 @@ body {
     border-bottom: 1px solid #eee;
 }
 
-/* UTILS */
 .text-primary-custom { color: var(--primary); }
 .text-accent { color: var(--accent); }

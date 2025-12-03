@@ -1,4 +1,4 @@
-@extends('layouts.app_barista')
+@extends(Auth::user()->role == 'admin' ? 'layouts.app' : 'layouts.app_barista')
 
 @section('title', 'Manajemen Menu - Kayuhan')
 
@@ -15,9 +15,13 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold text-primary-custom mb-0">Manajemen Menu</h3>
+        
+        {{-- Tombol Tambah Menu (Hanya muncul jika Admin) --}}
+        @if(Auth::user()->role == 'admin')
         <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalAddMenu">
             <i class="fas fa-plus me-2"></i> Tambah Menu Baru
         </button>
+        @endif
     </div>
 
     <!-- Filter & Search (Opsional, UI Only) -->
@@ -48,7 +52,9 @@
                         <th>Harga Modal</th>
                         <th>Harga Jual</th>
                         <th>Margin</th>
+                        @if(Auth::user()->role == 'admin')
                         <th class="text-center">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -62,10 +68,14 @@
                         <td class="text-success small">
                             + Rp {{ number_format($menu->sell_price - $menu->base_price, 0, ',', '.') }}
                         </td>
+                        
+                        {{-- Tombol Aksi (Hanya muncul jika Admin) --}}
+                        @if(Auth::user()->role == 'admin')
                         <td class="text-center">
                             <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
                         </td>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>
