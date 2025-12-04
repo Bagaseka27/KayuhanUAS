@@ -3,6 +3,13 @@
 @section('title', 'Riwayat Transaksi - Kayuhan')
 
 @section('content')
+    {{-- DATA DUMMY RINGKASAN PENDAPATAN (Seharusnya dari Controller) --}}
+    @php
+        $total_pendapatan = 1350000;
+        $pendapatan_tunai = 520000;
+        $pendapatan_qris = 830000;
+    @endphp
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold text-primary-custom mb-0">Riwayat Transaksi</h3>
         <div class="d-flex gap-2">
@@ -37,6 +44,34 @@
             </div>
             <div class="col-md-3">
                 <button class="btn btn-sm w-100 fw-bold text-white" style="background-color: var(--primary);">Tampilkan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PENGELOMPOKAN PENDAPATAN (Sesuai Permintaan) -->
+    <div class="row mb-4">
+        {{-- Card 1: TOTAL PENDAPATAN --}}
+        <div class="col-md-4">
+            <div class="stat-card bg-primary-custom text-white shadow-sm" style="background-color: var(--primary);">
+                <div class="text-xs fw-bold text-uppercase mb-1">TOTAL PENDAPATAN (Periode Filter)</div>
+                <div class="h4 mb-0 fw-bold">Rp {{ number_format($total_pendapatan, 0, ',', '.') }}</div> 
+                <small>Total pendapatan dari semua metode</small>
+            </div>
+        </div>
+        
+        {{-- Card 2: PENDAPATAN TUNAI --}}
+        <div class="col-md-4">
+            <div class="stat-card shadow-sm">
+                <div class="text-xs fw-bold text-primary-custom text-uppercase mb-1">PENDAPATAN TUNAI (Cash)</div>
+                <div class="h4 mb-0 fw-bold text-dark">Rp {{ number_format($pendapatan_tunai, 0, ',', '.') }}</div>
+            </div>
+        </div>
+        
+        {{-- Card 3: PENDAPATAN NON-TUNAI --}}
+        <div class="col-md-4">
+            <div class="stat-card shadow-sm">
+                <div class="text-xs fw-bold text-primary-custom text-uppercase mb-1">PENDAPATAN NON-TUNAI (QRIS)</div>
+                <div class="h4 mb-0 fw-bold text-dark">Rp {{ number_format($pendapatan_qris, 0, ',', '.') }}</div>
             </div>
         </div>
     </div>
