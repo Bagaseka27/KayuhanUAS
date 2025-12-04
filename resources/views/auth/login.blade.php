@@ -544,7 +544,7 @@
         <div class="right-side">
             <div class="form-container">
                 <h2 class="welcome-text">Welcome !</h2>
-                <p class="welcome-subtitle">Silakan login untuk melanjutkan ke dashboard</p>
+                <p class="welcome-subtitle">Silahkan login untuk melanjutkan ke dashboard</p>
 
                 @if($errors->any())
                 <div class="alert alert-danger">
