@@ -20,7 +20,7 @@
         <div class="col-md-4">
             <div class="stat-card bg-gradient-primary text-white">
                 <h6 class="text-white-50">Total Omset</h6>
-                <h3 class="fw-bold">Rp 45.2 Jt</h3>
+                <h3 class="fw-bold">Rp {{$totalOmsetBulanIni ?? 0,0, ',', '.'}} </h3>
                 <small class="text-white-50"><i class="fas fa-arrow-up"></i> +12% bulan ini</small>
             </div>
         </div>
