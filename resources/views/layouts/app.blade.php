@@ -46,6 +46,9 @@
             <a href="{{ route('history') }}" class="menu-item {{ request()->routeIs('history') ? 'active' : '' }}">
                 <i class="fas fa-history"></i> Manajemen Transaksi
             </a>
+            <a href="{{ route('admin.absensi.monitoring') }}" class="menu-item {{ request()->routeIs('absensi-monitoring') ? 'active' : '' }}">
+                <i class="fas fa-history"></i> Monitoring Absensi
+            </a>
         </div>
 
         <div class="bottom-menu">
