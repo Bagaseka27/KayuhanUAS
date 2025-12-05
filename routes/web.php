@@ -12,6 +12,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\GajiController;
+use App\Http\Controllers\MenuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,10 +51,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
         return view('pages.dashboard.admin');
     })->name('dashboard');
 
-    Route::get('/menu', fn () => view('pages.menu'))->name('menu');
-
-
-
     /*
     |--------------------------------------------------------------------------
     | CRUD KARYAWAN
@@ -64,6 +61,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/employee/{email}', [KaryawanController::class, 'update'])->name('employee.update');
     Route::delete('/employee/{email}', [KaryawanController::class, 'destroy'])->name('employee.destroy');
 
+    /*
+    |--------------------------------------------------------------------------
+    | CRUD Menu
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
+    Route::post('/menu/store', [MenuController::class, 'store'])->name('menu.store');
+    Route::put('/menu/update/{id}', [MenuController::class, 'update'])->name('menu.update');
+    Route::delete('/menu/delete/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -140,7 +146,7 @@ Route::middleware(['auth', 'barista'])->prefix('barista')->name('barista.')->gro
     Route::get('/riwayat', function () {
         return view('pages.riwayat');
     })->name('riwayat'); 
-}
+});
 /*
 |--------------------------------------------------------------------------
 | PROFILE (Admin & Barista)

@@ -34,7 +34,7 @@
             <a href="{{ route('employee.index') }}" class="menu-item {{ request()->routeIs('employee.index') ? 'active' : '' }}">
                 <i class="fas fa-users"></i> Karyawan & Gaji
             </a>
-            <a href="{{ route('menu') }}" class="menu-item {{ request()->routeIs('menu') ? 'active' : '' }}">
+            <a href="{{ route('menu.index') }}" class="menu-item {{ request()->routeIs('menu') ? 'active' : '' }}">
                 <i class="fas fa-coffee"></i> Manajemen Menu
             </a>
             <a href="{{ route('inventory') }}" class="menu-item {{ request()->routeIs('inventory') ? 'active' : '' }}">
