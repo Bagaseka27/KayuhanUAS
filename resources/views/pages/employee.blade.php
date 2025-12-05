@@ -15,21 +15,7 @@
         .nav-tabs .nav-link.active { color: var(--primary); background: transparent; }
     </style>
 
-    {{-- DATA DUMMY --}}
-    @php
-        $employees = [
-            (object)['email' => 'budi@kayuhan.com', 'id_jabatan' => '4', 'id_rombong' => 'RMB-01', 'id_cabang' => 'CBG-SBY01', 'name' => 'Budi Santoso', 'phone' => '08123456789', 'role' => 'Barista', 'jabatan_name' => 'Senior'],
-            (object)['email' => 'siti@kayuhan.com', 'id_jabatan' => '3', 'id_rombong' => 'RMB-01', 'id_cabang' => 'CBG-SBY01', 'name' => 'Siti Aminah', 'phone' => '08198765432', 'role' => 'Barista', 'jabatan_name' => 'Junior'],
-            (object)['email' => 'admin@kayuhan.com', 'id_jabatan' => '1', 'id_rombong' => '-', 'id_cabang' => '-', 'name' => 'Andi Wijaya', 'phone' => '08111122233', 'role' => 'Admin', 'jabatan_name' => 'Admin']
-        ];
-        $payrolls = [
-            (object)['id' => 'GJ-241101', 'email' => 'budi@kayuhan.com', 'name' => 'Budi Santoso', 'jabatan_name' => 'Senior', 'periode' => '2024-11', 'basic' => 1250000, 'bonus' => 500000, 'total' => 1750000, 'days' => 25, 'cup_bonus' => 500000]
-        ];
-        // Tambahan data dummy untuk select
-        $jabatanList = ['1' => 'Admin', '2' => 'Training', '3' => 'Junior', '4' => 'Senior'];
-        $cabangList = ['CBG-SBY01' => 'Taman Bungkul'];
-        $rombongList = ['RMB-01' => 'Rombong 01'];
-    @endphp
+
 
     <h2 class="fw-bold text-primary-custom mb-4">Data Karyawan, Gaji & Jadwal</h2>
 
@@ -77,21 +63,29 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white">
-                            @foreach($employees as $emp)
+                            @foreach($karyawan as $k)
                             <tr>
-                                <td class="ps-4">{{ $emp->email }}</td>
-                                <td>{{ $emp->id_jabatan }}</td>
-                                <td>{{ $emp->id_rombong }}</td>
-                                <td>{{ $emp->id_cabang }}</td>
-                                <td class="fw-bold text-dark">{{ $emp->name }}</td>
-                                <td>{{ $emp->phone }}</td>
-                                <td>{{ $emp->role }}</td>
+                                <td class="ps-4">{{ $k->EMAIL }}</td>
+                                <td>{{ $k->ID_JABATAN }}</td>
+                                <td>{{ $k->ID_ROMBONG }}</td>
+                                <td>{{ $k->ID_CABANG }}</td>
+                                <td class="fw-bold text-dark">{{ $k->NAMA }}</td>
+                                <td>{{ $k->NO_HP }}</td>
+                                <td>{{ $k->jabatan->NAMA_JABATAN ?? 'N/A' }}</td>
                                 <td class="text-center pe-4">
                                     <button class="btn btn-sm btn-light text-primary me-1 rounded-2"
-                                        onclick="fillKaryawanModal('{{ $emp->email }}', '{{ $emp->name }}', '{{ $emp->phone }}', '{{ $emp->role }}', '{{ $emp->id_jabatan }}', '{{ $emp->id_cabang }}', '{{ $emp->id_rombong }}')">
+                                        onclick="fillKaryawanModal(
+                                            '{{ $k->EMAIL }}', 
+                                            '{{ $k->NAMA }}', 
+                                            '{{ $k->NO_HP }}', 
+                                            '{{ $k->jabatan->NAMA_JABATAN ?? '' }}', 
+                                            '{{ $k->ID_JABATAN }}', 
+                                            '{{ $k->ID_CABANG }}', 
+                                            '{{ $k->ID_ROMBONG }}'
+                                        )">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-light text-danger rounded-2" onclick="confirmDelete('{{ $emp->email }}', 'karyawan')"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-light text-danger rounded-2" onclick="confirmDelete('{{ $k->EMAIL }}', 'karyawan')"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                             @endforeach

@@ -7,6 +7,7 @@ use App\Models\AbsenDatang;
 use App\Models\AbsenPulang;
 use App\Models\Karyawan;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Auth;
 
 // --------------------
@@ -43,10 +44,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         return view('pages.menu');
     })->name('menu');
 
-    Route::get('/employees', function () {
-        return view('pages.employee');
-    })->name('employees');
-
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employee');
     Route::get('/history', function () {
         return view('pages.history');
     })->name('history');
