@@ -51,6 +51,7 @@
         }
     </style>
 
+<<<<<<< HEAD
     {{-- DATA DUMMY --}}
     @php
         $employees = [
@@ -73,6 +74,9 @@
             return (object)['email' => $emp->email, 'name' => $emp->name, 'role' => $emp->role];
         });
     @endphp
+=======
+
+>>>>>>> 8acf805f436753d95ff34512d55fc55a17d565e5
 
     <h2 class="fw-bold text-primary-custom mb-4">Data Karyawan, Gaji & Jadwal</h2>
 
@@ -120,21 +124,29 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white">
-                            @foreach($employees as $emp)
+                            @foreach($karyawan as $k)
                             <tr>
-                                <td class="ps-4">{{ $emp->email }}</td>
-                                <td>{{ $emp->id_jabatan }}</td>
-                                <td>{{ $emp->id_rombong }}</td>
-                                <td>{{ $emp->id_cabang }}</td>
-                                <td class="fw-bold text-dark">{{ $emp->name }}</td>
-                                <td>{{ $emp->phone }}</td>
-                                <td>{{ $emp->role }}</td>
+                                <td class="ps-4">{{ $k->EMAIL }}</td>
+                                <td>{{ $k->ID_JABATAN }}</td>
+                                <td>{{ $k->ID_ROMBONG }}</td>
+                                <td>{{ $k->ID_CABANG }}</td>
+                                <td class="fw-bold text-dark">{{ $k->NAMA }}</td>
+                                <td>{{ $k->NO_HP }}</td>
+                                <td>{{ $k->jabatan->NAMA_JABATAN ?? 'N/A' }}</td>
                                 <td class="text-center pe-4">
                                     <button class="btn btn-sm btn-light text-primary me-1 rounded-2"
-                                        onclick="fillKaryawanModal('{{ $emp->email }}', '{{ $emp->name }}', '{{ $emp->phone }}', '{{ $emp->role }}', '{{ $emp->id_jabatan }}', '{{ $emp->id_cabang }}', '{{ $emp->id_rombong }}')">
+                                        onclick="fillKaryawanModal(
+                                            '{{ $k->EMAIL }}', 
+                                            '{{ $k->NAMA }}', 
+                                            '{{ $k->NO_HP }}', 
+                                            '{{ $k->jabatan->NAMA_JABATAN ?? '' }}', 
+                                            '{{ $k->ID_JABATAN }}', 
+                                            '{{ $k->ID_CABANG }}', 
+                                            '{{ $k->ID_ROMBONG }}'
+                                        )">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-light text-danger rounded-2" onclick="confirmDelete('{{ $emp->email }}', 'karyawan')"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-light text-danger rounded-2" onclick="confirmDelete('{{ $k->EMAIL }}', 'karyawan')"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                             @endforeach

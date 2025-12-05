@@ -31,7 +31,7 @@
             <a href="{{ route('dashboard') }}" class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <i class="fas fa-home"></i> Dashboard
             </a>
-            <a href="{{ route('employees') }}" class="menu-item {{ request()->routeIs('employees') ? 'active' : '' }}">
+            <a href="{{ route('employee') }}" class="menu-item {{ request()->routeIs('employee') ? 'active' : '' }}">
                 <i class="fas fa-users"></i> Karyawan & Gaji
             </a>
             <a href="{{ route('menu') }}" class="menu-item {{ request()->routeIs('menu') ? 'active' : '' }}">
@@ -40,7 +40,7 @@
             <a href="{{ route('inventory') }}" class="menu-item {{ request()->routeIs('inventory') ? 'active' : '' }}">
                 <i class="fas fa-boxes"></i> Stok (Gudang/Rombong)
             </a>
-            <a href="{{ route('locations') }}" class="menu-item {{ request()->routeIs('locations') ? 'active' : '' }}">
+            <a href="{{ route('location') }}" class="menu-item {{ request()->routeIs('location') ? 'active' : '' }}">
                 <i class="fas fa-map-marker-alt"></i> Lokasi (Cabang & Rombong)
             </a>
             <a href="{{ route('history') }}" class="menu-item {{ request()->routeIs('history') ? 'active' : '' }}">

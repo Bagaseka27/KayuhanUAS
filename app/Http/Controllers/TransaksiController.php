@@ -19,6 +19,7 @@ class TransaksiController extends Controller
         $validated = $request->validate([
             'ID_TRANSAKSI' => 'required|string|max:10|unique:transaksi,ID_TRANSAKSI',
             'EMAIL' => 'required|exists:karyawan,EMAIL',
+            'ID_PRODUK'=>'required|exists:menu,ID_PRODUK',
             'JUMLAH_ITEM'=> 'required|integer|min:1',
             'HARGA_ITEM'=> 'required|integer', 
             'DATETIME'=> 'required|date',
@@ -56,6 +57,17 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         return Transaksi::destroy($id);
+    }
+
+    public function totalpendapatan()
+    {
+        $startOfMonth = \Carbon\Carbon::now()->startOfMonth();
+        $endOfMonth = \Carbon\Carbon::now()->endOfMonth();
+
+        $totalOmsetBulanIni = Transaksi::whereBetween('DATETIME', [$startOfMonth, $endOfMonth])
+                                       ->sum('TOTAL_BAYAR');
+                                       
+        return $totalOmsetBulanIni;
     }
 
     public function export()

@@ -21,6 +21,9 @@ class KaryawanController extends Controller
             'ID_JABATAN'  => 'required|exists:jabatan,ID_JABATAN',
             'PASSWORD'    => 'required|string|min:6',
             'NO_HP'       => 'required|string|max:15',
+
+            'ID_CABANG'   => 'nullable|exists:cabang,ID_CABANG',
+            'ID_ROMBONG'  => 'nullable|exists:rombong,ID_ROMBONG',
         ]);
 
         $validated['PASSWORD'] = Hash::make($request->PASSWORD);
