@@ -9,6 +9,7 @@ use App\Models\Karyawan;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\JadwalController;
 use Illuminate\Support\Facades\Auth;
 
 // --------------------
@@ -45,7 +46,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         return view('pages.menu');
     })->name('menu');
 
-    Route::get('/employees', [EmployeeController::class, 'index'])->name('employee');
+    Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
+
+
     Route::get('/history', function () {
         return view('pages.history');
     })->name('history');
@@ -53,6 +56,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/inventory', function () {
         return view('pages.inventory');
     })->name('inventory');
+
+    Route::get('jadwal',[JadwalController::class, 'index']);
 
     Route::get('/locations', [LocationController::class, 'index'])->name('location');
 

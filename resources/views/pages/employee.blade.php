@@ -51,32 +51,6 @@
         }
     </style>
 
-<<<<<<< HEAD
-    {{-- DATA DUMMY --}}
-    @php
-        $employees = [
-            (object)['email' => 'budi@kayuhan.com', 'id_jabatan' => '4', 'id_rombong' => 'RMB-01', 'id_cabang' => 'CBG-SBY01', 'name' => 'Budi Santoso', 'phone' => '08123456789', 'role' => 'Barista', 'jabatan_name' => 'Senior'],
-            (object)['email' => 'siti@kayuhan.com', 'id_jabatan' => '3', 'id_rombong' => 'RMB-01', 'id_cabang' => 'CBG-SBY01', 'name' => 'Siti Aminah', 'phone' => '08198765432', 'role' => 'Barista', 'jabatan_name' => 'Junior'],
-            (object)['email' => 'admin@kayuhan.com', 'id_jabatan' => '1', 'id_rombong' => '-', 'id_cabang' => '-', 'name' => 'Andi Wijaya', 'phone' => '08111122233', 'role' => 'Admin', 'jabatan_name' => 'Admin']
-        ];
-        $payrolls = [
-            (object)['id' => 'GJ-241101', 'email' => 'budi@kayuhan.com', 'name' => 'Budi Santoso', 'jabatan_name' => 'Senior', 'periode' => '2024-11', 'basic' => 1250000, 'bonus' => 500000, 'total' => 1750000, 'days' => 25, 'cup_bonus' => 500000]
-        ];
-        $jadwals = [
-            (object)['id_jadwal' => 'JDW-001', 'email' => 'budi@kayuhan.com', 'karyawan_name' => 'Budi Santoso', 'id_cabang' => 'CBG-SBY01', 'cabang_name' => 'Taman Bungkul', 'tanggal' => '2024-11-25', 'jam_mulai' => '08:00', 'jam_selesai' => '16:00'],
-            (object)['id_jadwal' => 'JDW-002', 'email' => 'siti@kayuhan.com', 'karyawan_name' => 'Siti Aminah', 'id_cabang' => 'CBG-SBY01', 'cabang_name' => 'Taman Bungkul', 'tanggal' => '2024-11-25', 'jam_mulai' => '10:00', 'jam_selesai' => '18:00']
-        ];
-        
-        $jabatanList = ['1' => 'Admin', '2' => 'Training', '3' => 'Junior', '4' => 'Senior'];
-        $cabangList = ['CBG-SBY01' => 'Taman Bungkul', 'CBG-SBY02' => 'Kampus Unair B'];
-        $rombongList = ['RMB-01' => 'Rombong 01'];
-        $employeeDropdown = collect($employees)->map(function ($emp) {
-            return (object)['email' => $emp->email, 'name' => $emp->name, 'role' => $emp->role];
-        });
-    @endphp
-=======
-
->>>>>>> 8acf805f436753d95ff34512d55fc55a17d565e5
 
     <h2 class="fw-bold text-primary-custom mb-4">Data Karyawan, Gaji & Jadwal</h2>
 
@@ -124,29 +98,24 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white">
-                            @foreach($karyawan as $k)
+                            @foreach ($karyawanData as $data)
                             <tr>
-                                <td class="ps-4">{{ $k->EMAIL }}</td>
-                                <td>{{ $k->ID_JABATAN }}</td>
-                                <td>{{ $k->ID_ROMBONG }}</td>
-                                <td>{{ $k->ID_CABANG }}</td>
-                                <td class="fw-bold text-dark">{{ $k->NAMA }}</td>
-                                <td>{{ $k->NO_HP }}</td>
-                                <td>{{ $k->jabatan->NAMA_JABATAN ?? 'N/A' }}</td>
-                                <td class="text-center pe-4">
-                                    <button class="btn btn-sm btn-light text-primary me-1 rounded-2"
-                                        onclick="fillKaryawanModal(
-                                            '{{ $k->EMAIL }}', 
-                                            '{{ $k->NAMA }}', 
-                                            '{{ $k->NO_HP }}', 
-                                            '{{ $k->jabatan->NAMA_JABATAN ?? '' }}', 
-                                            '{{ $k->ID_JABATAN }}', 
-                                            '{{ $k->ID_CABANG }}', 
-                                            '{{ $k->ID_ROMBONG }}'
-                                        )">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-light text-danger rounded-2" onclick="confirmDelete('{{ $k->EMAIL }}', 'karyawan')"><i class="fas fa-trash"></i></button>
+                                {{-- Nomor urut otomatis (bukan ID DB) --}}
+                                <td>{{ $loop->iteration }}</td> 
+                                
+                                {{-- Tampilkan data dari database --}}
+                                <td>{{ $data->name }}</td>
+                                <td>{{ $data->email }}</td>
+                                <td>{{ $data->jabatan_name }}</td>
+                                <td>{{ $data->no_telp }}</td>
+                                <td>{{ $data->alamat }}</td>
+
+                                <td>
+                                    {{-- Tombol Aksi --}}
+                                    <button 
+                                        onclick="fillEmployeeModal('{{ $data->email }}', '{{ $data->name }}', '{{ $data->jabatan_name }}', '{{ $data->no_telp }}', '{{ $data->alamat }}')" 
+                                        class="btn btn-sm btn-warning">Edit</button>
+                                    <button onclick="confirmDelete('{{ $data->email }}', 'Karyawan')" class="btn btn-sm btn-danger">Hapus</button>
                                 </td>
                             </tr>
                             @endforeach
@@ -173,30 +142,38 @@
                     <table class="table custom-table mb-0 align-middle">
                         <thead class="bg-light text-secondary text-uppercase small fw-bold">
                             <tr>
-                                <th class="py-3 ps-4">ID GAJI</th>
-                                <th>KARYAWAN</th>
-                                <th>PERIODE</th>
-                                <th>GAJI POKOK</th>
-                                <th>BONUS</th>
-                                <th>TOTAL</th>
-                                <th class="text-center pe-4">AKSI</th>
+                                <th>No</th>
+                                <th>Nama Karyawan</th>
+                                <th>Periode</th>
+                                <th>Gaji Pokok</th>
+                                <th>Bonus</th>
+                                <th>Kompensasi</th>
+                                <th>Total Gaji Akhir</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white">
-                            @foreach($payrolls as $pay)
+                            @foreach ($payrollsData as $gaji)
                             <tr>
-                                <td class="ps-4 fw-bold">{{ $pay->id }}</td>
-                                <td>{{ $pay->name }}</td>
-                                <td>{{ $pay->periode }}</td>
-                                <td>Rp {{ number_format($pay->basic) }}</td>
-                                <td class="text-success fw-bold">+ Rp {{ number_format($pay->bonus) }}</td>
-                                <td class="fw-bold text-primary-custom fs-6">Rp {{ number_format($pay->total) }}</td>
-                                <td class="text-center pe-4">
-                                    <button class="btn btn-sm btn-light text-primary me-1 rounded-2"
-                                        onclick="fillGajiModal('{{ $pay->id }}', '{{ $pay->email }}', '{{ $pay->name }} ({{ $pay->jabatan_name }})', '{{ $pay->periode }}', {{ $pay->basic }}, {{ $pay->cup_bonus }}, {{ $pay->days }})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-light text-danger rounded-2" onclick="confirmDelete('{{ $pay->id }}', 'gaji')"><i class="fas fa-trash"></i></button>
+                                <td>{{ $loop->iteration }}</td> 
+                                <td>{{ $gaji->karyawan->NAMA ?? 'Data Karyawan Tidak Ditemukan' }}</td>                                
+                                <td>{{ $gaji->PERIODE }}</td>
+                                <td>Rp {{ number_format($gaji->TOTAL_GAJI_POKOK, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($gaji->TOTAL_BONUS, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($gaji->TOTAL_KOMPENSASI, 0, ',', '.') }}</td>
+                                <td>**Rp {{ number_format($gaji->TOTAL_GAJI_AKHIR, 0, ',', '.') }}**</td>
+                                <td>
+                                    <button 
+                                        onclick="fillGajiModal(
+                                            '{{ $gaji->ID_GAJI }}', 
+                                            '{{ $gaji->EMAIL }}', 
+                                            '{{ $gaji->PERIODE }}', 
+                                            '{{ $gaji->TOTAL_GAJI_POKOK }}', 
+                                            '{{ $gaji->TOTAL_BONUS }}', 
+                                            '{{ $gaji->TOTAL_KOMPENSASI }}'
+                                        )" 
+                                        class="btn btn-sm btn-warning">Edit</button>
+                                    <button onclick="confirmDelete('{{ $gaji->ID_GAJI }}', 'Gaji')" class="btn btn-sm btn-danger">Hapus</button>
                                 </td>
                             </tr>
                             @endforeach
@@ -232,19 +209,24 @@
                         </thead>
                         <tbody class="bg-white">
                             @if(count($jadwals) > 0)
-                                @foreach($jadwals as $jadwal)
+                                @foreach ($jadwals as $jadwal)
                                 <tr>
-                                    <td class="ps-4 fw-bold">{{ $jadwal->id_jadwal }}</td>
-                                    <td>{{ $jadwal->karyawan_name }}</td>
-                                    <td><span class="badge bg-secondary">{{ $jadwal->cabang_name }}</span></td>
-                                    <td>{{ $jadwal->tanggal }}</td>
-                                    <td>{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}</td>
-                                    <td class="text-center pe-4">
-                                        <button class="btn btn-sm btn-light text-primary me-1 rounded-2"
-                                            onclick="fillJadwalModal('{{ $jadwal->id_jadwal }}', '{{ $jadwal->email }}', '{{ $jadwal->id_cabang }}', '{{ $jadwal->tanggal }}', '{{ $jadwal->jam_mulai }}', '{{ $jadwal->jam_selesai }}')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-light text-danger rounded-2" onclick="confirmDelete('{{ $jadwal->id_jadwal }}', 'jadwal')"><i class="fas fa-trash"></i></button>
+                                    <td>{{ $loop->iteration }}</td>
+                                    
+                                    {{-- Tampilkan data relasi karyawan dan cabang --}}
+                                    <td>{{ $jadwal->karyawan->NAMA ?? 'N/A' }}</td>
+                                    <td>{{ $jadwal->cabang->NAMA_LOKASI ?? 'N/A' }}</td>
+                                    
+                                    {{-- Tampilkan data jadwal --}}
+                                    <td>{{ $jadwal->TANGGAL }}</td>
+                                    <td>{{ $jadwal->JAM_MULAI . ' - ' . $jadwal->JAM_SELESAI }}</td>
+                                    
+                                    <td>
+                                        {{-- Tombol Aksi (Pastikan ID yang dilempar adalah ID_JADWAL) --}}
+                                        <button 
+                                            onclick="fillJadwalModal('{{ $jadwal->ID_JADWAL }}', '{{ $jadwal->EMAIL }}', '{{ $jadwal->ID_CABANG }}', '{{ $jadwal->TANGGAL }}', '{{ $jadwal->JAM_MULAI }}', '{{ $jadwal->JAM_SELESAI }}')" 
+                                            class="btn btn-sm btn-warning">Edit</button>
+                                        <button onclick="confirmDelete('{{ $jadwal->ID_JADWAL }}', 'Jadwal')" class="btn btn-sm btn-danger">Hapus</button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -339,7 +321,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Pilih Karyawan</label>
                         <select name="employee_id" class="form-select" id="gaji_employee_select">
-                            @foreach($employees as $emp)
+                            @foreach($karyawanData as $emp)
                                 <option value="{{ $emp->email }}">{{ $emp->name }} ({{ $emp->jabatan_name }})</option>
                             @endforeach
                         </select>
@@ -389,8 +371,8 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Karyawan</label>
                         <select name="employee_email" class="form-select" id="jadwal_employee_select">
-                            @foreach($employeeDropdown as $emp)
-                                <option value="{{ $emp->email }}">{{ $emp->name }} ({{ $emp->role }})</option>
+                            @foreach ($employeeDropdown as $email => $nama)
+                                <option value="{{ $email }}">{{ $nama }} ({{ $email }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -447,7 +429,7 @@
             resetKaryawanModal(); 
             
             document.querySelector('#modalKaryawan .modal-title').textContent = 'Edit Data Karyawan';
-            formKaryawan.action = `/employee/update/${email}`; 
+            formKaryawan.action = /employee/update/${email}; 
             
             formKaryawan.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
 
@@ -487,13 +469,13 @@
         window.fillGajiModal = function(id, email, name_jabatan, periode, basic, bonus, days) {
             resetGajiModal();
             
-            document.querySelector('#modalGaji .modal-title').textContent = `Edit Gaji ${name_jabatan}`;
-            formGaji.action = `/payroll/update/${id}`;
+            document.querySelector('#modalGaji .modal-title').textContent = Edit Gaji ${name_jabatan};
+            formGaji.action = /payroll/update/${id};
             
             formGaji.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
             
             // Isi Field Karyawan (READONLY di mode edit)
-            gajiEmployeeSelect.innerHTML = `<option value="${email}">${name_jabatan}</option>`;
+            gajiEmployeeSelect.innerHTML = <option value="${email}">${name_jabatan}</option>;
             gajiEmployeeSelect.value = email;
             gajiEmployeeSelect.setAttribute('disabled', true);
             
@@ -526,8 +508,8 @@
         window.fillJadwalModal = function(id_jadwal, email, id_cabang, tanggal, jam_mulai, jam_selesai) {
             resetJadwalModal(); 
             
-            document.querySelector('#modalJadwal .modal-title').textContent = `Edit Jadwal ${id_jadwal}`;
-            formJadwal.action = `/jadwal/update/${id_jadwal}`; 
+            document.querySelector('#modalJadwal .modal-title').textContent = Edit Jadwal ${id_jadwal};
+            formJadwal.action = /jadwal/update/${id_jadwal}; 
             
             formJadwal.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
 
@@ -548,8 +530,8 @@
 
         // --- FUNGSI DUMMY DELETE ---
         window.confirmDelete = function(id, tipe) {
-             if (confirm(`Yakin ingin menghapus data ${tipe} dengan ID ${id} ini?`)) {
-                 console.log(`Menghapus ${tipe} ID: ${id}`);
+             if (confirm(Yakin ingin menghapus data ${tipe} dengan ID ${id} ini?)) {
+                 console.log(Menghapus ${tipe} ID: ${id});
              }
         };
     });
