@@ -9,6 +9,7 @@ use App\Models\Karyawan;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MenuController;
 use Illuminate\Support\Facades\Auth;
 
 // --------------------
@@ -62,35 +63,35 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // --------------------
 // BARISTA ROUTES
 // --------------------
-Route::prefix('barista')->middleware(['auth', 'barista'])->group(function () {
+Route::middleware(['auth', 'barista'])->prefix('barista')->name('barista.')->group(function () {
     
-    // 1. Dashboard Barista
+    // 1. Dashboard Barista 
     Route::get('/dashboard', function () {
         return view('pages.dashboard.barista');
-    })->name('barista.dashboard');
+    })->name('dashboard'); 
     
     // 2. POS (Kasir)
     Route::get('/pos', function () {
         return view('pages.dashboard.pos');
-    })->name('barista.pos');
+    })->name('pos'); 
     
-    // 3. Manajemen Menu
-    Route::get('/menu', function () {
-        return view('pages.menu');
-    })->name('barista.menu');
+    // 3. Manajemen Menu (Barista)
+    // Route ini memanggil controller yang sama, menggunakan nama 'menu' untuk navigasi Barista.
+    Route::get('/menu', [MenuController::class, 'index'])->name('menu'); 
+
+    // 4. Presensi/Absensi
+    Route::get('/absensi', [AbsensiController::class, 'indexDatang'])->name('absensi.index'); 
     
-    // 4. Riwayat Transaksi
+    // Proses Absensi Masuk (POST)
+    Route::post('/absensi/datang', [AbsensiController::class, 'storeDatang'])->name('absensi.storeDatang');
+    
+    // Proses Absensi Pulang (POST)
+    Route::post('/absensi/pulang', [AbsensiController::class, 'storePulang'])->name('absensi.storePulang');
+    
+    // 5. Riwayat Transaksi
     Route::get('/riwayat', function () {
         return view('pages.riwayat');
-    })->name('barista.riwayat');
-
-    Route::get('/absensi', [AbsensiController::class, 'indexDatang'])->name('barista.absensi.index'); 
-    
-    // Proses Absensi Masuk (POST): Memanggil storeDatang()
-    Route::post('/absensi/datang', [AbsensiController::class, 'storeDatang'])->name('barista.absensi.storeDatang');
-    
-    // Proses Absensi Pulang (POST): Memanggil storePulang()
-    Route::post('/absensi/pulang', [AbsensiController::class, 'storePulang'])->name('barista.absensi.storePulang');
+    })->name('riwayat'); 
 });
 
 // --------------------
