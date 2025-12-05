@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('gaji', function (Blueprint $table) {
-            $table->char('ID_GAJI', 10)->primary();
+            $table->increments('ID_GAJI');
             $table->string('EMAIL', 50)->nullable();
             $table->char('PERIODE', 10)->nullable();
             $table->char('TOTAL_GAJI_POKOK', 10)->nullable();

@@ -8,11 +8,15 @@ class Gaji extends Model
 {
     protected $table = 'gaji';
     protected $primaryKey = 'ID_GAJI';
+    public $incrementing = true;
+    protected $keyType = "int";
     public $timestamps = true;
+
 
     protected $fillable = [
         'EMAIL', 
         'PERIODE',
+        'JUMLAH_HARI_MASUK',
         'TOTAL_GAJI_POKOK',
         'TOTAL_BONUS',
         'TOTAL_KOMPENSASI',
@@ -22,6 +26,6 @@ class Gaji extends Model
 
     public function karyawan()
     {
-        return $this->belongsTo(Karyawan::class, 'EMAIL');
+        return $this->belongsTo(Karyawan::class, 'EMAIL','EMAIL');
     }
 }

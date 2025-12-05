@@ -15,15 +15,20 @@ class JadwalController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'EMAIL'       => 'required|exists:karyawan,EMAIL', 
-            'ID_CABANG'   => 'required|exists:cabang,ID_CABANG', 
+            'EMAIL'       => 'required|exists:karyawan,EMAIL',
+            'ID_CABANG'   => 'required|exists:cabang,ID_CABANG',
             'TANGGAL'     => 'required|date',
-            'JAM_MULAI'   => 'required|date_format:H:i:s', 
-            'JAM_SELESAI' => 'required|date_format:H:i:s|after:JAM_MULAI', 
+            'JAM_MULAI'   => 'required',
+            'JAM_SELESAI' => 'required',
         ]);
 
-        $jadwal = Jadwal::create($validated);
+        // Convert input time (HH:MM) → (HH:MM:SS)
+        $validated['JAM_MULAI'] = $validated['JAM_MULAI'] . ':00';
+        $validated['JAM_SELESAI'] = $validated['JAM_SELESAI'] . ':00';
+
+        return Jadwal::create($validated);
     }
+
 
     public function show($id)
     {
@@ -32,19 +37,28 @@ class JadwalController extends Controller
 
     public function update(Request $request, $id)
     {
-        $jadwal = Jadwal::find($id);
-        
+        $jadwal = Jadwal::findOrFail($id);
+
         $validated = $request->validate([
             'EMAIL'       => 'sometimes|exists:karyawan,EMAIL',
             'ID_CABANG'   => 'sometimes|exists:cabang,ID_CABANG',
             'TANGGAL'     => 'sometimes|date',
-            'JAM_MULAI'   => 'sometimes|date_format:H:i:s',
-            'JAM_SELESAI' => 'sometimes|date_format:H:i:s|after:JAM_MULAI',
+            'JAM_MULAI'   => 'sometimes',
+            'JAM_SELESAI' => 'sometimes',
         ]);
 
+        if (isset($validated['JAM_MULAI'])) {
+            $validated['JAM_MULAI'] .= ':00';
+        }
+        if (isset($validated['JAM_SELESAI'])) {
+            $validated['JAM_SELESAI'] .= ':00';
+        }
+
         $jadwal->update($validated);
+
         return $jadwal;
     }
+
 
     public function destroy($id)
     {
