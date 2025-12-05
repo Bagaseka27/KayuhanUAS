@@ -9,7 +9,8 @@ class GajiController extends Controller
 {
     public function index()
     {
-        return Gaji::with('karyawan')->get();
+        Gaji::with('karyawan')->get();
+        return view('gaji.index',compact('gajis'));
     }
 
     public function store(Request $request)
@@ -61,12 +62,13 @@ class GajiController extends Controller
 
         $gaji->save();
 
-        return $gaji;
+        return redirect()->back()->with('success', 'Gaji berhasil diupdate');
     }
 
 
     public function destroy($id)
     {
-        return Gaji::destroy($id);
+        Gaji::destroy($id);
+        return redirect()->back()->with('success', 'Gaji berhasil dihapus');
     }
 }

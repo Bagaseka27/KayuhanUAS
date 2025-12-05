@@ -15,19 +15,8 @@ class EmployeeController extends Controller
     public function index()
     {
 
-    $payrollsData = Gaji::with('karyawan')->get()->map(function ($gaji) {
-        return (object)[
-            'ID_GAJI'           => $gaji->ID_GAJI,
-            'EMAIL'             => $gaji->EMAIL,
-            'NAMA'              => $gaji->karyawan->NAMA ?? '-',
-            'PERIODE'           => $gaji->PERIODE,
-            'JUMLAH_HARI_MASUK' => $gaji->JUMLAH_HARI_MASUK ?? 0,
-            'TOTAL_GAJI_POKOK'  => $gaji->TOTAL_GAJI_POKOK,
-            'TOTAL_BONUS'       => $gaji->TOTAL_BONUS,
-            'TOTAL_KOMPENSASI'  => $gaji->TOTAL_KOMPENSASI,
-            'TOTAL_GAJI_AKHIR'  => $gaji->TOTAL_GAJI_AKHIR,
-        ];
-    });
+    $payrollsData = Gaji::with('karyawan')->get();
+
 
     $jadwals = Jadwal::with(['karyawan','cabang'])->get();
 

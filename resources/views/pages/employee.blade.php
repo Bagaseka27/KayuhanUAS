@@ -309,6 +309,7 @@
         <div class="modal-dialog modal-lg">
             <form action="#" method="POST" id="formKaryawan" class="modal-content border-0 shadow">
                 @csrf
+
                 <div class="modal-header text-white" style="background-color: var(--primary);">
                     <h5 class="modal-title fw-bold">Kelola Data Karyawan</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -355,7 +356,8 @@
                         </div>
                     </div>
 
-                    <div class="row" id="location_fields_container">
+                    {{-- Lokasi hanya muncul jika Barista --}}
+                    <div id="location_fields_container" class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold text-secondary">ID Cabang</label>
                             <select name="ID_CABANG" id="id_cabang_select" class="form-select">
@@ -377,10 +379,6 @@
                         </div>
                     </div>
 
-                    <!-- Hidden fallback agar selalu terkirim ketika kosong -->
-                    <input type="hidden" name="ID_CABANG" id="hidden_id_cabang" value="">
-                    <input type="hidden" name="ID_ROMBONG" id="hidden_id_rombong" value="">
-
                 </div>
 
                 <div class="modal-footer bg-light">
@@ -388,9 +386,9 @@
                     <button type="submit" class="btn btn-primary text-white fw-bold">Simpan</button>
                 </div>
             </form>
-
         </div>
     </div>
+
 
     {{-- MODAL GAJI --}}
     <div class="modal fade" id="modalGaji" tabindex="-1">
@@ -511,75 +509,78 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
         const formKaryawan = document.getElementById('formKaryawan');
         const modalKaryawan = document.getElementById('modalKaryawan');
 
         const roleSelect = document.getElementById('role_select');
         const idCabangSelect = document.getElementById('id_cabang_select');
         const idRombongSelect = document.getElementById('id_rombong_select');
-        const hiddenCabang = document.getElementById('hidden_id_cabang');
-        const hiddenRombong = document.getElementById('hidden_id_rombong');
         const locationFieldsContainer = document.getElementById('location_fields_container');
 
+        // ==== TOGGLE ROLE BARISTA / ADMIN ====
         function toggleLocationFields() {
             const isBarista = roleSelect.value === "Barista";
 
             locationFieldsContainer.style.display = isBarista ? "flex" : "none";
-            idCabangSelect.disabled = !isBarista;
-            idRombongSelect.disabled = !isBarista;
 
             if (!isBarista) {
                 idCabangSelect.value = "";
                 idRombongSelect.value = "";
-
-                // Sync hidden fallback
-                hiddenCabang.value = "";
-                hiddenRombong.value = "";
             }
         }
+
         roleSelect.addEventListener("change", toggleLocationFields);
 
-        window.resetKaryawanModal = function() {
+
+        // ==== RESET MODAL (INSERT) ====
+        window.resetKaryawanModal = function () {
+
             formKaryawan.reset();
             formKaryawan.action = "{{ route('employee.store') }}";
 
+            // Buang _method jika ada dari edit
             const m = formKaryawan.querySelector('input[name="_method"]');
             if (m) m.remove();
 
+            // Email harus bisa diinput pada insert
             formKaryawan.querySelector('input[name="EMAIL"]').removeAttribute('readonly');
 
+            // Default role → Barista
             roleSelect.value = "Barista";
             toggleLocationFields();
-        }
+        };
 
+
+        // ==== FILL MODAL (UPDATE) ====
         window.fillKaryawanModal = function(email, nama, telp, role, idJabatan, idCabang, idRombong) {
-            resetKaryawanModal();
+            
+            resetKaryawanModal(); // start from clean state
 
             formKaryawan.action = `/employee/${email}`;
             formKaryawan.insertAdjacentHTML("beforeend", `<input type="hidden" name="_method" value="PUT">`);
 
             formKaryawan.querySelector(`input[name="EMAIL"]`).value = email;
             formKaryawan.querySelector(`input[name="EMAIL"]`).setAttribute("readonly", true);
+
             formKaryawan.querySelector(`input[name="NAMA"]`).value = nama;
             formKaryawan.querySelector(`input[name="NO_HP"]`).value = telp;
 
-            // PASSWORD tidak diisi ketika edit (kosong)
-            formKaryawan.querySelector(`input[name="PASSWORD"]`).value = '';
+            // Password kosong → tidak akan diupdate
+            formKaryawan.querySelector(`input[name="PASSWORD"]`).value = "";
 
             roleSelect.value = role;
             formKaryawan.querySelector(`select[name="ID_JABATAN"]`).value = idJabatan;
 
-            if (idCabang) idCabangSelect.value = idCabang;
-            if (idRombong) idRombongSelect.value = idRombong;
-
-            // Sync hidden fallback
-            hiddenCabang.value = idCabang || '';
-            hiddenRombong.value = idRombong || '';
+            idCabangSelect.value = idCabang ?? "";
+            idRombongSelect.value = idRombong ?? "";
 
             toggleLocationFields();
 
             new bootstrap.Modal(modalKaryawan).show();
         };
+
+
 
         // --- GAJI MODAL RESET/FILL ---
         const formGaji = document.getElementById("formGaji");

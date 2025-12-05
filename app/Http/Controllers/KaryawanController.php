@@ -78,8 +78,8 @@ class KaryawanController extends Controller
             'NO_HP' => 'sometimes|string|max:15',
             'ROLE' => 'sometimes|string|in:Admin,Barista',
             'PASSWORD' => 'nullable|string|min:6',
-            'ID_CABANG' => 'nullable|exists:cabang,ID_CABANG',
-            'ID_ROMBONG' => 'nullable|exists:rombong,ID_ROMBONG',
+            'ID_CABANG' => 'nullable',
+            'ID_ROMBONG' => 'nullable',
         ];
 
 
