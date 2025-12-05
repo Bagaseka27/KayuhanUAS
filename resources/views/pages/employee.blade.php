@@ -5,14 +5,50 @@
 @section('content')
     {{-- CSS KHUSUS UNTUK HALAMAN INI (Tab Effect) --}}
     <style>
-        /* ... (CSS Anda) ... */
-        .nav-tabs { border-bottom: 2px solid #e9ecef; }
-        .nav-tabs .nav-link { border: none; color: #6c757d; font-weight: 600; padding: 10px 20px; position: relative; transition: all 0.3s ease; background: transparent; }
-        .nav-tabs .nav-link:hover { color: var(--primary); border: none; }
-        .nav-tabs .nav-link::after { content: ''; position: absolute; width: 0; height: 3px; bottom: -2px; left: 0; background-color: var(--primary); transition: width 0.3s ease; }
+        /* Hilangkan border default bootstrap */
+        .nav-tabs { 
+            border-bottom: 2px solid #e9ecef; 
+        }
+        
+        .nav-tabs .nav-link { 
+            border: none; 
+            color: #6c757d; /* Warna abu-abu saat tidak aktif */
+            font-weight: 600;
+            padding: 10px 20px;
+            position: relative;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        /* Efek Hover */
+        .nav-tabs .nav-link:hover { 
+            color: var(--primary); 
+            border: none;
+        }
+
+        /* Garis Bawah Hijau yang Bergerak */
+        .nav-tabs .nav-link::after { 
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -2px; 
+            left: 0;
+            background-color: var(--primary); /* Warna Hijau Kayuhan */
+            transition: width 0.3s ease;
+        }
+
+        /* Saat Hover atau Aktif, garis memanjang 100% */
         .nav-tabs .nav-link:hover::after,
-        .nav-tabs .nav-link.active::after { width: 100%; }
-        .nav-tabs .nav-link.active { color: var(--primary); background: transparent; }
+        .nav-tabs .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* State Aktif */
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            background: transparent;
+        }
     </style>
 
     {{-- DATA DUMMY --}}
@@ -25,10 +61,17 @@
         $payrolls = [
             (object)['id' => 'GJ-241101', 'email' => 'budi@kayuhan.com', 'name' => 'Budi Santoso', 'jabatan_name' => 'Senior', 'periode' => '2024-11', 'basic' => 1250000, 'bonus' => 500000, 'total' => 1750000, 'days' => 25, 'cup_bonus' => 500000]
         ];
-        // Tambahan data dummy untuk select
+        $jadwals = [
+            (object)['id_jadwal' => 'JDW-001', 'email' => 'budi@kayuhan.com', 'karyawan_name' => 'Budi Santoso', 'id_cabang' => 'CBG-SBY01', 'cabang_name' => 'Taman Bungkul', 'tanggal' => '2024-11-25', 'jam_mulai' => '08:00', 'jam_selesai' => '16:00'],
+            (object)['id_jadwal' => 'JDW-002', 'email' => 'siti@kayuhan.com', 'karyawan_name' => 'Siti Aminah', 'id_cabang' => 'CBG-SBY01', 'cabang_name' => 'Taman Bungkul', 'tanggal' => '2024-11-25', 'jam_mulai' => '10:00', 'jam_selesai' => '18:00']
+        ];
+        
         $jabatanList = ['1' => 'Admin', '2' => 'Training', '3' => 'Junior', '4' => 'Senior'];
-        $cabangList = ['CBG-SBY01' => 'Taman Bungkul'];
+        $cabangList = ['CBG-SBY01' => 'Taman Bungkul', 'CBG-SBY02' => 'Kampus Unair B'];
         $rombongList = ['RMB-01' => 'Rombong 01'];
+        $employeeDropdown = collect($employees)->map(function ($emp) {
+            return (object)['email' => $emp->email, 'name' => $emp->name, 'role' => $emp->role];
+        });
     @endphp
 
     <h2 class="fw-bold text-primary-custom mb-4">Data Karyawan, Gaji & Jadwal</h2>
@@ -156,14 +199,49 @@
                 <div class="alert alert-light border shadow-sm py-2 px-3 mb-0 d-flex align-items-center text-primary-custom">
                     <i class="fas fa-info-circle me-2"></i> Jadwal diatur per minggu.
                 </div>
-                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);" data-bs-toggle="modal" data-bs-target="#modalJadwal">
+                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);" 
+                    data-bs-toggle="modal" data-bs-target="#modalJadwal" onclick="resetJadwalModal()">
                     <i class="fas fa-calendar-plus me-2"></i> Buat Jadwal
                 </button>
             </div>
             
-            <div class="stat-card p-5 text-center shadow-sm border-0 rounded-4">
-                <i class="fas fa-calendar-alt fa-3x text-muted mb-3 opacity-25"></i>
-                <p class="text-muted fw-bold">Belum ada jadwal shift yang dibuat.</p>
+            <div class="stat-card p-0 overflow-hidden shadow-sm border-0 rounded-4">
+                <div class="table-responsive">
+                    <table class="table custom-table mb-0 align-middle">
+                        <thead class="bg-light text-secondary text-uppercase small fw-bold">
+                            <tr>
+                                <th class="py-3 ps-4">ID JADWAL</th>
+                                <th>KARYAWAN</th>
+                                <th>LOKASI (CABANG)</th>
+                                <th>TANGGAL</th>
+                                <th>JAM</th>
+                                <th class="text-center pe-4">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            @if(count($jadwals) > 0)
+                                @foreach($jadwals as $jadwal)
+                                <tr>
+                                    <td class="ps-4 fw-bold">{{ $jadwal->id_jadwal }}</td>
+                                    <td>{{ $jadwal->karyawan_name }}</td>
+                                    <td><span class="badge bg-secondary">{{ $jadwal->cabang_name }}</span></td>
+                                    <td>{{ $jadwal->tanggal }}</td>
+                                    <td>{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}</td>
+                                    <td class="text-center pe-4">
+                                        <button class="btn btn-sm btn-light text-primary me-1 rounded-2"
+                                            onclick="fillJadwalModal('{{ $jadwal->id_jadwal }}', '{{ $jadwal->email }}', '{{ $jadwal->id_cabang }}', '{{ $jadwal->tanggal }}', '{{ $jadwal->jam_mulai }}', '{{ $jadwal->jam_selesai }}')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light text-danger rounded-2" onclick="confirmDelete('{{ $jadwal->id_jadwal }}', 'jadwal')"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <tr><td colspan="6" class="text-center text-muted py-4">Belum ada jadwal shift yang dibuat.</td></tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -287,14 +365,57 @@
     </div>
 
     <div class="modal fade" id="modalJadwal" tabindex="-1">
+        <div class="modal-dialog">
+            <form action="#" method="POST" class="modal-content border-0 shadow" id="formJadwal">
+                @csrf
+                <div class="modal-header bg-primary-custom text-white" style="background-color: var(--primary);">
+                    <h5 class="modal-title fw-bold">Buat Jadwal Shift</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" name="id_jadwal" id="jadwal_id_input">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Karyawan</label>
+                        <select name="employee_email" class="form-select" id="jadwal_employee_select">
+                            @foreach($employeeDropdown as $emp)
+                                <option value="{{ $emp->email }}">{{ $emp->name }} ({{ $emp->role }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Lokasi Cabang</label>
+                        <select name="id_cabang" class="form-select" id="jadwal_cabang_select">
+                            @foreach($cabangList as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Tanggal</label>
+                        <input type="date" name="tanggal" class="form-control" id="jadwal_tanggal_input">
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label fw-bold text-secondary">Jam Mulai</label>
+                            <input type="time" name="jam_mulai" class="form-control" id="jadwal_jam_mulai_input">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label fw-bold text-secondary">Jam Selesai</label>
+                            <input type="time" name="jam_selesai" class="form-control" id="jadwal_jam_selesai_input">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary fw-bold px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary text-white fw-bold px-4 bg-primary border-0" style="background-color: var(--primary);">Simpan Jadwal</button>
+                </div>
+            </form>
         </div>
+    </div>
 @endsection
 
 @push('scripts')
 <script>
-    // Fungsi untuk mereset modal kembali ke mode 'Tambah' saat ditutup/dibuka dari tombol 'Tambah'
-    // ==============================================================================================
-
     document.addEventListener('DOMContentLoaded', function() {
         // --- KARYAWAN MODAL RESET/FILL ---
         const formKaryawan = document.getElementById('formKaryawan');
@@ -302,7 +423,7 @@
 
         const resetKaryawanModal = () => {
             document.querySelector('#modalKaryawan .modal-title').textContent = 'Kelola Data Karyawan'; 
-            formKaryawan.action = '#'; // Route tambah
+            formKaryawan.action = '#'; 
             formKaryawan.reset();
             formKaryawan.querySelector('input[name="email"]').removeAttribute('readonly');
             
@@ -311,15 +432,13 @@
         };
 
         window.fillKaryawanModal = function(email, name, phone, role, id_jabatan, id_cabang, id_rombong) {
-            resetKaryawanModal(); // Selalu reset sebelum mengisi
+            resetKaryawanModal(); 
             
             document.querySelector('#modalKaryawan .modal-title').textContent = 'Edit Data Karyawan';
             formKaryawan.action = `/employee/update/${email}`; 
             
-            // Masukkan method spoofing PUT
             formKaryawan.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
 
-            // Isi Fields
             formKaryawan.querySelector('input[name="email"]').value = email;
             formKaryawan.querySelector('input[name="email"]').setAttribute('readonly', true);
             formKaryawan.querySelector('input[name="name"]').value = name;
@@ -332,8 +451,6 @@
 
             new bootstrap.Modal(modalKaryawan).show();
         };
-
-        // Tambahkan listener untuk mereset saat modal ditutup
         modalKaryawan.addEventListener('hidden.bs.modal', resetKaryawanModal);
 
 
@@ -341,14 +458,13 @@
         const formGaji = document.getElementById('formGaji');
         const modalGaji = document.getElementById('modalGaji');
         const gajiEmployeeSelect = document.getElementById('gaji_employee_select');
-        const originalEmployeeOptions = gajiEmployeeSelect.innerHTML; // Simpan opsi awal
+        const originalEmployeeOptions = gajiEmployeeSelect.innerHTML;
 
         const resetGajiModal = () => {
              document.querySelector('#modalGaji .modal-title').textContent = 'Hitung Gaji (Payroll)';
-             formGaji.action = '#'; // Route tambah
+             formGaji.action = '#';
              formGaji.reset();
              
-             // Kembalikan opsi karyawan asli dan hapus disabled
              gajiEmployeeSelect.innerHTML = originalEmployeeOptions;
              gajiEmployeeSelect.removeAttribute('disabled');
              
@@ -357,12 +473,11 @@
         };
 
         window.fillGajiModal = function(id, email, name_jabatan, periode, basic, bonus, days) {
-            resetGajiModal(); // Selalu reset sebelum mengisi
+            resetGajiModal();
             
             document.querySelector('#modalGaji .modal-title').textContent = `Edit Gaji ${name_jabatan}`;
             formGaji.action = `/payroll/update/${id}`;
             
-            // Masukkan method spoofing PUT
             formGaji.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
             
             // Isi Field Karyawan (READONLY di mode edit)
@@ -372,25 +487,59 @@
             
             // Isi Fields
             document.getElementById('gaji_period_input').value = periode;
-            document.getElementById('gaji_days_input').value = days; // Jumlah Hari Masuk
-            document.getElementById('gaji_basic_auto').value = basic; // Gaji Pokok
-            document.getElementById('gaji_bonus_input').value = bonus; // Bonus
+            document.getElementById('gaji_days_input').value = days;
+            document.getElementById('gaji_basic_auto').value = basic; 
+            document.getElementById('gaji_bonus_input').value = bonus;
             
             new bootstrap.Modal(modalGaji).show();
         };
-        
-        // Tambahkan listener untuk mereset saat modal ditutup
         modalGaji.addEventListener('hidden.bs.modal', resetGajiModal);
+
+
+        // --- JADWAL MODAL RESET/FILL ---
+        const formJadwal = document.getElementById('formJadwal');
+        const modalJadwal = document.getElementById('modalJadwal');
+        
+        // Fungsi Reset (Tambah Jadwal)
+        window.resetJadwalModal = function() {
+            document.querySelector('#modalJadwal .modal-title').textContent = 'Buat Jadwal Shift'; 
+            formJadwal.action = '/jadwal/store'; // Route Tambah
+            formJadwal.reset();
+            
+            const methodInput = formJadwal.querySelector('input[name="_method"]');
+            if (methodInput) { methodInput.remove(); }
+        };
+
+        // Fungsi Isi Data (Edit Jadwal)
+        window.fillJadwalModal = function(id_jadwal, email, id_cabang, tanggal, jam_mulai, jam_selesai) {
+            resetJadwalModal(); 
+            
+            document.querySelector('#modalJadwal .modal-title').textContent = `Edit Jadwal ${id_jadwal}`;
+            formJadwal.action = `/jadwal/update/${id_jadwal}`; 
+            
+            formJadwal.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
+
+            // Isi Fields
+            document.getElementById('jadwal_id_input').value = id_jadwal;
+            document.getElementById('jadwal_employee_select').value = email;
+            document.getElementById('jadwal_cabang_select').value = id_cabang;
+            document.getElementById('jadwal_tanggal_input').value = tanggal;
+            document.getElementById('jadwal_jam_mulai_input').value = jam_mulai;
+            document.getElementById('jadwal_jam_selesai_input').value = jam_selesai;
+
+            new bootstrap.Modal(modalJadwal).show();
+        };
+
+        // Tambahkan listener untuk mereset saat modal ditutup
+        modalJadwal.addEventListener('hidden.bs.modal', resetJadwalModal);
 
 
         // --- FUNGSI DUMMY DELETE ---
         window.confirmDelete = function(id, tipe) {
              if (confirm(`Yakin ingin menghapus data ${tipe} dengan ID ${id} ini?`)) {
-                 // Di sini Anda akan menambahkan logika fetch/AJAX ke route DELETE
                  console.log(`Menghapus ${tipe} ID: ${id}`);
              }
         };
-
     });
 </script>
 @endpush
