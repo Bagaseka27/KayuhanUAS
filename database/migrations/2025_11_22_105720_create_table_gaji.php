@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('EMAIL', 50)->nullable();
             $table->char('PERIODE', 10)->nullable();
             $table->char('TOTAL_GAJI_POKOK', 10)->nullable();
+            $table->integer('JUMLAH_HARI_MASUK');
             $table->char('TOTAL_BONUS', 10)->nullable();
             $table->char('TOTAL_KOMPENSASI', 10)->nullable();
             $table->char('TOTAL_GAJI_AKHIR', 10)->nullable();

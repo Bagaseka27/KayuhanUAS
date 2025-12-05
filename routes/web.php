@@ -12,7 +12,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\GajiController;
-
+use App\Http\Controllers\MenuController;
 /*
 |--------------------------------------------------------------------------
 | LOGIN ROUTES
@@ -140,7 +140,7 @@ Route::middleware(['auth', 'barista'])->prefix('barista')->name('barista.')->gro
     Route::get('/riwayat', function () {
         return view('pages.riwayat');
     })->name('riwayat'); 
-}
+});
 /*
 |--------------------------------------------------------------------------
 | PROFILE (Admin & Barista)
