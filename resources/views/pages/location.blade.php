@@ -3,24 +3,7 @@
 @section('title', 'Lokasi & Cabang - Kayuhan')
 
 @section('content')
-    {{-- DATA DUMMY (Tetap di sini) --}}
-    @php
-        $cabangs = [
-            (object)['id' => 'SBY01', 'name' => 'Taman Bungkul'],
-            (object)['id' => 'SBY02', 'name' => 'Kampus Unair B'],
-            (object)['id' => 'SBY03', 'name' => 'Merr Surabaya'],
-        ];
-
-        $rombongs = [
-            (object)['id' => 'RMB-01', 'loc' => 'Taman Bungkul', 'cabang_id' => 'SBY01'],
-            (object)['id' => 'RMB-02', 'loc' => 'Kampus Unair B', 'cabang_id' => 'SBY02'],
-            (object)['id' => 'RMB-03', 'loc' => 'Belum Ditentukan', 'cabang_id' => null],
-        ];
-
-        // Daftar cabang untuk dropdown (digunakan di Modal Add/Edit Rombong)
-        $cabangList = collect($cabangs)->pluck('name', 'id')->all();
-    @endphp
-
+   
     <h3 class="fw-bold text-primary-custom mb-4">Manajemen Lokasi</h3>
 
     <div class="row">
@@ -41,10 +24,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($cabangs as $cab)
+                        @foreach($cabangs as $cabang)
                         <tr>
-                            <td>{{ $cab->id }}</td>
-                            <td class="fw-bold">{{ $cab->name }}</td>
+                            <td>{{ $cabang->ID_CABANG }}</td>
+                            <td class="fw-bold">{{ $cabang->NAMA_LOKASI }}</td>
                             <td class="text-center">
                                 <button class="btn btn-sm btn-light text-primary me-1 edit-cabang-btn"
                                     data-bs-toggle="modal" data-bs-target="#modalEditLokasi"
@@ -81,9 +64,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($rombongs as $romb)
+                        @foreach($rombongs as $rombong)
                         <tr>
-                            <td class="fw-bold">{{ $romb->id }}</td>
+                            <td class="fw-bold">{{ $rombong->ID_ROMBONG }}</td>
                             <td>{{ $romb->loc }}</td>
                             <td class="text-center">
                                 <button class="btn btn-sm btn-light text-primary me-1 edit-rombong-btn"

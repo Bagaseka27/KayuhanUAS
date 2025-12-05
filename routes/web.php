@@ -8,6 +8,7 @@ use App\Models\AbsenPulang;
 use App\Models\Karyawan;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LocationController;
 use Illuminate\Support\Facades\Auth;
 
 // --------------------
@@ -53,9 +54,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         return view('pages.inventory');
     })->name('inventory');
 
-    Route::get('/locations', function () {
-        return view('pages.location');
-    })->name('locations');
+    Route::get('/locations', [LocationController::class, 'index'])->name('location');
 
     Route::get('/absensi-monitoring', [App\Http\Controllers\AbsensiController::class, 'indexPulang'])->name('admin.absensi.monitoring');
 });
