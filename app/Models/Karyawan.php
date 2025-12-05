@@ -18,6 +18,8 @@ class Karyawan extends Model
         'ID_JABATAN',
         'PASSWORD',
         'NO_HP',
+        'ROLE',
+        'remember_token'
     ];
 
     public function jabatan()

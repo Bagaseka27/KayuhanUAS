@@ -47,6 +47,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     })->name('menu');
 
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
+    Route::post('/employee/store', [EmployeeController::class, 'store'])->name('employee.store'); 
+    Route::put('/employee/{email}', [EmployeeController::class, 'update'])->name('employee.update');
+    Route::delete('/employee/{email}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
 
 
     Route::get('/history', function () {
