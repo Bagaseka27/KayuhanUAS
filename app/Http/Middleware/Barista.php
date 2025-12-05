@@ -15,7 +15,7 @@ class Barista
             return redirect('/'); 
         }
 
-        if (Auth::user()->role == 'barista') {
+        if (Auth::user()->role == 'Barista') {
             return $next($request);
         }
 
