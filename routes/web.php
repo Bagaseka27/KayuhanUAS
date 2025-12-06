@@ -168,7 +168,7 @@ Route::middleware(['auth', 'barista'])
 
     Route::get('/dashboard', [TransaksiController::class, 'indexDashboardBarista'])->name('dashboard');
 
-    Route::get('/pos', fn () => view('pages.dashboard.pos'))->name('pos');
+    Route::get('/pos', [MenuController::class, 'pos'])->name('pos');
     Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
 
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');

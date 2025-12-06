@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('ID_PRODUK', 10)->primary();
             $table->string('NAMA_PRODUK', 50)->nullable();
             $table->string('KATEGORI', 30)->nullable();
+            $table->string('FOTO', 255)->nullable();
             $table->integer('HARGA_DASAR')->nullable();
             $table->integer('HARGA_JUAL')->nullable();
             $table->timestamps();
