@@ -16,6 +16,7 @@ class Menu extends Model
         'ID_PRODUK', 
         'NAMA_PRODUK', 
         'KATEGORI',
+        'FOTO',
         'HARGA_DASAR', 
         'HARGA_JUAL'
     ];
