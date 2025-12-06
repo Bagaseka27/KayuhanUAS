@@ -10,6 +10,7 @@ use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Auth;
 
 // --------------------
@@ -34,6 +35,13 @@ Route::post('/logout', function () {
 })->name('logout');
 
 // --------------------
+// EXPORT ROUTES
+// --------------------
+Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
+
+Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('transaksi.export');
+
+// --------------------
 // ADMIN ROUTES
 // --------------------
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -47,9 +55,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     })->name('menu');
 
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employee');
-    Route::get('/history', function () {
-        return view('pages.history');
-    })->name('history');
+
+    Route::get('/history', [TransaksiController::class, 'indexRiwayat'])->name('history'); 
 
     Route::get('/inventory', function () {
         return view('pages.inventory');
@@ -66,14 +73,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'barista'])->prefix('barista')->name('barista.')->group(function () {
     
     // 1. Dashboard Barista 
-    Route::get('/dashboard', function () {
-        return view('pages.dashboard.barista');
-    })->name('dashboard'); 
+    Route::get('/dashboard', [TransaksiController::class, 'indexDashboardBarista'])->name('dashboard');
     
     // 2. POS (Kasir)
     Route::get('/pos', function () {
         return view('pages.dashboard.pos');
     })->name('pos'); 
+
+    Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
     
     // 3. Manajemen Menu (Barista)
     // Route ini memanggil controller yang sama, menggunakan nama 'menu' untuk navigasi Barista.
@@ -89,9 +96,7 @@ Route::middleware(['auth', 'barista'])->prefix('barista')->name('barista.')->gro
     Route::post('/absensi/pulang', [AbsensiController::class, 'storePulang'])->name('absensi.storePulang');
     
     // 5. Riwayat Transaksi
-    Route::get('/riwayat', function () {
-        return view('pages.riwayat');
-    })->name('riwayat'); 
+    Route::get('/riwayat', [TransaksiController::class, 'indexRiwayat'])->name('riwayat'); 
 });
 
 // --------------------
