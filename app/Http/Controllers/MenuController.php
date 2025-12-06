@@ -27,9 +27,9 @@ class MenuController extends Controller
         $validated = $request->validate([
             'ID_PRODUK' => 'required|string|max:10|unique:menu,ID_PRODUK',
             'NAMA_PRODUK' => 'required|string|max:50',
+            'KATEGORI' => 'sometimes|string', // Menambahkan KATEGORU jika Anda memasukkannya ke form
             'HARGA_DASAR' => 'required|integer',
             'HARGA_JUAL' => 'required|integer',
-            'CATEGORY' => 'sometimes|string', // Menambahkan CATEGORY jika Anda memasukkannya ke form
         ]);
 
         Menu::create($validated);
@@ -46,7 +46,7 @@ class MenuController extends Controller
             'NAMA_PRODUK' => 'sometimes|string|max:50',
             'HARGA_DASAR' => 'sometimes|integer',
             'HARGA_JUAL'  => 'sometimes|integer',
-            'CATEGORY' => 'sometimes|string',
+            'KATEGORI' => 'sometimes|string',
         ]);
         
         $menu->update($validated);

@@ -35,7 +35,7 @@
         .left-side {
             flex: 1;
             background: linear-gradient(135deg, rgba(0, 61, 46, 0.95), rgba(0, 42, 32, 0.98)),
-                        url('{{ asset('images/coffee-background.jpg') }}') center/cover;
+                        url("{{ asset('images/coffee-background.jpg') }}") center/cover;
             display: flex;
             flex-direction: column;
             align-items: center;

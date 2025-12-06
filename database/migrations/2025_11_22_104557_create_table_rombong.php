@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('rombong', function (Blueprint $table) {
             $table->string('ID_ROMBONG', 10)->primary();
+            $table->string('ID_CABANG',20);
+
+            $table->foreign('ID_CABANG')->references('ID_CABANG')->on('cabang')->onDelete('cascade');
             $table->timestamps();
         });
     }

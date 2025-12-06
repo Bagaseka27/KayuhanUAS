@@ -14,56 +14,41 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        // Data Gaji (sudah benar)
-        $payrollsData = Gaji::with('karyawan')->get();
-        
-        // Data Jadwal (sudah benar)
-        $jadwals = Jadwal::with(['karyawan','cabang'])->get();
-        
-        // --- PERBAIKAN LOGIKA PENGAMBILAN KARYAWAN MURNI ---
-        $karyawanData = Karyawan::with('jabatan')->get()->map(function($karyawan){
-            // Variabel iterator di sini harusnya $karyawan, bukan $gaji
-            return (object)[
-                // Sesuaikan dengan kolom yang ada di model Karyawan
-                'email'        => $karyawan->EMAIL,
-                'name'         => $karyawan->NAMA ?? 'N/A',
-                'no_telp'      => $karyawan->NO_TELP,
-                'alamat'       => $karyawan->ALAMAT,
-                'jabatan_name' => $karyawan->jabatan->NAMA_JABATAN ?? 'N/A',
-            ];
-        });
-        // ---------------------------------------------------
-        
-        $jabatanlist = Jabatan::pluck('NAMA_JABATAN','ID_JABATAN');
-        $cabanglist  = Cabang::pluck('NAMA_LOKASI','ID_CABANG');
-        $rombonglist = Rombong::pluck('ID_ROMBONG','ID_ROMBONG');
 
-        // Tambahkan juga dropdown karyawan (untuk mencegah error $employeeDropdown)
-        $employeeDropdown = Karyawan::pluck('NAMA', 'EMAIL');
+    $payrollsData = Gaji::with('karyawan')->get();
 
-        // --- PASTIKAN SEMUA VARIABEL DITERUSKAN KE VIEW ---
-        return view('pages.employee', [
-            'karyawanData'     => $karyawanData, // Pastikan ini ada!
-            'jadwals'          => $jadwals,      
-            'payrollsData'     => $payrollsData, 
-            'jabatanList'      => $jabatanlist,
-            'cabangList'       => $cabanglist,
-            'rombongList'      => $rombonglist,
-            'employeeDropdown' => $employeeDropdown, // Mencegah error sebelumnya
-        ]);
-    }
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'EMAIL'         => 'required|unique:karyawan,EMAIL|email|max:100',
-            'NAMA'          => 'required|string|max:255',
-            'ID_JABATAN'    => 'required|exists:jabatan,ID_JABATAN',
-            'NO_TELP'       => 'required|string|max:15',
-            'ALAMAT'        => 'nullable|string|max:255',
-        ]);
 
-        Karyawan::create($validatedData);
-        return redirect()->route('employee.index')->with('success', 'Data karyawan berhasil ditambahkan!');
+    $jadwals = Jadwal::with(['karyawan','cabang'])->get();
+
+    $karyawanData = Karyawan::with(['jabatan','cabang','rombong'])->get()->map(function($k){
+        return (object)[
+            'email' => $k->EMAIL,
+            'name' => $k->NAMA ?? 'N/A',
+            'no_telp' => $k->NO_HP ?? '',
+            'jabatan_name' => $k->jabatan->NAMA_JABATAN ?? '',
+            'ID_JABATAN' => $k->ID_JABATAN,
+            'ID_CABANG' => $k->ID_CABANG,
+            'ID_ROMBONG' => $k->ID_ROMBONG,
+            'role' => $k->ROLE,
+        ];
+    });
+
+
+    $jabatanList = Jabatan::pluck('NAMA_JABATAN','ID_JABATAN');
+    $cabangList = Cabang::pluck('NAMA_LOKASI','ID_CABANG');
+    $rombongList = Rombong::pluck('ID_ROMBONG','ID_ROMBONG');
+    $employeeDropdown = Karyawan::pluck('NAMA','EMAIL');
+
+
+    return view('pages.employee', [
+    'karyawanData' => $karyawanData,
+    'jadwals' => $jadwals,
+    'payrollsData' => $payrollsData,
+    'jabatanList' => $jabatanList,
+    'cabangList' => $cabangList,
+    'rombongList' => $rombongList,
+    'employeeDropdown' => $employeeDropdown,
+    ]);
     }
     // EmployeeController.php (Tambahkan fungsi ini)
 

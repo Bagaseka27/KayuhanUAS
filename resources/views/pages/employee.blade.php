@@ -6,13 +6,13 @@
     {{-- CSS KHUSUS UNTUK HALAMAN INI (Tab Effect) --}}
     <style>
         /* Hilangkan border default bootstrap */
-        .nav-tabs { 
-            border-bottom: 2px solid #e9ecef; 
+        .nav-tabs {
+            border-bottom: 2px solid #e9ecef;
         }
-        
-        .nav-tabs .nav-link { 
-            border: none; 
-            color: #6c757d; /* Warna abu-abu saat tidak aktif */
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
             font-weight: 600;
             padding: 10px 20px;
             position: relative;
@@ -20,41 +20,36 @@
             background: transparent;
         }
 
-        /* Efek Hover */
-        .nav-tabs .nav-link:hover { 
-            color: var(--primary); 
+        .nav-tabs .nav-link:hover {
+            color: var(--primary);
             border: none;
         }
 
-        /* Garis Bawah Hijau yang Bergerak */
-        .nav-tabs .nav-link::after { 
+        .nav-tabs .nav-link::after {
             content: '';
             position: absolute;
             width: 0;
             height: 3px;
-            bottom: -2px; 
+            bottom: -2px;
             left: 0;
-            background-color: var(--primary); /* Warna Hijau Kayuhan */
+            background-color: var(--primary);
             transition: width 0.3s ease;
         }
 
-        /* Saat Hover atau Aktif, garis memanjang 100% */
         .nav-tabs .nav-link:hover::after,
         .nav-tabs .nav-link.active::after {
             width: 100%;
         }
 
-        /* State Aktif */
         .nav-tabs .nav-link.active {
             color: var(--primary);
             background: transparent;
         }
-        
-        /* Gaya Tambahan untuk Judul Bagian */
+
         .section-title {
             font-size: 1.25rem;
             font-weight: 700;
-            color: #38704D; /* Warna hijau gelap yang senada */
+            color: #38704D;
             border-bottom: 2px solid #e9ecef;
             padding-bottom: 10px;
             margin-bottom: 15px;
@@ -62,10 +57,9 @@
         }
     </style>
 
-
     <h2 class="fw-bold text-primary-custom mb-4">Data Karyawan, Gaji & Jadwal</h2>
 
-    {{-- Tabs (Data Karyawan, Data Gaji, Jadwal Shift) --}}
+    {{-- Tabs --}}
     <ul class="nav nav-tabs mb-4" id="employeeTabs" role="tablist">
         <li class="nav-item me-2">
             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-karyawan">
@@ -85,20 +79,18 @@
     </ul>
 
     <div class="tab-content">
-        
+
         <div class="tab-pane fade show active" id="tab-karyawan">
-            
-            {{-- Tombol Tambah Karyawan (Terapkan di sini) --}}
+
+            {{-- Tombol Tambah Karyawan --}}
             <div class="d-flex justify-content-end mb-3">
-                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);" 
+                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);"
                     data-bs-toggle="modal" data-bs-target="#modalKaryawan" onclick="resetKaryawanModal()">
                     <i class="fas fa-user-plus me-2"></i> Tambah Karyawan
                 </button>
             </div>
 
-            {{-- ========================================================================= --}}
-            {{-- BAGIAN 1: TABEL DATA KARYAWAN ADMIN (Tampilan Sederhana) --}}
-            {{-- ========================================================================= --}}
+            {{-- Data Karyawan Admin --}}
             <h3 class="section-title">Data Karyawan Admin</h3>
             <div class="stat-card p-0 overflow-hidden shadow-sm border-0 rounded-4">
                 <div class="table-responsive">
@@ -113,7 +105,7 @@
                         </thead>
                         <tbody class="bg-white">
                             @php
-                                $adminData = $karyawanData->filter(fn($data) => $data->jabatan_name == 'Admin');
+                                $adminData = $karyawanData->filter(fn($data) => ($data->role ?? '') == 'Admin' || ($data->jabatan_name ?? '') == 'Admin');
                             @endphp
                             @forelse ($adminData as $data)
                             <tr>
@@ -121,17 +113,16 @@
                                 <td>{{ $data->name }}</td>
                                 <td>{{ $data->no_telp }}</td>
                                 <td>
-                                    {{-- Tombol Aksi --}}
-                                    <button 
+                                    <button
                                         onclick="fillKaryawanModal(
-                                            '{{ $data->email }}', 
-                                            '{{ $data->name }}', 
-                                            '{{ $data->no_telp }}', 
-                                            '{{ $data->jabatan_name }}', 
-                                            '{{ $data->ID_JABATAN ?? '' }}', {{-- Aman: Tambah operator ?? '' --}}
-                                            '{{ $data->ID_CABANG ?? '-' }}', 
-                                            '{{ $data->ID_ROMBONG ?? '-' }}'
-                                        )" 
+                                            '{{ $data->email }}',
+                                            '{{ $data->name }}',
+                                            '{{ $data->no_telp }}',
+                                            '{{ $data->role ?? 'Admin' }}',
+                                            '{{ $data->ID_JABATAN ?? '' }}',
+                                            '{{ $data->ID_CABANG ?? '' }}',
+                                            '{{ $data->ID_ROMBONG ?? '' }}'
+                                        )"
                                         class="btn btn-sm btn-warning">Edit</button>
                                     <button onclick="confirmDelete('{{ $data->email }}', 'Karyawan')" class="btn btn-sm btn-danger">Hapus</button>
                                 </td>
@@ -143,10 +134,8 @@
                     </table>
                 </div>
             </div>
-            
-            {{-- ========================================================================= --}}
-            {{-- BAGIAN 2: TABEL DATA KARYAWAN BARISTA (Tampilan Lengkap) --}}
-            {{-- ========================================================================= --}}
+
+            {{-- Data Karyawan Barista --}}
             <h3 class="section-title mt-5">Data Karyawan Barista</h3>
             <div class="stat-card p-0 overflow-hidden shadow-sm border-0 rounded-4">
                 <div class="table-responsive">
@@ -165,29 +154,28 @@
                         </thead>
                         <tbody class="bg-white">
                             @php
-                                $baristaData = $karyawanData->filter(fn($data) => $data->jabatan_name == 'Barista');
+                                $baristaData = $karyawanData->filter(fn($data) => ($data->role ?? '') == 'Barista' || ($data->jabatan_name ?? '') == 'Barista');
                             @endphp
                             @forelse ($baristaData as $data)
                             <tr>
                                 <td>{{ $data->email }}</td>
-                                <td>{{ $data->ID_JABATAN ?? '-' }}</td> {{-- FIX: Tambah operator ?? '-' --}}
+                                <td>{{ $data->ID_JABATAN ?? '-' }}</td>
                                 <td>{{ $data->ID_ROMBONG ?? '-' }}</td>
                                 <td>{{ $data->ID_CABANG ?? '-' }}</td>
                                 <td>{{ $data->name }}</td>
                                 <td>{{ $data->no_telp }}</td>
-                                <td>{{ $data->jabatan_name }}</td>
+                                <td>{{ $data->jabatan_name ?? $data->role }}</td>
                                 <td>
-                                    {{-- Tombol Aksi --}}
-                                    <button 
+                                    <button
                                         onclick="fillKaryawanModal(
-                                            '{{ $data->email }}', 
-                                            '{{ $data->name }}', 
-                                            '{{ $data->no_telp }}', 
-                                            '{{ $data->jabatan_name }}', 
-                                            '{{ $data->ID_JABATAN ?? '' }}', {{-- Aman: Tambah operator ?? '' --}}
-                                            '{{ $data->ID_CABANG ?? '-' }}', 
-                                            '{{ $data->ID_ROMBONG ?? '-' }}'
-                                        )" 
+                                            '{{ $data->email }}',
+                                            '{{ $data->name }}',
+                                            '{{ $data->no_telp }}',
+                                            '{{ $data->role ?? 'Barista' }}',
+                                            '{{ $data->ID_JABATAN ?? '' }}',
+                                            '{{ $data->ID_CABANG ?? '' }}',
+                                            '{{ $data->ID_ROMBONG ?? '' }}'
+                                        )"
                                         class="btn btn-sm btn-warning">Edit</button>
                                     <button onclick="confirmDelete('{{ $data->email }}', 'Karyawan')" class="btn btn-sm btn-danger">Hapus</button>
                                 </td>
@@ -199,16 +187,17 @@
                     </table>
                 </div>
             </div>
+
         </div>
 
-        {{-- Tab Data Gaji (Tidak Berubah) --}}
+        {{-- Tab Data Gaji --}}
         <div class="tab-pane fade" id="tab-gaji">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="d-flex align-items-center bg-white px-3 py-2 rounded-3 shadow-sm">
                     <label class="fw-bold me-2 text-primary-custom">Periode:</label>
-                    <input type="month" class="form-control border-0 bg-transparent fw-bold" value="2024-11">
+                    <input type="month" class="form-control border-0 bg-transparent fw-bold" value="{{ now()->format('Y-m') }}">
                 </div>
-                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);" 
+                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);"
                     data-bs-toggle="modal" data-bs-target="#modalGaji" onclick="resetGajiModal()">
                     <i class="fas fa-plus me-2"></i> Tambah Data Gaji
                 </button>
@@ -232,25 +221,25 @@
                         <tbody class="bg-white">
                             @foreach ($payrollsData as $gaji)
                             <tr>
-                                <td>{{ $loop->iteration }}</td> 
-                                <td>{{ $gaji->karyawan->NAMA ?? 'Data Karyawan Tidak Ditemukan' }}</td>                                
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $gaji->karyawan->NAMA ?? 'Data Karyawan Tidak Ditemukan' }}</td>
                                 <td>{{ $gaji->PERIODE }}</td>
                                 <td>Rp {{ number_format($gaji->TOTAL_GAJI_POKOK, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($gaji->TOTAL_BONUS, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($gaji->TOTAL_KOMPENSASI, 0, ',', '.') }}</td>
-                                <td>**Rp {{ number_format($gaji->TOTAL_GAJI_AKHIR, 0, ',', '.') }}**</td>
+                                <td>Rp {{ number_format($gaji->TOTAL_GAJI_AKHIR, 0, ',', '.') }}</td>
                                 <td>
-                                    <button 
+                                    <button
                                         onclick="fillGajiModal(
-                                            '{{ $gaji->ID_GAJI }}', 
-                                            '{{ $gaji->EMAIL }}', 
-                                            '{{ $gaji->karyawan->NAMA ?? 'N/A' }} ({{ $gaji->karyawan->jabatan_name ?? 'N/A' }})', 
-                                            '{{ $gaji->PERIODE }}', 
-                                            '{{ $gaji->TOTAL_GAJI_POKOK }}', 
-                                            '{{ $gaji->TOTAL_BONUS }}', 
+                                            '{{ $gaji->ID_GAJI }}',
+                                            '{{ $gaji->EMAIL }}',
+                                            '{{ $gaji->karyawan->NAMA ?? 'N/A' }} ({{ $gaji->karyawan->jabatan_name ?? 'N/A' }})',
+                                            '{{ $gaji->PERIODE }}',
+                                            '{{ $gaji->TOTAL_GAJI_POKOK }}',
+                                            '{{ $gaji->TOTAL_BONUS }}',
                                             '{{ $gaji->TOTAL_KOMPENSASI }}',
                                             '{{ $gaji->JUMLAH_HARI_MASUK ?? 0 }}'
-                                        )" 
+                                        )"
                                         class="btn btn-sm btn-warning">Edit</button>
                                     <button onclick="confirmDelete('{{ $gaji->ID_GAJI }}', 'Gaji')" class="btn btn-sm btn-danger">Hapus</button>
                                 </td>
@@ -262,18 +251,18 @@
             </div>
         </div>
 
-        {{-- Tab Jadwal Shift (Tidak Berubah) --}}
+        {{-- Tab Jadwal Shift --}}
         <div class="tab-pane fade" id="tab-jadwal">
             <div class="d-flex justify-content-between mb-3">
                 <div class="alert alert-light border shadow-sm py-2 px-3 mb-0 d-flex align-items-center text-primary-custom">
                     <i class="fas fa-info-circle me-2"></i> Jadwal diatur per minggu.
                 </div>
-                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);" 
+                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);"
                     data-bs-toggle="modal" data-bs-target="#modalJadwal" onclick="resetJadwalModal()">
                     <i class="fas fa-calendar-plus me-2"></i> Buat Jadwal
                 </button>
             </div>
-            
+
             <div class="stat-card p-0 overflow-hidden shadow-sm border-0 rounded-4">
                 <div class="table-responsive">
                     <table class="table custom-table mb-0 align-middle">
@@ -292,19 +281,13 @@
                                 @foreach ($jadwals as $jadwal)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    
-                                    {{-- Tampilkan data relasi karyawan dan cabang --}}
                                     <td>{{ $jadwal->karyawan->NAMA ?? 'N/A' }}</td>
                                     <td>{{ $jadwal->cabang->NAMA_LOKASI ?? 'N/A' }}</td>
-                                    
-                                    {{-- Tampilkan data jadwal --}}
                                     <td>{{ $jadwal->TANGGAL }}</td>
-                                    <td>{{ $jadwal->JAM_MULAI . ' - ' . $jadwal->JAM_SELESAI }}</td>
-                                    
+                                    <td>{{ \Carbon\Carbon::parse($jadwal->JAM_MULAI)->format('H:i') . ' - ' . \Carbon\Carbon::parse($jadwal->JAM_SELESAI)->format('H:i') }}</td>
                                     <td>
-                                        {{-- Tombol Aksi (Pastikan ID yang dilempar adalah ID_JADWAL) --}}
-                                        <button 
-                                            onclick="fillJadwalModal('{{ $jadwal->ID_JADWAL }}', '{{ $jadwal->EMAIL }}', '{{ $jadwal->ID_CABANG }}', '{{ $jadwal->TANGGAL }}', '{{ $jadwal->JAM_MULAI }}', '{{ $jadwal->JAM_SELESAI }}')" 
+                                        <button
+                                            onclick="fillJadwalModal('{{ $jadwal->ID_JADWAL }}', '{{ $jadwal->EMAIL }}', '{{ $jadwal->ID_CABANG }}', '{{ $jadwal->TANGGAL }}', '{{ $jadwal->JAM_MULAI }}', '{{ $jadwal->JAM_SELESAI }}')"
                                             class="btn btn-sm btn-warning">Edit</button>
                                         <button onclick="confirmDelete('{{ $jadwal->ID_JADWAL }}', 'Jadwal')" class="btn btn-sm btn-danger">Hapus</button>
                                     </td>
@@ -318,45 +301,54 @@
                 </div>
             </div>
         </div>
+
     </div>
 
-    {{-- ========================================================================= --}}
-    {{-- MODAL TAMBAH/EDIT KARYAWAN (DILENGKAPI LOGIKA ROLE ADMIN) --}}
-    {{-- ========================================================================= --}}
+    {{-- MODAL KARYAWAN --}}
     <div class="modal fade" id="modalKaryawan" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <form action="#" method="POST" class="modal-content border-0 shadow" id="formKaryawan">
+            <form action="#" method="POST" id="formKaryawan" class="modal-content border-0 shadow">
                 @csrf
-                <div class="modal-header bg-primary-custom text-white" style="background-color: var(--primary);">
+
+                <div class="modal-header text-white" style="background-color: var(--primary);">
                     <h5 class="modal-title fw-bold">Kelola Data Karyawan</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body p-4">
+
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Email (PK)</label>
-                        <input type="email" name="email" class="form-control" placeholder="user@kayuhan.com" required>
+                        <input type="email" name="EMAIL" class="form-control" required>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Nama Lengkap</label>
-                        <input type="text" name="name" class="form-control" required>
+                        <input type="text" name="NAMA" class="form-control" required>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">No HP</label>
-                        <input type="text" name="phone" class="form-control">
+                        <input type="text" name="NO_HP" class="form-control" required>
                     </div>
-                    
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Password</label>
+                        <input type="password" name="PASSWORD" class="form-control" required>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            {{-- Input untuk memilih Role (Admin/Barista) --}}
-                            <label class="form-label fw-bold text-secondary">Posisi (Role)</label>
-                            <select name="role" class="form-select" id="role_select">
+                            <label class="form-label fw-bold text-secondary">Role</label>
+                            <select name="ROLE" id="role_select" class="form-select" required>
                                 <option value="Barista">Barista</option>
                                 <option value="Admin">Admin</option>
                             </select>
                         </div>
+
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold text-secondary">ID Jabatan (FK1)</label>
-                            <select name="id_jabatan" class="form-select">
+                            <label class="form-label fw-bold text-secondary">ID Jabatan</label>
+                            <select name="ID_JABATAN" class="form-select" required>
                                 @foreach($jabatanList as $id => $name)
                                     <option value="{{ $id }}">{{ $id }} - {{ $name }}</option>
                                 @endforeach
@@ -364,131 +356,150 @@
                         </div>
                     </div>
 
-                    {{-- Kontainer untuk ID Cabang dan ID Rombong yang akan disembunyikan/dinonaktifkan untuk Admin --}}
-                    <div class="row" id="location_fields_container">
+                    {{-- Lokasi hanya muncul jika Barista --}}
+                    <div id="location_fields_container" class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold text-secondary">ID Cabang (FK2)</label>
-                            <select name="id_cabang" class="form-select" id="id_cabang_select">
-                                <option value="-">-</option>
+                            <label class="form-label fw-bold text-secondary">ID Cabang</label>
+                            <select name="ID_CABANG" id="id_cabang_select" class="form-select">
+                                <option value="">-</option>
                                 @foreach($cabangList as $id => $name)
-                                    <option value="{{ $id }}">{{ $name }} ({{ $id }})</option>
+                                    <option value="{{ $id }}">{{ $name }}</option>
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold text-secondary">ID Rombong (FK3)</label>
-                            <select name="id_rombong" class="form-select" id="id_rombong_select">
-                                <option value="-">-</option>
+                            <label class="form-label fw-bold text-secondary">ID Rombong</label>
+                            <select name="ID_ROMBONG" id="id_rombong_select" class="form-select">
+                                <option value="">-</option>
                                 @foreach($rombongList as $id => $name)
                                     <option value="{{ $id }}">{{ $id }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
+
                 </div>
+
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary fw-bold px-4" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary text-white fw-bold px-4 bg-primary border-0" style="background-color: var(--primary);">Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary text-white fw-bold">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- Modal Gaji (Tidak Berubah) --}}
+
+    {{-- MODAL GAJI --}}
     <div class="modal fade" id="modalGaji" tabindex="-1">
         <div class="modal-dialog">
-            <form action="#" method="POST" class="modal-content border-0 shadow" id="formGaji">
+            <form action="#" method="POST" id="formGaji" class="modal-content border-0 shadow">
                 @csrf
-                <div class="modal-header bg-primary-custom text-white" style="background-color: var(--primary);">
-                    <h5 class="modal-title fw-bold">Hitung Gaji (Payroll)</h5>
+                <div class="modal-header text-white" style="background-color: var(--primary);">
+                    <h5 class="modal-title fw-bold">Hitung Gaji</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body p-4">
+
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">Pilih Karyawan</label>
-                        <select name="employee_id" class="form-select" id="gaji_employee_select">
+                        <label class="fw-bold text-secondary">Pilih Karyawan</label>
+                        <select name="EMAIL" id="gaji_employee_select" class="form-select" required>
                             @foreach($karyawanData as $emp)
-                                <option value="{{ $emp->email }}">{{ $emp->name }} ({{ $emp->jabatan_name }})</option>
+                                <option value="{{ $emp->email }}">{{ $emp->name }} ({{ $emp->jabatan_name ?? '' }})</option>
                             @endforeach
                         </select>
                     </div>
-                    
-                    <div class="alert alert-info border-0 py-2 small" style="background-color: #e7f1ff; color: #004085;">
-                        <i class="fas fa-info-circle me-1"></i> <strong>Gaji Pokok: Rp 50.000/hari</strong><br>
-                        <span class="ms-3">Bonus Harian: <strong>Rp 1.000/cup</strong> (jika > 50 cup)</span>
+
+                    <div class="mb-3">
+                        <label class="fw-bold text-secondary">Periode</label>
+                        <input type="month" name="PERIODE" id="gaji_period_input" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">Periode</label>
-                        <input type="month" name="period" class="form-control" value="2024-11" id="gaji_period_input">
+                        <label class="fw-bold text-secondary">Jumlah Hari Masuk</label>
+                        <input type="number" name="JUMLAH_HARI_MASUK" id="gaji_days_input" class="form-control" required>
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">Jumlah Hari Masuk (Hari)</label>
-                        <input type="number" name="days" class="form-control" placeholder="0" id="gaji_days_input">
+                        <label class="fw-bold text-secondary">Total Gaji Pokok (Auto)</label>
+                        <input type="number" name="TOTAL_GAJI_POKOK" id="gaji_basic_auto" class="form-control bg-light" readonly>
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">Total Gaji Pokok (Otomatis)</label>
-                        <input type="text" class="form-control bg-light" value="0" readonly id="gaji_basic_auto">
+                        <label class="fw-bold text-secondary">Bonus</label>
+                        <input type="number" name="TOTAL_BONUS" id="gaji_bonus_input" class="form-control">
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">Total Bonus (Manual)</label>
-                        <input type="number" name="bonus" class="form-control" placeholder="0" id="gaji_bonus_input">
-                        <small class="text-muted">*Hitung manual berdasarkan cup > 50/hari</small>
+                        <label class="fw-bold text-secondary">Kompensasi</label>
+                        <input type="number" name="TOTAL_KOMPENSASI" id="gaji_kompensasi_input" class="form-control" value="0">
                     </div>
+
                 </div>
+
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary fw-bold px-4" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary text-white fw-bold px-4 bg-primary border-0" style="background-color: var(--primary);">Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary text-white fw-bold">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- Modal Jadwal (Tidak Berubah) --}}
+    {{-- MODAL JADWAL --}}
     <div class="modal fade" id="modalJadwal" tabindex="-1">
         <div class="modal-dialog">
-            <form action="#" method="POST" class="modal-content border-0 shadow" id="formJadwal">
+           <form action="#" method="POST" id="formJadwal" class="modal-content border-0 shadow">
                 @csrf
-                <div class="modal-header bg-primary-custom text-white" style="background-color: var(--primary);">
+
+                <div class="modal-header text-white" style="background-color: var(--primary);">
                     <h5 class="modal-title fw-bold">Buat Jadwal Shift</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body p-4">
-                    <input type="hidden" name="id_jadwal" id="jadwal_id_input">
+
+                    <input type="hidden" name="ID_JADWAL" id="jadwal_id_input">
+
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">Karyawan</label>
-                        <select name="employee_email" class="form-select" id="jadwal_employee_select">
+                        <label class="fw-bold text-secondary">Karyawan</label>
+                        <select name="EMAIL" class="form-select" id="jadwal_employee_select" required>
                             @foreach ($employeeDropdown as $email => $nama)
-                                <option value="{{ $email }}">{{ $nama }} ({{ $email }})</option>
+                                <option value="{{ $email }}">{{ $nama }}</option>
                             @endforeach
                         </select>
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">Lokasi Cabang</label>
-                        <select name="id_cabang" class="form-select" id="jadwal_cabang_select">
+                        <label class="fw-bold text-secondary">Lokasi Cabang</label>
+                        <select name="ID_CABANG" class="form-select" id="jadwal_cabang_select" required>
                             @foreach($cabangList as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">Tanggal</label>
-                        <input type="date" name="tanggal" class="form-control" id="jadwal_tanggal_input">
+                        <label class="fw-bold text-secondary">Tanggal</label>
+                        <input type="date" name="TANGGAL" id="jadwal_tanggal_input" class="form-control" required>
                     </div>
+
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <label class="form-label fw-bold text-secondary">Jam Mulai</label>
-                            <input type="time" name="jam_mulai" class="form-control" id="jadwal_jam_mulai_input">
+                            <label class="fw-bold text-secondary">Jam Mulai</label>
+                            <input type="time" name="JAM_MULAI" id="jadwal_jam_mulai_input" class="form-control" required>
                         </div>
                         <div class="col-6 mb-3">
-                            <label class="form-label fw-bold text-secondary">Jam Selesai</label>
-                            <input type="time" name="jam_selesai" class="form-control" id="jadwal_jam_selesai_input">
+                            <label class="fw-bold text-secondary">Jam Selesai</label>
+                            <input type="time" name="JAM_SELESAI" id="jadwal_jam_selesai_input" class="form-control" required>
                         </div>
                     </div>
+
                 </div>
+
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary fw-bold px-4" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary text-white fw-bold px-4 bg-primary border-0" style="background-color: var(--primary);">Simpan Jadwal</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary text-white fw-bold">Simpan Jadwal</button>
                 </div>
             </form>
         </div>
@@ -498,190 +509,218 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        
+
         const formKaryawan = document.getElementById('formKaryawan');
         const modalKaryawan = document.getElementById('modalKaryawan');
+
         const roleSelect = document.getElementById('role_select');
         const idCabangSelect = document.getElementById('id_cabang_select');
         const idRombongSelect = document.getElementById('id_rombong_select');
         const locationFieldsContainer = document.getElementById('location_fields_container');
 
-        // Fungsi untuk mengontrol visibilitas dan status Cabang/Rombong berdasarkan Role
-        const toggleLocationFields = () => {
-            const isBarista = roleSelect.value === 'Barista';
-            
-            // Tampilkan/Sembunyikan kontainer field
-            locationFieldsContainer.style.display = isBarista ? 'flex' : 'none';
+        // ==== TOGGLE ROLE BARISTA / ADMIN ====
+        function toggleLocationFields() {
+            const isBarista = roleSelect.value === "Barista";
 
-            // Nonaktifkan/Aktifkan field (Penting saat Submit Form)
-            idCabangSelect.disabled = !isBarista;
-            idRombongSelect.disabled = !isBarista;
-            
-            // Opsional: set nilai default ke '-' jika non-Barista untuk menghindari error FK
+            locationFieldsContainer.style.display = isBarista ? "flex" : "none";
+
             if (!isBarista) {
-                idCabangSelect.value = '-';
-                idRombongSelect.value = '-';
+                idCabangSelect.value = "";
+                idRombongSelect.value = "";
             }
-        };
+        }
 
-        // Panggil fungsi saat role berubah
-        roleSelect.addEventListener('change', toggleLocationFields);
+        roleSelect.addEventListener("change", toggleLocationFields);
 
-        // --- KARYAWAN MODAL RESET/FILL ---
-        const resetKaryawanModal = () => {
-            document.querySelector('#modalKaryawan .modal-title').textContent = 'Kelola Data Karyawan'; 
-            formKaryawan.action = '/employee/store'; // Asumsikan route store
+
+        // ==== RESET MODAL (INSERT) ====
+        window.resetKaryawanModal = function () {
+
             formKaryawan.reset();
-            formKaryawan.querySelector('input[name="email"]').removeAttribute('readonly');
-            
-            const methodInput = formKaryawan.querySelector('input[name="_method"]');
-            if (methodInput) { methodInput.remove(); }
-            
-            // Pastikan field lokasi terlihat saat reset (default Barista)
-            roleSelect.value = 'Barista';
-            toggleLocationFields(); 
+            formKaryawan.action = "{{ route('employee.store') }}";
+
+            // Buang _method jika ada dari edit
+            const m = formKaryawan.querySelector('input[name="_method"]');
+            if (m) m.remove();
+
+            // Email harus bisa diinput pada insert
+            formKaryawan.querySelector('input[name="EMAIL"]').removeAttribute('readonly');
+
+            // Default role → Barista
+            roleSelect.value = "Barista";
+            toggleLocationFields();
         };
 
-        window.fillKaryawanModal = function(email, name, phone, role, id_jabatan, id_cabang, id_rombong) {
-            resetKaryawanModal(); 
-            
-            document.querySelector('#modalKaryawan .modal-title').textContent = 'Edit Data Karyawan';
-            formKaryawan.action = `/employee/${email}`; // Asumsikan route update
-            
-            formKaryawan.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
 
-            formKaryawan.querySelector('input[name="email"]').value = email;
-            formKaryawan.querySelector('input[name="email"]').setAttribute('readonly', true);
-            formKaryawan.querySelector('input[name="name"]').value = name;
-            formKaryawan.querySelector('input[name="phone"]').value = phone;
-
-            formKaryawan.querySelector('select[name="role"]').value = role;
-            formKaryawan.querySelector('select[name="id_jabatan"]').value = id_jabatan;
+        // ==== FILL MODAL (UPDATE) ====
+        window.fillKaryawanModal = function(email, nama, telp, role, idJabatan, idCabang, idRombong) {
             
-            // Set nilai Cabang dan Rombong
-            idCabangSelect.value = id_cabang;
-            idRombongSelect.value = id_rombong;
+            resetKaryawanModal(); // start from clean state
 
-            // Panggil toggle untuk menyesuaikan tampilan Cabang/Rombong
-            toggleLocationFields(); 
+            formKaryawan.action = `/employee/${email}`;
+            formKaryawan.insertAdjacentHTML("beforeend", `<input type="hidden" name="_method" value="PUT">`);
+
+            formKaryawan.querySelector(`input[name="EMAIL"]`).value = email;
+            formKaryawan.querySelector(`input[name="EMAIL"]`).setAttribute("readonly", true);
+
+            formKaryawan.querySelector(`input[name="NAMA"]`).value = nama;
+            formKaryawan.querySelector(`input[name="NO_HP"]`).value = telp;
+
+            // Password kosong → tidak akan diupdate
+            formKaryawan.querySelector(`input[name="PASSWORD"]`).value = "";
+
+            roleSelect.value = role;
+            formKaryawan.querySelector(`select[name="ID_JABATAN"]`).value = idJabatan;
+
+            idCabangSelect.value = idCabang ?? "";
+            idRombongSelect.value = idRombong ?? "";
+
+            toggleLocationFields();
 
             new bootstrap.Modal(modalKaryawan).show();
         };
-        modalKaryawan.addEventListener('hidden.bs.modal', resetKaryawanModal);
-        
-        // Panggil toggle saat DOM pertama kali dimuat
-        toggleLocationFields(); 
+
 
 
         // --- GAJI MODAL RESET/FILL ---
-        const formGaji = document.getElementById('formGaji');
-        const modalGaji = document.getElementById('modalGaji');
-        const gajiEmployeeSelect = document.getElementById('gaji_employee_select');
-        const originalEmployeeOptions = gajiEmployeeSelect.innerHTML;
+        const formGaji = document.getElementById("formGaji");
+        const modalGaji = document.getElementById("modalGaji");
 
-        const resetGajiModal = () => {
-             document.querySelector('#modalGaji .modal-title').textContent = 'Hitung Gaji (Payroll)';
-             formGaji.action = '/payroll/store'; // Asumsikan route store
-             formGaji.reset();
-             
-             gajiEmployeeSelect.innerHTML = originalEmployeeOptions;
-             gajiEmployeeSelect.removeAttribute('disabled');
-             
-             const methodInput = formGaji.querySelector('input[name="_method"]');
-             if (methodInput) { methodInput.remove(); }
-        };
+        function resetGajiModal() {
+            formGaji.reset();
+            formGaji.action = "/gaji/store";
 
-        window.fillGajiModal = function(id, email, name_jabatan, periode, basic, bonus, kompensasi, days) {
+            const m = formGaji.querySelector('input[name="_method"]');
+            if (m) m.remove();
+
+            document.querySelector("#gaji_employee_select").removeAttribute("disabled");
+        }
+
+        window.resetGajiModal = resetGajiModal;
+
+        window.fillGajiModal = function(id, email, namaJabatan, periode, basic, bonus, kompensasi, days) {
             resetGajiModal();
-            
-            document.querySelector('#modalGaji .modal-title').textContent = `Edit Gaji ${name_jabatan}`;
-            formGaji.action = `/payroll/update/${id}`; // Asumsikan route update
-            
-            formGaji.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
-            
-            // Isi Field Karyawan (READONLY di mode edit)
-            gajiEmployeeSelect.innerHTML = `<option value="${email}">${name_jabatan}</option>`;
-            gajiEmployeeSelect.value = email;
-            gajiEmployeeSelect.setAttribute('disabled', true);
-            
-            // Isi Fields
-            document.getElementById('gaji_period_input').value = periode;
-            document.getElementById('gaji_days_input').value = days;
-            document.getElementById('gaji_basic_auto').value = basic; 
-            document.getElementById('gaji_bonus_input').value = bonus;
-            // Note: Kompensasi tidak ada di modal gaji yang asli, saya tambahkan di sini jika Anda ingin menggunakannya
-            // document.getElementById('gaji_kompensasi_input').value = kompensasi;
-            
+
+            formGaji.action = `/gaji/update/${id}`;
+            formGaji.insertAdjacentHTML("beforeend", `<input type="hidden" name="_method" value="PUT">`);
+
+            document.getElementById("gaji_employee_select").innerHTML =
+                `<option value="${email}">${namaJabatan}</option>`;
+            document.getElementById("gaji_employee_select").setAttribute("disabled", true);
+
+            document.getElementById("gaji_period_input").value = periode;
+            document.getElementById("gaji_basic_auto").value = basic;
+            document.getElementById("gaji_bonus_input").value = bonus;
+            document.getElementById("gaji_kompensasi_input").value = kompensasi ?? 0;
+            document.getElementById("gaji_days_input").value = days ?? 0;
+
             new bootstrap.Modal(modalGaji).show();
         };
-        modalGaji.addEventListener('hidden.bs.modal', resetGajiModal);
 
+        document.getElementById("gaji_days_input").addEventListener("input", function() {
+            const val = parseInt(this.value) || 0;
+            document.getElementById("gaji_basic_auto").value = val * 50000;
+        });
 
         // --- JADWAL MODAL RESET/FILL ---
-        const formJadwal = document.getElementById('formJadwal');
-        const modalJadwal = document.getElementById('modalJadwal');
-        
-        // Fungsi Reset (Tambah Jadwal)
+        const formJadwal = document.getElementById("formJadwal");
+        const modalJadwal = document.getElementById("modalJadwal");
+
         window.resetJadwalModal = function() {
-            document.querySelector('#modalJadwal .modal-title').textContent = 'Buat Jadwal Shift'; 
-            formJadwal.action = '/jadwal/store'; // Asumsikan Route Tambah
             formJadwal.reset();
-            
-            const methodInput = formJadwal.querySelector('input[name="_method"]');
-            if (methodInput) { methodInput.remove(); }
+            formJadwal.action = "/jadwal/store";
+
+            const m = formJadwal.querySelector('input[name="_method"]');
+            if (m) m.remove();
         };
 
-        // Fungsi Isi Data (Edit Jadwal)
-        window.fillJadwalModal = function(id_jadwal, email, id_cabang, tanggal, jam_mulai, jam_selesai) {
-            resetJadwalModal(); 
-            
-            document.querySelector('#modalJadwal .modal-title').textContent = `Edit Jadwal ${id_jadwal}`;
-            formJadwal.action = `/jadwal/update/${id_jadwal}`; // Asumsikan Route Update
-            
-            formJadwal.insertAdjacentHTML('beforeend', '<input type="hidden" name="_method" value="PUT">');
+        function toInputTimeFormat(timeString) {
+            if (!timeString) return "";
+            return timeString.substring(0, 5);
+        }
 
-            // Isi Fields
-            document.getElementById('jadwal_id_input').value = id_jadwal;
-            document.getElementById('jadwal_employee_select').value = email;
-            document.getElementById('jadwal_cabang_select').value = id_cabang;
-            document.getElementById('jadwal_tanggal_input').value = tanggal;
-            document.getElementById('jadwal_jam_mulai_input').value = jam_mulai;
-            document.getElementById('jadwal_jam_selesai_input').value = jam_selesai;
+        window.fillJadwalModal = function(id_jadwal, email, id_cabang, tanggal, jam_mulai, jam_selesai) {
+            resetJadwalModal();
+
+            formJadwal.action = `/jadwal/update/${id_jadwal}`;
+            formJadwal.insertAdjacentHTML("beforeend", `<input type="hidden" name="_method" value="PUT">`);
+
+            document.getElementById("jadwal_id_input").value = id_jadwal;
+            document.getElementById("jadwal_employee_select").value = email;
+            document.getElementById("jadwal_cabang_select").value = id_cabang;
+            document.getElementById("jadwal_tanggal_input").value = tanggal;
+
+            document.getElementById("jadwal_jam_mulai_input").value = toInputTimeFormat(jam_mulai);
+            document.getElementById("jadwal_jam_selesai_input").value = toInputTimeFormat(jam_selesai);
 
             new bootstrap.Modal(modalJadwal).show();
         };
 
-        // Tambahkan listener untuk mereset saat modal ditutup
-        modalJadwal.addEventListener('hidden.bs.modal', resetJadwalModal);
+        // Sinkron hidden fallback setiap kali select berubah
+        idCabangSelect.addEventListener('change', function(){ hiddenCabang.value = this.value; });
+        idRombongSelect.addEventListener('change', function(){ hiddenRombong.value = this.value; });
 
-
-        // --- FUNGSI DUMMY DELETE ---
-        // employee.blade.php (Di dalam tag <script>)
-
-// ... (di bagian akhir script)
-
-        // --- FUNGSI DELETE KARYAWAN (Menggunakan Form DELETE) ---
+        // --- FUNGSI DELETE ---
         window.confirmDelete = function(id, tipe) {
              if (confirm(`Yakin ingin menghapus data ${tipe} dengan ID ${id} ini?`)) {
                  if (tipe === 'Karyawan') {
-                     // Buat form dinamis untuk submit DELETE
                      const form = document.createElement('form');
                      form.method = 'POST';
-                     form.action = `/employee/${id}`; // Mengarah ke DELETE /employee/{email}
+                     form.action = `/employee/${id}`;
 
-                     // Token CSRF
-                     form.innerHTML += '@csrf';
-                     
-                     // Method Spoofing
-                     form.innerHTML += '<input type="hidden" name="_method" value="DELETE">';
-                     
+                     const csrf = document.createElement('input');
+                     csrf.type = 'hidden';
+                     csrf.name = '_token';
+                     csrf.value = '{{ csrf_token() }}';
+                     form.appendChild(csrf);
+
+                     const method = document.createElement('input');
+                     method.type = 'hidden';
+                     method.name = '_method';
+                     method.value = 'DELETE';
+                     form.appendChild(method);
+
                      document.body.appendChild(form);
                      form.submit();
-                 } 
-                 // Tambahkan logika untuk Gaji dan Jadwal jika ingin menghapus
-                 // else if (tipe === 'Gaji') { ... }
-                 // else if (tipe === 'Jadwal') { ... }
-                 else {
+                 } else if (tipe === 'Gaji') {
+                     const form = document.createElement('form');
+                     form.method = 'POST';
+                     form.action = `/gaji/${id}`;
+
+                     const csrf = document.createElement('input');
+                     csrf.type = 'hidden';
+                     csrf.name = '_token';
+                     csrf.value = '{{ csrf_token() }}';
+                     form.appendChild(csrf);
+
+                     const method = document.createElement('input');
+                     method.type = 'hidden';
+                     method.name = '_method';
+                     method.value = 'DELETE';
+                     form.appendChild(method);
+
+                     document.body.appendChild(form);
+                     form.submit();
+                 } else if (tipe === 'Jadwal') {
+                     const form = document.createElement('form');
+                     form.method = 'POST';
+                     form.action = `/jadwal/${id}`;
+
+                     const csrf = document.createElement('input');
+                     csrf.type = 'hidden';
+                     csrf.name = '_token';
+                     csrf.value = '{{ csrf_token() }}';
+                     form.appendChild(csrf);
+
+                     const method = document.createElement('input');
+                     method.type = 'hidden';
+                     method.name = '_method';
+                     method.value = 'DELETE';
+                     form.appendChild(method);
+
+                     document.body.appendChild(form);
+                     form.submit();
+                 } else {
                     console.log(`Menghapus ${tipe} ID: ${id} (Logika perlu ditambahkan)`);
                  }
              }

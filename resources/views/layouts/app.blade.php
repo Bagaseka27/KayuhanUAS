@@ -34,7 +34,7 @@
             <a href="{{ route('employee') }}" class="menu-item {{ request()->routeIs('employee') ? 'active' : '' }}">
                 <i class="fas fa-users"></i> Karyawan & Gaji
             </a>
-            <a href="{{ route('menu') }}" class="menu-item {{ request()->routeIs('menu') ? 'active' : '' }}">
+            <a href="{{ route('menu.index') }}" class="menu-item {{ request()->routeIs('menu') ? 'active' : '' }}">
                 <i class="fas fa-coffee"></i> Manajemen Menu
             </a>
             <a href="{{ route('inventory') }}" class="menu-item {{ request()->routeIs('inventory') ? 'active' : '' }}">
@@ -45,6 +45,9 @@
             </a>
             <a href="{{ route('history') }}" class="menu-item {{ request()->routeIs('history') ? 'active' : '' }}">
                 <i class="fas fa-history"></i> Manajemen Transaksi
+            </a>
+            <a href="{{ route('admin.absensi.monitoring') }}" class="menu-item {{ request()->routeIs('absensi-monitoring') ? 'active' : '' }}">
+                <i class="fas fa-history"></i> Monitoring Absensi
             </a>
         </div>
 

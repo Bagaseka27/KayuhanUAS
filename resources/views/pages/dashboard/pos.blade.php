@@ -9,6 +9,7 @@
         // Pastikan $menuItems sudah diisi dari Controller
         if (!isset($menuItems)) { $menuItems = collect([]); } 
 
+<<<<<<< HEAD
         // Definisikan ikon default jika tidak ada kolom icon di DB
         $iconMap = [
             'Coffee' => 'fas fa-coffee',
@@ -38,6 +39,17 @@
                         </div>
                         <h6 class="fw-bold mb-1">{{ $menu->NAMA_PRODUK }}</h6>
                         <span class="text-accent fw-bold">Rp {{ number_format($menu->HARGA_JUAL, 0, ',', '.') }}</span>
+=======
+    <div class="col-md-4">
+        <div class="card-custom d-flex flex-column" style="height: calc(100vh - 80px); position: sticky; top: 20px;">
+            <h5 class="fw-bold mb-3 border-bottom pb-3">Keranjang</h5>
+            
+            <div class="grow overflow-auto">
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <div class="fw-bold">Kopi Susu Aren</div>
+                        <small class="text-muted">1 x Rp 18.000</small>
+>>>>>>> cd20386144a8993ea144b64acc0413311973cfa0
                     </div>
                 </div>
                 @empty

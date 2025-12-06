@@ -19,6 +19,8 @@ class Karyawan extends Model
         'PASSWORD',
         'NO_HP',
         'ROLE',
+        'ID_CABANG',
+        'ID_ROMBONG',
         'remember_token'
     ];
 
@@ -49,7 +51,7 @@ class Karyawan extends Model
 
     public function gaji()
     {
-        return $this->hasMany(Gaji::class, 'EMAIL');
+        return $this->hasMany(Gaji::class, 'EMAIL','EMAIL');
     }
 
     public function jadwal()

@@ -14,6 +14,7 @@
     
     <!-- 2. BAGIAN MENU NAVIGASI (LENGKAP TANPA BATASAN) -->
     <div class="sidebar-menu">
+
         <!-- 1. Dashboard -->
         <a href="{{ url('/dashboard') }}" class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
             <i class="fas fa-home"></i> Dashboard
