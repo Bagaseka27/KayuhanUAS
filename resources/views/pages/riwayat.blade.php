@@ -1,21 +1,32 @@
 @extends('layouts.app_barista') 
 
+@section('title', 'Riwayat Transaksi Saya')
+
 @section('content')
 <div class="container-fluid">
     <div class="d-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-primary-custom">Riwayat Transaksi</h1>
-        
-        <button class="btn btn-success" id="export-excel">
-            <i class="fas fa-file-excel"></i> Export Excel
-        </button>
+            <h1 class="h3 mb-0 text-primary-custom">Riwayat Transaksi</h1>
+        <div class="text-end">
+            {{-- Bagian Waktu Dibuat Dinamis --}}
+            <h6 class="fw-bold text-primary-custom mb-0" id="current-date">{{ date('l, d M Y') }}</h6>
+            <small class="text-muted">Waktu Server: <span id="current-time-riwayat"></span></small>
+        </div>
     </div>
 
+    {{-- FILTER SECTION --}}
     <div class="card shadow mb-4">
         <div class="card-body py-3">
+            {{-- Menggunakan route barista.riwayat yang sudah dikonfigurasi --}}
             <form action="{{ route('barista.riwayat') }}" method="GET" class="row align-items-center">
                 <div class="col-md-4">
-                    <label for="tanggal_filter" class="form-label fw-bold">Pilih Tanggal Riwayat</label>
-                    <input type="date" class="form-control" id="tanggal_filter" name="tanggal" value="{{ request('tanggal', date('Y-m-d')) }}">
+                    <label for="from_date_filter" class="form-label fw-bold">Dari Tanggal</label>
+                    {{-- Menggunakan fromDate yang dikirim dari Controller --}}
+                    <input type="date" class="form-control" id="from_date_filter" name="from_date" value="{{ $fromDate ?? date('Y-m-d') }}">
+                </div>
+                <div class="col-md-4">
+                    <label for="to_date_filter" class="form-label fw-bold">Sampai Tanggal</label>
+                    {{-- Menggunakan toDate yang dikirim dari Controller --}}
+                    <input type="date" class="form-control" id="to_date_filter" name="to_date" value="{{ $toDate ?? date('Y-m-d') }}">
                 </div>
                 <div class="col-md-4">
                     <button type="submit" class="btn btn-primary-custom mt-md-4 w-100">Tampilkan Riwayat</button>
@@ -24,24 +35,30 @@
         </div>
     </div>
     
+    {{-- RINGKASAN PENDAPATAN (DYNAMIC) --}}
     <div class="row mb-4">
+        {{-- Card 1: TOTAL PENDAPATAN --}}
         <div class="col-md-4">
             <div class="stat-card bg-gradient-primary">
-                <div class="text-xs fw-bold text-white text-uppercase mb-1">TOTAL PENDAPATAN (Hari Ini)</div>
-                <div class="h5 mb-0 fw-bold text-white">Rp 67.000</div> 
-                <small class="text-white-50">Dari QRIS & Tunai</small>
+                <div class="text-xs fw-bold text-white text-uppercase mb-1">TOTAL PENDAPATAN (Tersaring)</div>
+                <div class="h5 mb-0 fw-bold text-white">Rp {{ number_format($total_pendapatan ?? 0, 0, ',', '.') }}</div> 
+                <small class="text-white-50">Total transaksi yang Anda catat.</small>
             </div>
         </div>
+        
+        {{-- Card 2: PENDAPATAN TUNAI --}}
         <div class="col-md-4">
             <div class="stat-card">
                 <div class="text-xs fw-bold text-primary-custom text-uppercase mb-1">PENDAPATAN TUNAI</div>
-                <div class="h5 mb-0 fw-bold text-dark">Rp 22.000</div>
+                <div class="h5 mb-0 fw-bold text-dark">Rp {{ number_format($pendapatan_tunai ?? 0, 0, ',', '.') }}</div>
             </div>
         </div>
+        
+        {{-- Card 3: PENDAPATAN NON-TUNAI --}}
         <div class="col-md-4">
             <div class="stat-card">
                 <div class="text-xs fw-bold text-primary-custom text-uppercase mb-1">PENDAPATAN NON-TUNAI (QRIS)</div>
-                <div class="h5 mb-0 fw-bold text-dark">Rp 45.000</div>
+                <div class="h5 mb-0 fw-bold text-dark">Rp {{ number_format($pendapatan_qris ?? 0, 0, ',', '.') }}</div>
             </div>
         </div>
     </div>
@@ -56,61 +73,64 @@
                             <th>ID TRANSAKSI</th>
                             <th>EMAIL</th>
                             <th>DETAIL PRODUK (ID & NAMA)</th> 
-                            <th>JML ITEM</th>
+                            <th>JML ITEM (Total)</th>
                             <th>TOTAL BAYAR</th>
                             <th>DATETIME</th>
                             <th>METODE</th>
-                            <th>AKSI</th> 
+                            {{-- AKSI DIHAPUS --}}
                         </tr>
                     </thead>
                     <tbody>
+                        {{-- LOOP DATA DARI CONTROLLER --}}
+                        @forelse($riwayats as $trx)
                         <tr>
-                            <td>TRX-901</td>
-                            <td>siti@kayuhan.com</td>
+                            <td class="fw-bold">{{ $trx->ID_TRANSAKSI }}</td>
+                            <td>{{ $trx->EMAIL }}</td>
                             <td>
-                                <small>
-                                    <span class="text-primary-custom fw-bold">M01</span>: Kopi Susu Aren (1x)<br>
-                                    <span class="text-primary-custom fw-bold">M03</span>: Latte Ice (1x)
-                                </small>
+                                {{-- LOOP DETAIL PRODUK --}}
+                                @php
+                                    $totalItems = 0;
+                                @endphp
+                                @foreach($trx->detailtransaksi as $detail)
+                                    <small class="d-block">
+                                        <span class="text-primary-custom fw-bold">{{ $detail->ID_PRODUK }}</span>: 
+                                        {{ $detail->menu->NAMA_PRODUK ?? 'Produk Dihapus' }} ({{ $detail->JML_ITEM }}x)
+                                    </small>
+                                    @php
+                                        $totalItems += $detail->JML_ITEM;
+                                    @endphp
+                                @endforeach
                             </td>
-                            <td>2</td>
-                            <td class="text-accent-custom fw-bold">Rp 45,000</td>
-                            <td>2024-11-24 10:00</td>
+                            {{-- Menampilkan total jumlah item dari semua detail --}}
+                            <td class="fw-bold">{{ $totalItems }}</td>
+                            <td class="text-accent-custom fw-bold">Rp {{ number_format($trx->TOTAL_BAYAR, 0, ',', '.') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($trx->DATETIME)->format('Y-m-d H:i') }}</td>
                             <td>
-                                <span class="badge badge-payment text-dark" style="color: #000000 !important; background-color: #ffffff !important;">QRIS</span>
+                                <span class="badge badge-payment text-dark badge-{{ $trx->METODE_PEMBAYARAN == 'Tunai' ? 'secondary' : 'info' }}">
+                                    {{ $trx->METODE_PEMBAYARAN }}
+                                </span>
                             </td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-info-custom">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                            </td>
+                            {{-- KOLOM AKSI DIHAPUS --}}
                         </tr>
+                        @empty
                         <tr>
-                            <td>TRX-902</td>
-                            <td>siti@kayuhan.com</td>
-                            <td>
-                                <small>
-                                    <span class="text-primary-custom fw-bold">M02</span>: Americano (1x)
-                                </small>
-                            </td>
-                            <td>1</td>
-                            <td class="text-accent-custom fw-bold">Rp 22,000</td>
-                            <td>2024-11-24 10:15</td>
-                            <td>
-                                <span class="badge badge-payment text-dark" style="color: #000000 !important; background-color: #ffffff !important;">Tunai</span>
-                            </td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-info-custom">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                            </td>
+                            {{-- COLSPAN disesuaikan --}}
+                            <td colspan="7" class="text-center py-4 text-muted">Tidak ada transaksi yang ditemukan.</td>
                         </tr>
-                        </tbody>
+                        @endforelse
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
+    
+    {{-- Pagination Dinamis --}}
+    <div class="d-flex justify-content-end mt-3">
+         {{ $riwayats->links() }}
+    </div>
 </div>
+
+@endsection
 
 @push('styles')
 <style>
@@ -118,16 +138,26 @@
     .text-primary-custom { color: var(--primary) !important; }
     .text-accent-custom { color: var(--accent) !important; } /* Emas */
     
-    /* Badge Payment (QRIS & Tunai): Putih dengan teks Hitam */
-    table tbody td span.badge.badge-payment.text-dark,
-    span.badge.badge-payment.text-dark,
-    .badge.badge-payment { 
-        background-color: #ffffff !important; 
-        color: #000000 !important; 
+    /* Card Primary untuk total pendapatan Barista */
+    .bg-gradient-primary {
+        background-color: var(--primary) !important;
+        background-image: linear-gradient(180deg, var(--primary) 10%, #1c527f 100%) !important;
+    }
+    
+    /* Badge Payment (Meniru gaya kustom Anda) */
+    .badge-payment { 
         border: 1px solid #dee2e6 !important; 
         font-weight: 500 !important;
     }
-    
+    .badge-info { 
+        background-color: #0dcaf0 !important;
+        color: #000000 !important; 
+    }
+    .badge-secondary { 
+        background-color: #6c757d !important;
+        color: #ffffff !important; 
+    }
+
     .btn-info-custom { 
         background-color: #0d6efd !important; 
         color: white !important; 
@@ -136,7 +166,48 @@
     .table-custom thead th {
         color: var(--text-dark) !important;
     }
+    .stat-card {
+        padding: 1rem;
+        border-radius: 0.35rem;
+        background-color: #fff;
+        border: 1px solid #e3e6f0;
+    }
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
 </style>
 @endpush
 
-@endsection
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ambil elemen waktu di Riwayat Transaksi
+        const timeElement = document.getElementById('current-time-riwayat');
+        
+        // Fungsi untuk mendapatkan waktu saat ini dan memformatnya (Memaksa ke WIB)
+        function updateTimeRiwayat() {
+            // Guard clause jika elemen tidak ditemukan (penting untuk robust!)
+            if (!timeElement) return; 
+            
+            const now = new Date();
+            
+            // Menggunakan toLocaleTimeString untuk memformat waktu sesuai timezone
+            const timeString = now.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                // Opsional: memaksa timezone ke Asia/Jakarta jika browser default salah
+                timeZone: 'Asia/Jakarta' 
+            });
+            
+            timeElement.textContent = timeString;
+        }
+
+        // Panggil fungsi sekali saat dimuat
+        updateTimeRiwayat();
+        
+        // Perbarui setiap 1 detik (1000 milidetik)
+        setInterval(updateTimeRiwayat, 1000);
+    });
+</script>
+@endpush

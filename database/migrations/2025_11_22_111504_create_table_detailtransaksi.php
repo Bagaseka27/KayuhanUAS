@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('detailtransaksi', function (Blueprint $table) {
             $table->string('ID_TRANSAKSI', 10);
             $table->string('ID_PRODUK', 10);
-
+            $table->integer('JML_ITEM'); 
             $table->primary(['ID_TRANSAKSI', 'ID_PRODUK']);
 
             $table->foreign('ID_TRANSAKSI')->references('ID_TRANSAKSI')->on('transaksi')->restrictOnDelete()->restrictOnUpdate();

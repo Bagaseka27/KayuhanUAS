@@ -1,20 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
+use App\Models\AbsenDatang;
+use App\Models\AbsenPulang;
+use App\Models\Karyawan;
+use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Auth;
 
 // Controllers
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AbsensiController;
-use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\KaryawanController;
-use App\Http\Controllers\LocationController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\RombongController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,11 +47,24 @@ Route::post('/logout', function () {
 })->name('logout');
 
 
+// --------------------
+// EXPORT ROUTES
+// --------------------
+Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
+
+Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('transaksi.export');
+
+// --------------------
+// ADMIN ROUTES
+// --------------------
+
+
 /*
 |--------------------------------------------------------------------------
 | ADMIN ROUTES
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'admin'])->group(function () {
 
     // Dashboard Admin
@@ -63,6 +82,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/employee/{email}', [KaryawanController::class, 'update'])->name('employee.update');
     Route::delete('/employee/{email}', [KaryawanController::class, 'destroy'])->name('employee.destroy');
 
+
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employee');
+
+    Route::get('/history', [TransaksiController::class, 'indexRiwayat'])->name('history'); 
+
     /*
     |--------------------------------------------------------------------------
     | CRUD Menu
@@ -72,6 +96,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/menu/store', [MenuController::class, 'store'])->name('menu.store');
     Route::put('/menu/update/{id}', [MenuController::class, 'update'])->name('menu.update');
     Route::delete('/menu/delete/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -131,14 +156,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'barista'])->prefix('barista')->name('barista.')->group(function () {
     
     // 1. Dashboard Barista 
-    Route::get('/dashboard', function () {
-        return view('pages.dashboard.barista');
-    })->name('dashboard'); 
+    Route::get('/dashboard', [TransaksiController::class, 'indexDashboardBarista'])->name('dashboard');
     
     // 2. POS (Kasir)
     Route::get('/pos', function () {
         return view('pages.dashboard.pos');
     })->name('pos'); 
+
+    Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
     
     // 3. Manajemen Menu (Barista)
     // Route ini memanggil controller yang sama, menggunakan nama 'menu' untuk navigasi Barista.
@@ -154,9 +179,7 @@ Route::middleware(['auth', 'barista'])->prefix('barista')->name('barista.')->gro
     Route::post('/absensi/pulang', [AbsensiController::class, 'storePulang'])->name('absensi.storePulang');
     
     // 5. Riwayat Transaksi
-    Route::get('/riwayat', function () {
-        return view('pages.riwayat');
-    })->name('riwayat'); 
+    Route::get('/riwayat', [TransaksiController::class, 'indexRiwayat'])->name('riwayat'); 
 });
 /*
 |--------------------------------------------------------------------------
