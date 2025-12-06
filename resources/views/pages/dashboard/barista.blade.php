@@ -17,6 +17,7 @@
 
     <div class="row g-4 mb-5">
         {{-- CARD 1: Penjualan Shift Ini (Dynamic) --}}
+        {{-- CATATAN: Pastikan Controller mengirim variabel $penjualan_shift_ini --}}
         <div class="col-md-6">
             <div class="card-custom">
                 <p class="text-muted mb-2">Penjualan Shift Ini</p>
@@ -26,7 +27,8 @@
             </div>
         </div>
         
-        {{-- CARD 2: Transaksi Berhasil (Dynamic) --}}
+        {{-- CARD 2: Item Terjual Hari Ini (Dynamic) --}}
+        {{-- CATATAN: Pastikan Controller mengirim variabel $total_items_terjual --}}
         <div class="col-md-6">
             <div class="card-custom">
                 <p class="text-muted mb-2">Item Terjual Hari Ini</p>
@@ -38,24 +40,22 @@
     </div>
 
     <div class="card-custom p-0 overflow-hidden">
-        <div class="p-4 pb-2">
-            <h5 class="fw-bold text-primary-custom">Jadwal Shift Karyawan</h5>
-        </div>
         <div class="table-responsive">
             <table class="table table-custom mb-0">
                 <thead>
                     <tr>
-                        <th>TANGGAL</th>
-                        <th>NAMA KARYAWAN</th>
-                        <th>LOKASI</th>
-                        <th>JAM SHIFT</th>
+                        <th class="fw-bold">Tanggal</th>
+                        <th class="fw-bold">Nama Staf</th>
+                        <th class="fw-bold">Lokasi</th>
+                        <th class="fw-bold">Jam Kerja</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{-- LOOP DATA JADWAL (dari $schedules) --}}
                     @forelse ($schedules ?? [] as $schedule)
                     <tr>
-                        <td class="fw-bold">{{ $schedule['tanggal'] }}</td>
+                        {{-- Key array ini sudah sesuai dengan yang di-format dari Controller --}}
+                        <td class="fw-bold">{{ $schedule['tanggal'] }}</td> 
                         <td>{{ $schedule['nama'] }}</td>
                         <td><span class="badge bg-light text-dark border">{{ $schedule['lokasi'] }}</span></td>
                         <td>{{ $schedule['jam'] }}</td>
@@ -65,7 +65,6 @@
                         <td colspan="4" class="text-center text-muted">Tidak ada jadwal shift hari ini.</td>
                     </tr>
                     @endforelse
-                    
                 </tbody>
             </table>
         </div>

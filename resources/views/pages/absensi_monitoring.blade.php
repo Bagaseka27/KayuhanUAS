@@ -39,52 +39,64 @@
             <h6 class="m-0 font-weight-bold text-primary">Data Absensi Karyawan (Tanggal: {{ \Carbon\Carbon::parse($tanggalFilter)->translatedFormat('d F Y') }})</h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Nama Karyawan</th>
-                            <th>Email</th>
-                            <th>Lokasi (ID)</th> <th>Waktu Datang</th>
-                            <th>Foto Datang</th>
-                            <th>Waktu Pulang</th>
-                            <th>Foto Pulang</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($karyawanList as $karyawan)
-                            <tr>
-                                <td>{{ $karyawan->nama }}</td>
-                                <td>{{ $karyawan->email }}</td>
-                                <td>{{ $karyawan->id_cabang ?? $karyawan->id_rombong ?? '-' }}</td> 
-                                
-                                <td>{{ $karyawan->absenDatang->DATETIME_DATANG ?? '-' }}</td>
-                                
-                                <td>
-                                    @if($karyawan->absenDatang)
-                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#fotoModal" data-foto="{{ asset('storage/absensi/datang/' . $karyawan->absenDatang->FOTO) }}">Lihat Foto</button>
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                
-                                <td>{{ $karyawan->absenPulang->DATETIME_PULANG ?? '-' }}</td>
-                                
-                                <td>
-                                    @if($karyawan->absenPulang)
-                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#fotoModal" data-foto="{{ asset('storage/absensi/pulang/' . $karyawan->absenPulang->FOTO) }}">Lihat Foto</button>
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="7" class="text-center">Tidak ada data absensi yang ditemukan.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    {{-- 1. Nama Karyawan & Email (Berikan sedikit ruang lebih) --}}
+                    <th style="width: 15%;">Nama Karyawan</th>
+                    <th style="width: 15%;">Email</th>
+                    
+                    {{-- 2. Lokasi (Kunci masalah, buat sangat kecil) --}}
+                    <th style="width: 10%;">Lokasi (ID)</th> 
+                    
+                    {{-- 3. Waktu Datang & Pulang (Buat sama rata) --}}
+                    <th style="width: 15%;">Waktu Datang</th>
+                    <th style="width: 10%;">Foto Datang</th>
+                    <th style="width: 15%;">Waktu Pulang</th>
+                    <th style="width: 10%;">Foto Pulang</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($karyawanList as $karyawan)
+                    <tr>
+                        <td>{{ $karyawan->NAMA }}</td>
+                        <td>{{ $karyawan->EMAIL }}</td>
+                        
+                        {{-- Output Lokasi (gunakan logic debugging terakhir) --}}
+                        <td>
+                            {{ $karyawan->cabang->NAMA_LOKASI ?? $karyawan->rombong->NAMA_LOKASI ?? 'ID: ' . ($karyawan->ID_CABANG ?? $karyawan->ID_ROMBONG ?? 'NULL') }}
+                        </td> 
+                        
+                        <td>{{ $karyawan->absenDatang->DATETIME_DATANG ?? '-' }}</td>
+                        
+                        {{-- Tombol Lihat Foto Datang --}}
+                        <td>
+                            @if($karyawan->absenDatang)
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#fotoModal" data-foto="{{ asset('storage/absensi/datang/' . $karyawan->absenDatang->FOTO) }}">Lihat Foto</button>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        
+                        <td>{{ $karyawan->absenPulang->DATETIME_PULANG ?? '-' }}</td>
+                        
+                        {{-- Tombol Lihat Foto Pulang --}}
+                        <td>
+                            @if($karyawan->absenPulang)
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#fotoModal" data-foto="{{ asset('storage/absensi/pulang/' . $karyawan->absenPulang->FOTO) }}">Lihat Foto</button>
+                            @else
+                                -
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="7" class="text-center">Tidak ada data absensi yang ditemukan.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
     </div>
 
     <div class="modal fade" id="fotoModal" tabindex="-1" aria-labelledby="fotoModalLabel" aria-hidden="true">

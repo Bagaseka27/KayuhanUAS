@@ -113,7 +113,7 @@ class TransaksiController extends Controller
         $query->whereBetween('DATETIME', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
 
         // --- 2. LOGIKA PEMISAHAN PERAN (Filter Barista) ---
-        $is_admin = Auth::check() && Auth::user()->role === 'admin';
+        $is_admin = Auth::check() && Auth::user()->role === 'Admin';
 
         if (!$is_admin) {
             // JIKA BARISTA: Filter oleh email

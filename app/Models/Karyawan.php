@@ -41,12 +41,12 @@ class Karyawan extends Model
 
     public function absenDatang()
     {
-        return $this->hasMany(AbsenDatang::class, 'EMAIL');
+        return $this->hasOne(AbsenDatang::class, 'EMAIL');
     }
 
     public function absenPulang()
     {
-        return $this->hasMany(AbsenPulang::class, 'EMAIL');
+        return $this->hasOne(AbsenPulang::class, 'EMAIL');
     }
 
     public function gaji()
