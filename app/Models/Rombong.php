@@ -9,11 +9,12 @@ class Rombong extends Model
     protected $table = 'rombong';
     protected $primaryKey = 'ID_ROMBONG';
     public $incrementing = false;
-    protected $keyType = 'string'; // Set string agar fleksibel (bisa angka/huruf)
+    protected $keyType = 'string';
     public $timestamps = true;
     
     protected $fillable = [
-        'ID_ROMBONG'
+        'ID_ROMBONG',
+        'ID_CABANG'
     ];
     
     public function karyawan()
@@ -29,5 +30,9 @@ class Rombong extends Model
     public function stokakhir()
     {
         return $this->hasOne(StokAkhir::class, 'ID_ROMBONG');
+    }
+
+    public function cabang(){
+        return $this->belongsTo(Cabang::class,'ID_CABANG');
     }
 }

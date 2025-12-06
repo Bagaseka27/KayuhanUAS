@@ -14,33 +14,36 @@ class RombongController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        if (!$request->filled('ID_ROMBONG')) {
+            $request->merge(['ID_ROMBONG' => 'RM-' . time()]);
+        }
+
+        $request->validate([
             'ID_ROMBONG' => 'required|string|max:10|unique:rombong,ID_ROMBONG',
+            'ID_CABANG'  => 'required|exists:cabang,ID_CABANG',
         ]);
 
-        return Rombong::create($validated);
-    }
+        Rombong::create($request->all());
 
-    public function show($id)
-    {
-        return Rombong::findOrFail($id);
+        return back()->with('success', 'Rombong berhasil ditambahkan');
     }
 
     public function update(Request $request, $id)
     {
         $rombong = Rombong::findOrFail($id);
 
-        $validated = $request->validate([
-            'ID_ROMBONG' => 'required|string|max:10|unique:rombong,ID_ROMBONG,'.$id.',ID_ROMBONG',
+        $request->validate([
+            'ID_CABANG' => 'required|exists:cabang,ID_CABANG',
         ]);
 
-        $rombong->update($validated);
-        return $rombong;
-    }
+        $rombong->update($request->only('ID_CABANG'));
 
+        return back()->with('success', 'Rombong berhasil diperbarui');
+    }
 
     public function destroy($id)
     {
-        return Rombong::destroy($id);
+        Rombong::destroy($id);
+        return back()->with('success','Rombong dihapus');
     }
 }

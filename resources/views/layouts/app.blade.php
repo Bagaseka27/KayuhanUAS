@@ -40,7 +40,7 @@
             <a href="{{ route('inventory') }}" class="menu-item {{ request()->routeIs('inventory') ? 'active' : '' }}">
                 <i class="fas fa-boxes"></i> Stok (Gudang/Rombong)
             </a>
-            <a href="{{ route('location') }}" class="menu-item {{ request()->routeIs('location') ? 'active' : '' }}">
+            <a href="{{ route('locations.index') }}" class="menu-item {{ request()->routeIs('locations.index') ? 'active' : '' }}">
                 <i class="fas fa-map-marker-alt"></i> Lokasi (Cabang & Rombong)
             </a>
             <a href="{{ route('history') }}" class="menu-item {{ request()->routeIs('history') ? 'active' : '' }}">

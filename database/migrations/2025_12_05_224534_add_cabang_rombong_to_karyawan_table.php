@@ -12,8 +12,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('karyawan', function (Blueprint $table) {
-            $table->integer('ID_CABANG')->nullable()->after('ROLE');
-            $table->integer('ID_ROMBONG')->nullable()->after('ID_CABANG');
+            $table->string('ID_CABANG',20)->nullable()->after('ROLE');
+            $table->string('ID_ROMBONG',10)->nullable()->after('ID_CABANG');
         });
     }
 

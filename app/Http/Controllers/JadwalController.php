@@ -26,7 +26,19 @@ class JadwalController extends Controller
         $validated['JAM_MULAI'] = $validated['JAM_MULAI'] . ':00';
         $validated['JAM_SELESAI'] = $validated['JAM_SELESAI'] . ':00';
 
-        return Jadwal::create($validated);
+        $last = Jadwal::orderBy('ID_JADWAL', 'desc')->first();
+
+        if ($last) {
+            $num = (int) substr($last->ID_JADWAL, 4);
+            $next = $num + 1;
+        } else {
+            $next = 1;
+        }
+
+        $validated['ID_JADWAL'] = 'JDW-' . str_pad($next, 3, '0', STR_PAD_LEFT);
+
+        Jadwal::create($validated);
+        return back()->with('success', 'Jadwal berhasil ditambahkan');
     }
 
 
@@ -35,33 +47,33 @@ class JadwalController extends Controller
         return Jadwal::with(['karyawan', 'cabang'])->find($id);
     }
 
-    public function update(Request $request, $id)
+     public function update(Request $request, $id)
     {
         $jadwal = Jadwal::findOrFail($id);
 
         $validated = $request->validate([
-            'EMAIL'       => 'sometimes|exists:karyawan,EMAIL',
-            'ID_CABANG'   => 'sometimes|exists:cabang,ID_CABANG',
-            'TANGGAL'     => 'sometimes|date',
-            'JAM_MULAI'   => 'sometimes',
-            'JAM_SELESAI' => 'sometimes',
+            'EMAIL' => 'required|exists:karyawan,EMAIL',
+            'ID_CABANG' => 'required|exists:cabang,ID_CABANG',
+            'TANGGAL' => 'required|date',
+            'JAM_MULAI' => 'required',
+            'JAM_SELESAI' => 'required'
         ]);
-
-        if (isset($validated['JAM_MULAI'])) {
-            $validated['JAM_MULAI'] .= ':00';
-        }
-        if (isset($validated['JAM_SELESAI'])) {
-            $validated['JAM_SELESAI'] .= ':00';
-        }
 
         $jadwal->update($validated);
 
-        return $jadwal;
+        return back()->with('success', 'Jadwal berhasil diperbarui!');
     }
 
 
     public function destroy($id)
     {
-        return Jadwal::destroy($id);
+        $jadwal = Jadwal::find($id);
+
+        if (!$jadwal) {
+            return back()->with('error', 'Data jadwal tidak ditemukan!');
+        }
+
+        $jadwal->delete();
+        return back()->with('success', 'Jadwal berhasil dihapus!');
     }
 }

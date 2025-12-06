@@ -26,4 +26,7 @@ class Cabang extends Model
     {
         return $this->hasMany(Jadwal::class, 'ID_CABANG');
     }
+    public function rombong(){
+        return $this->hasMany(Rombong::class,'ID_CABANG');
+    }
 }

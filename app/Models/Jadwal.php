@@ -8,11 +8,12 @@ class Jadwal extends Model
 {
     protected $table = 'jadwal';
     protected $primaryKey = 'ID_JADWAL';
-    public $incrementing = true;
-    protected $keyType = 'int';
+    public $incrementing = false;
+    protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [
+        'ID_JADWAL',
         'EMAIL',      
         'ID_CABANG',  
         'TANGGAL',

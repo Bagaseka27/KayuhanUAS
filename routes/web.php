@@ -13,6 +13,8 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CabangController;
+use App\Http\Controllers\RombongController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,7 +90,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     Route::post('/jadwal/store', [JadwalController::class, 'store'])->name('jadwal.store');
     Route::put('/jadwal/update/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
-    Route::delete('/jadwal/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
+    Route::delete('/jadwal/delete/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
 
 
     /*
@@ -96,8 +98,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     | LOKASI, INVENTORY, HISTORY
     |--------------------------------------------------------------------------
     */
+    Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
 
-    Route::get('/locations', [LocationController::class, 'index'])->name('location');
+    Route::post('/cabang', [CabangController::class, 'store']);
+    Route::put('/cabang/{id}', [CabangController::class, 'update']);
+    Route::delete('/cabang/{id}', [CabangController::class, 'destroy']);
+
+    Route::post('/rombong', [RombongController::class, 'store']);
+    Route::put('/rombong/{id}', [RombongController::class, 'update']);
+    Route::delete('/rombong/{id}', [RombongController::class, 'destroy']);
+
+
 
     Route::get('/history', fn () => view('pages.history'))->name('history');
     Route::get('/inventory', fn () => view('pages.inventory'))->name('inventory');

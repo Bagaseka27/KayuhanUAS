@@ -24,24 +24,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($cabangs as $cabang)
+                        @foreach($cabangs as $cab)
                         <tr>
-                            <td>{{ $cabang->ID_CABANG }}</td>
-                            <td class="fw-bold">{{ $cabang->NAMA_LOKASI }}</td>
+                            <td>{{ $cab->ID_CABANG }}</td>
+                            <td>{{ $cab->NAMA_LOKASI }}</td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-light text-primary me-1 edit-cabang-btn"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditLokasi"
+                                <button class="btn btn-sm btn-light text-primary edit-cabang-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditLokasi"
                                     data-type="cabang"
-                                    data-id="{{ $cab->id }}"
-                                    data-name="{{ $cab->name }}">
+                                    data-id="{{ $cab->ID_CABANG }}"
+                                    data-namalokasi="{{ $cab->NAMA_LOKASI }}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-light text-danger" onclick="confirm('Hapus cabang {{ $cab->name }}?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+
+                                <form action="/cabang/{{ $cab->ID_CABANG }}" method="POST" class="d-inline">
+                                    @csrf @method('DELETE')
+                                    <button class="btn btn-sm btn-light text-danger" onclick="return confirm('Hapus?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+
                             </td>
                         </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -64,25 +71,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($rombongs as $rombong)
+                        @foreach($rombongs as $rom)
                         <tr>
-                            <td class="fw-bold">{{ $rombong->ID_ROMBONG }}</td>
-                            <td>{{ $romb->loc }}</td>
+                            <td>{{ $rom->ID_ROMBONG }}</td>
+                            <td>{{ $rom->cabang->NAMA_LOKASI ?? '-' }}</td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-light text-primary me-1 edit-rombong-btn"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditLokasi"
+
+                                <button class="btn btn-sm btn-light text-primary edit-rombong-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditLokasi"
                                     data-type="rombong"
-                                    data-id="{{ $romb->id }}"
-                                    data-loc="{{ $romb->loc }}"
-                                    data-cabangid="{{ $romb->cabang_id }}">
+                                    data-id="{{ $rom->ID_ROMBONG }}"
+                                    data-cabangid="{{ $rom->ID_CABANG }}"
+                                    data-lokasi="{{ $rom->cabang->NAMA_LOKASI ?? '-' }}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-light text-danger" onclick="confirm('Hapus unit {{ $romb->id }}?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+
+
+                                <form action="/rombong/{{ $rom->ID_ROMBONG }}" method="POST" class="d-inline">
+                                    @csrf @method('DELETE')
+                                    <button class="btn btn-sm btn-light text-danger" onclick="return confirm('Hapus?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+
                             </td>
                         </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -91,7 +107,7 @@
 
     <div class="modal fade" id="modalAddCabang" tabindex="-1">
         <div class="modal-dialog">
-            <form action="#" method="POST" class="modal-content border-0 shadow">
+            <form action="/cabang" method="POST" class="modal-content border-0 shadow">
                 @csrf
                 <div class="modal-header text-white" style="background-color: var(--primary);">
                     <h5 class="modal-title">Kelola Cabang</h5>
@@ -100,11 +116,11 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label text-secondary">ID Cabang</label>
-                        <input type="text" name="id" class="form-control" placeholder="Contoh: CBG-SBY01">
+                        <input type="text" name="ID_CABANG" class="form-control" placeholder="Contoh: CBG-SBY01">
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-secondary">Nama Lokasi</label>
-                        <input type="text" name="name" class="form-control">
+                        <input type="text" name="NAMA_LOKASI" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -117,26 +133,31 @@
 
     <div class="modal fade" id="modalAddRombong" tabindex="-1">
         <div class="modal-dialog">
-            <form action="#" method="POST" class="modal-content border-0 shadow">
+            <form action="/rombong" method="POST" class="modal-content border-0 shadow">
                 @csrf
                 <div class="modal-header text-white" style="background-color: var(--primary);">
-                    <h5 class="modal-title">Kelola Rombong</h5>
+                    <h5 class="modal-title">Tambah Rombong</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label text-secondary">ID Rombong (Auto)</label>
-                        <input type="text" class="form-control bg-light" value="Auto Generated" readonly>
+                        <label class="form-label text-secondary">ID Rombong</label>
+                        <!-- Bisa diisi manual, atau kamu bisa buat generator JS jika mau auto -->
+                        <input type="text" name="ID_ROMBONG" class="form-control" placeholder="Contoh: RM-001" required>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label text-secondary">Pilih Cabang (Lokasi)</label>
-                        <select name="cabang_id" class="form-select">
+                        <select name="ID_CABANG" class="form-select" required>
+                            <option value="">-- Pilih Cabang --</option>
                             @foreach($cabangs as $cab)
-                                <option value="{{ $cab->id }}">{{ $cab->name }} ({{ $cab->id }})</option>
+                                <option value="{{ $cab->ID_CABANG }}">{{ $cab->NAMA_LOKASI }} ({{ $cab->ID_CABANG }})</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary px-4">Simpan</button>
@@ -144,6 +165,7 @@
             </form>
         </div>
     </div>
+
 
     <div class="modal fade" id="modalEditLokasi" tabindex="-1" aria-labelledby="modalEditLokasiLabel">
         <div class="modal-dialog">
@@ -175,10 +197,9 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Data Cabang yang tersedia untuk dropdown Rombong
         const cabangData = @json($cabangs);
         const cabangListHtml = cabangData.map(cab => 
-            `<option value="${cab.id}">${cab.name} (${cab.id})</option>`
+            `<option value="${cab.ID_CABANG}">${cab.NAMA_LOKASI} (${cab.ID_CABANG})</option>`
         ).join('');
 
         const modalEditLokasi = document.getElementById('modalEditLokasi');
@@ -187,49 +208,45 @@
         const modalTitle = document.getElementById('modalEditLokasiLabel');
         const inputId = document.getElementById('edit_lokasi_id');
 
-        // Listener untuk modal edit generik
         modalEditLokasi.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const type = button.getAttribute('data-type');
             const id = button.getAttribute('data-id');
 
-            // 1. Setup ID dan Action Form
             inputId.value = id;
-            form.action = `/locations/${type}/${id}`; // Contoh: /locations/cabang/SBY01
+            form.action = `/${type}/${id}`; // e.g. /rombong/RM-001
 
-            dynamicFields.innerHTML = ''; // Bersihkan field sebelumnya
+            dynamicFields.innerHTML = '';
 
             if (type === 'cabang') {
-                const name = button.getAttribute('data-name');
+                const namaLokasi = button.getAttribute('data-namalokasi') || '';
                 modalTitle.textContent = 'Edit Cabang';
-                
-                // Isi field untuk Edit Cabang (Nama Lokasi)
+
                 dynamicFields.innerHTML = `
                     <div class="mb-3">
                         <label class="form-label text-secondary">Nama Lokasi</label>
-                        <input type="text" name="name" class="form-control" value="${name}" required>
+                        <input type="text" name="NAMA_LOKASI" class="form-control" value="${namaLokasi}" required>
                     </div>
                 `;
-
             } else if (type === 'rombong') {
-                const currentLoc = button.getAttribute('data-loc');
-                const currentCabangId = button.getAttribute('data-cabangid');
+                const currentLoc = button.getAttribute('data-lokasi') || '-';
+                const currentCabangId = button.getAttribute('data-cabangid') || '';
+
                 modalTitle.textContent = 'Edit Rombong';
-                
-                // Isi field untuk Edit Rombong (Pilih Cabang/Lokasi)
+
                 dynamicFields.innerHTML = `
                     <div class="mb-3">
                         <label class="form-label text-secondary">Pilih Lokasi Cabang Baru</label>
-                        <select name="cabang_id" class="form-select" required>
+                        <select name="ID_CABANG" class="form-select" required>
                             <option value="">-- Pilih Cabang --</option>
                             ${cabangListHtml}
                         </select>
                     </div>
                     <p class="text-muted small">Lokasi saat ini: ${currentLoc}</p>
                 `;
-                
-                // Set nilai terpilih di dropdown
-                modalEditLokasi.querySelector('select[name="cabang_id"]').value = currentCabangId;
+
+                const sel = modalEditLokasi.querySelector('select[name="ID_CABANG"]');
+                if (sel) sel.value = currentCabangId;
             }
         });
     });

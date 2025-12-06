@@ -24,17 +24,24 @@ class KaryawanController extends Controller
             'PASSWORD' => 'required|string|min:6',
             'NO_HP' => 'required|string|max:15',
             'ROLE' => 'required|string|in:Admin,Barista',
-            'ID_CABANG' => 'nullable|exists:cabang,ID_CABANG',
-            'ID_ROMBONG' => 'nullable|exists:rombong,ID_ROMBONG',
+            'ID_CABANG' => 'nullable|string',
+            'ID_ROMBONG' => 'nullable|string',
         ]);
 
 
     // Jika role Admin, kosongkan lokasi
-        if (($validated['ROLE'] ?? '') === 'Admin') {
+        if ($validated['ROLE'] === 'Barista') {
+            if (empty($validated['ID_CABANG'])) {
+                return back()->with('error', 'Cabang wajib dipilih untuk Barista.');
+            }
+            if (empty($validated['ID_ROMBONG'])) {
+                return back()->with('error', 'Rombong wajib dipilih untuk Barista.');
+            }
+        }
+        if ($validated['ROLE'] === 'Admin') {
             $validated['ID_CABANG'] = null;
             $validated['ID_ROMBONG'] = null;
         }
-
 
         $hashedPassword = Hash::make($validated['PASSWORD']);
         $validated['PASSWORD'] = $hashedPassword;
@@ -78,8 +85,8 @@ class KaryawanController extends Controller
             'NO_HP' => 'sometimes|string|max:15',
             'ROLE' => 'sometimes|string|in:Admin,Barista',
             'PASSWORD' => 'nullable|string|min:6',
-            'ID_CABANG' => 'nullable',
-            'ID_ROMBONG' => 'nullable',
+            'ID_CABANG' => 'nullable|string|exists:cabang,ID_CABANG',
+            'ID_ROMBONG' => 'nullable|string|exists:rombong,ID_ROMBONG',
         ];
 
 

@@ -307,8 +307,10 @@
     {{-- MODAL KARYAWAN --}}
     <div class="modal fade" id="modalKaryawan" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <form action="#" method="POST" id="formKaryawan" class="modal-content border-0 shadow">
+            <form id="formKaryawan" action="{{ route('employee.store') }}" method="POST" class="modal-content border-0 shadow">
                 @csrf
+                <input type="hidden" name="ID_CABANG" id="hiddenCabang">
+                <input type="hidden" name="ID_ROMBONG" id="hiddenRombong">
 
                 <div class="modal-header text-white" style="background-color: var(--primary);">
                     <h5 class="modal-title fw-bold">Kelola Data Karyawan</h5>
@@ -356,8 +358,8 @@
                         </div>
                     </div>
 
-                    {{-- Lokasi hanya muncul jika Barista --}}
-                    <div id="location_fields_container" class="row">
+                    {{-- Lokasi khusus Barista --}}
+                    <div id="location_fields_container" class="row" style="display:none;">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold text-secondary">ID Cabang</label>
                             <select name="ID_CABANG" id="id_cabang_select" class="form-select">
@@ -385,9 +387,11 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary text-white fw-bold">Simpan</button>
                 </div>
+
             </form>
         </div>
     </div>
+
 
 
     {{-- MODAL GAJI --}}
@@ -449,7 +453,7 @@
     {{-- MODAL JADWAL --}}
     <div class="modal fade" id="modalJadwal" tabindex="-1">
         <div class="modal-dialog">
-           <form action="#" method="POST" id="formJadwal" class="modal-content border-0 shadow">
+           <form action="{{ route('jadwal.store') }}" method="POST" id="formJadwal" class="modal-content border-0 shadow">
                 @csrf
 
                 <div class="modal-header text-white" style="background-color: var(--primary);">
@@ -508,77 +512,78 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener("DOMContentLoaded", () => {
 
-        const formKaryawan = document.getElementById('formKaryawan');
-        const modalKaryawan = document.getElementById('modalKaryawan');
-
+        const form = document.getElementById('formKaryawan');
         const roleSelect = document.getElementById('role_select');
-        const idCabangSelect = document.getElementById('id_cabang_select');
-        const idRombongSelect = document.getElementById('id_rombong_select');
-        const locationFieldsContainer = document.getElementById('location_fields_container');
+        const cabangSelect = document.getElementById('id_cabang_select');
+        const rombongSelect = document.getElementById('id_rombong_select');
+        const container = document.getElementById('location_fields_container');
 
-        // ==== TOGGLE ROLE BARISTA / ADMIN ====
-        function toggleLocationFields() {
+        // == SHOW/HIDE lokasi sesuai Role ==
+        function toggleFields() {
             const isBarista = roleSelect.value === "Barista";
-
-            locationFieldsContainer.style.display = isBarista ? "flex" : "none";
+            container.style.display = isBarista ? "flex" : "none";
 
             if (!isBarista) {
-                idCabangSelect.value = "";
-                idRombongSelect.value = "";
+                hiddenCabang.value = "";
+                hiddenRombong.value = "";
             }
+
         }
 
-        roleSelect.addEventListener("change", toggleLocationFields);
+        roleSelect.addEventListener("change", toggleFields);
 
 
-        // ==== RESET MODAL (INSERT) ====
-        window.resetKaryawanModal = function () {
+        // ========== RESET MODAL (INSERT) ==========
+        window.resetKaryawanModal = () => {
 
-            formKaryawan.reset();
-            formKaryawan.action = "{{ route('employee.store') }}";
+            form.reset();
+            form.action = "{{ route('employee.store') }}";
 
-            // Buang _method jika ada dari edit
-            const m = formKaryawan.querySelector('input[name="_method"]');
-            if (m) m.remove();
+            // Hapus _method dari mode edit
+            const method = form.querySelector('input[name="_method"]');
+            if (method) method.remove();
 
-            // Email harus bisa diinput pada insert
-            formKaryawan.querySelector('input[name="EMAIL"]').removeAttribute('readonly');
+            // Email dapat diinput
+            form.querySelector('input[name="EMAIL"]').removeAttribute('readonly');
 
-            // Default role → Barista
+            // Default Barista
             roleSelect.value = "Barista";
-            toggleLocationFields();
+            toggleFields();
         };
 
 
-        // ==== FILL MODAL (UPDATE) ====
-        window.fillKaryawanModal = function(email, nama, telp, role, idJabatan, idCabang, idRombong) {
-            
-            resetKaryawanModal(); // start from clean state
+        // ========== FILL MODAL (EDIT) ==========
+        window.fillKaryawanModal = (email, nama, hp, role, idJabatan, cabang, rombong) => {
 
-            formKaryawan.action = `/employee/${email}`;
-            formKaryawan.insertAdjacentHTML("beforeend", `<input type="hidden" name="_method" value="PUT">`);
+            resetKaryawanModal();
 
-            formKaryawan.querySelector(`input[name="EMAIL"]`).value = email;
-            formKaryawan.querySelector(`input[name="EMAIL"]`).setAttribute("readonly", true);
+            form.action = `/employee/${email}`;
+            form.insertAdjacentHTML("beforeend",
+                `<input type="hidden" name="_method" value="PUT">`
+            );
 
-            formKaryawan.querySelector(`input[name="NAMA"]`).value = nama;
-            formKaryawan.querySelector(`input[name="NO_HP"]`).value = telp;
+            form.querySelector('input[name="EMAIL"]').value = email;
+            form.querySelector('input[name="EMAIL"]').setAttribute('readonly', true);
 
-            // Password kosong → tidak akan diupdate
-            formKaryawan.querySelector(`input[name="PASSWORD"]`).value = "";
+            form.querySelector('input[name="NAMA"]').value = nama;
+            form.querySelector('input[name="NO_HP"]').value = hp;
+            form.querySelector('input[name="PASSWORD"]').value = "";
 
+            form.querySelector('select[name="ID_JABATAN"]').value = idJabatan;
             roleSelect.value = role;
-            formKaryawan.querySelector(`select[name="ID_JABATAN"]`).value = idJabatan;
 
-            idCabangSelect.value = idCabang ?? "";
-            idRombongSelect.value = idRombong ?? "";
+            cabangSelect.value = cabang ?? "";
+            rombongSelect.value = rombong ?? "";
 
-            toggleLocationFields();
+            toggleFields();
 
-            new bootstrap.Modal(modalKaryawan).show();
+            new bootstrap.Modal(document.getElementById('modalKaryawan')).show();
         };
+
+
+
 
 
 
@@ -628,11 +633,11 @@
 
         window.resetJadwalModal = function() {
             formJadwal.reset();
-            formJadwal.action = "/jadwal/store";
-
+            formJadwal.action = "{{ url('/jadwal/store') }}"; // atau "/jadwal/store"
             const m = formJadwal.querySelector('input[name="_method"]');
             if (m) m.remove();
         };
+
 
         function toInputTimeFormat(timeString) {
             if (!timeString) return "";
@@ -641,8 +646,7 @@
 
         window.fillJadwalModal = function(id_jadwal, email, id_cabang, tanggal, jam_mulai, jam_selesai) {
             resetJadwalModal();
-
-            formJadwal.action = `/jadwal/update/${id_jadwal}`;
+            formJadwal.action = '/jadwal/update/' + encodeURIComponent(id_jadwal);
             formJadwal.insertAdjacentHTML("beforeend", `<input type="hidden" name="_method" value="PUT">`);
 
             document.getElementById("jadwal_id_input").value = id_jadwal;
@@ -656,9 +660,13 @@
             new bootstrap.Modal(modalJadwal).show();
         };
 
-        // Sinkron hidden fallback setiap kali select berubah
-        idCabangSelect.addEventListener('change', function(){ hiddenCabang.value = this.value; });
-        idRombongSelect.addEventListener('change', function(){ hiddenRombong.value = this.value; });
+        idCabangSelect.addEventListener("change", () => {
+            hiddenCabang.value = idCabangSelect.value;
+        });
+        idRombongSelect.addEventListener("change", () => {
+            hiddenRombong.value = idRombongSelect.value;
+});
+
 
         // --- FUNGSI DELETE ---
         window.confirmDelete = function(id, tipe) {
@@ -702,25 +710,25 @@
                      document.body.appendChild(form);
                      form.submit();
                  } else if (tipe === 'Jadwal') {
-                     const form = document.createElement('form');
-                     form.method = 'POST';
-                     form.action = `/jadwal/${id}`;
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/jadwal/' + encodeURIComponent(id);
 
-                     const csrf = document.createElement('input');
-                     csrf.type = 'hidden';
-                     csrf.name = '_token';
-                     csrf.value = '{{ csrf_token() }}';
-                     form.appendChild(csrf);
+                    const csrf = document.createElement('input');
+                    csrf.type = 'hidden';
+                    csrf.name = '_token';
+                    csrf.value = '{{ csrf_token() }}';
+                    form.appendChild(csrf);
 
-                     const method = document.createElement('input');
-                     method.type = 'hidden';
-                     method.name = '_method';
-                     method.value = 'DELETE';
-                     form.appendChild(method);
+                    const method = document.createElement('input');
+                    method.type = 'hidden';
+                    method.name = '_method';
+                    method.value = 'DELETE';
+                    form.appendChild(method);
 
-                     document.body.appendChild(form);
-                     form.submit();
-                 } else {
+                    document.body.appendChild(form);
+                    form.submit();
+                }else {
                     console.log(`Menghapus ${tipe} ID: ${id} (Logika perlu ditambahkan)`);
                  }
              }
