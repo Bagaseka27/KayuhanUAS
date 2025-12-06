@@ -9,13 +9,22 @@
         // Pastikan $menuItems sudah diisi dari Controller
         if (!isset($menuItems)) { $menuItems = collect([]); } 
 
-<<<<<<< HEAD
         // Definisikan ikon default jika tidak ada kolom icon di DB
         $iconMap = [
             'Coffee' => 'fas fa-coffee',
             'Non-Coffee' => 'fas fa-mug-hot'
         ];
     @endphp
+
+    {{-- START: Debugging Block untuk menampilkan pesan error dari Controller --}}
+    @if (!empty($error))
+        <div class="alert alert-warning mb-4">
+            <strong>Peringatan Menu:</strong> {{ $error }}
+            {{-- Jika pesan di atas adalah "Database tabel Menu kosong...", 
+                 silakan input data menu melalui halaman Manajemen Menu (Admin)! --}}
+        </div>
+    @endif
+    {{-- END: Debugging Block --}}
 
     <div class="row g-4">
         <div class="col-md-8">
@@ -35,21 +44,10 @@
                         
                         {{-- Menggunakan ikon berdasarkan kategori (jika ada) --}}
                         <div class="mb-2 text-primary-custom">
-                            <i class="{{ $iconMap[$menu->CATEGORY ?? 'Coffee'] ?? 'fas fa-utensils' }} fa-3x"></i>
+                            <i class="{{ $iconMap[$menu->KATEGORI ?? 'Coffee'] ?? 'fas fa-utensils' }} fa-3x"></i>
                         </div>
                         <h6 class="fw-bold mb-1">{{ $menu->NAMA_PRODUK }}</h6>
                         <span class="text-accent fw-bold">Rp {{ number_format($menu->HARGA_JUAL, 0, ',', '.') }}</span>
-=======
-    <div class="col-md-4">
-        <div class="card-custom d-flex flex-column" style="height: calc(100vh - 80px); position: sticky; top: 20px;">
-            <h5 class="fw-bold mb-3 border-bottom pb-3">Keranjang</h5>
-            
-            <div class="grow overflow-auto">
-                <div class="d-flex justify-content-between mb-3">
-                    <div>
-                        <div class="fw-bold">Kopi Susu Aren</div>
-                        <small class="text-muted">1 x Rp 18.000</small>
->>>>>>> cd20386144a8993ea144b64acc0413311973cfa0
                     </div>
                 </div>
                 @empty
@@ -109,6 +107,9 @@
         const loadingSpinner = document.getElementById('loading-spinner');
         const checkoutMessage = document.getElementById('checkout-message');
         const searchInput = document.getElementById('search-input');
+        
+        // --- PENTING: Mendapatkan semua elemen menu item setelah DOM dimuat ---
+        // Karena menuItemsCards diakses di fungsi pencarian, kita harus ambil elemennya
         const menuItemsCards = document.querySelectorAll('.menu-item-card');
         
         // Mengaktifkan kembali Named Route dan CSRF
