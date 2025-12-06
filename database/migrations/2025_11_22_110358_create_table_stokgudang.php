@@ -13,10 +13,13 @@ return new class extends Migration
 {
     Schema::create('stokgudang', function (Blueprint $table) {
         $table->string('ID_BARANG', 10)->primary();
-        $table->string('NAMA_BARANG', 50)->nullable();
-        $table->integer('JUMLAH')->nullable();
+        $table->string('NAMA_BARANG', 50);
+        $table->integer('MASUK')->default(0);
+        $table->integer('KELUAR')->default(0);
+        $table->integer('JUMLAH')->default(0); // total
         $table->timestamps();
     });
+
 }
 
 

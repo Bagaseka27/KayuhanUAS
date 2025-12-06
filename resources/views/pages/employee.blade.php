@@ -280,7 +280,7 @@
                             @if(count($jadwals) > 0)
                                 @foreach ($jadwals as $jadwal)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $jadwal->ID_JADWAL }}</td>
                                     <td>{{ $jadwal->karyawan->NAMA ?? 'N/A' }}</td>
                                     <td>{{ $jadwal->cabang->NAMA_LOKASI ?? 'N/A' }}</td>
                                     <td>{{ $jadwal->TANGGAL }}</td>

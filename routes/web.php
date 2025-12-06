@@ -16,6 +16,10 @@ use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\RombongController;
+use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\StokRombongController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -119,12 +123,28 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/rombong/{id}', [RombongController::class, 'update']);
     Route::delete('/rombong/{id}', [RombongController::class, 'destroy']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | INVENTORY
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/inventory', fn () => view('pages.inventory'))->name('inventory');
+
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+
+    // ========== GUDANG ==========
+    Route::post('/inventory/gudang/store', [StokGudangController::class, 'store'])->name('gudang.store');
+    Route::put('/inventory/gudang/update/{id}', [StokGudangController::class, 'update'])->name('gudang.update');
+    Route::delete('/inventory/gudang/delete/{id}', [StokGudangController::class, 'destroy'])->name('gudang.delete');
+
+    // ========== ROMBONG ==========
+    Route::post('/inventory/rombong/store', [StokRombongController::class, 'store'])->name('rombong.store');
+    Route::put('/inventory/rombong/update/{id}', [StokRombongController::class, 'update'])->name('rombong.update');
+    Route::delete('/inventory/rombong/delete/{id}', [StokRombongController::class, 'destroy'])->name('rombong.delete');
+    Route::post('/inventory/rombong/batch-store', [StokRombongController::class, 'batchStore'])
+    ->name('rombong.batchStore');
+
+    // CRUD Jabatan
+    Route::get('/jabatan', [JabatanController::class, 'indexPage'])->name('jabatan.index');
+    Route::post('/jabatan/store', [JabatanController::class, 'store'])->name('jabatan.store');
+    Route::put('/jabatan/update/{id}', [JabatanController::class, 'update'])->name('jabatan.update');
+    Route::delete('/jabatan/delete/{id}', [JabatanController::class, 'destroy'])->name('jabatan.delete');
+
+
 
     /*
     |--------------------------------------------------------------------------

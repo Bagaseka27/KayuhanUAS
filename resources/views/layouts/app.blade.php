@@ -31,13 +31,13 @@
             <a href="{{ route('dashboard') }}" class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <i class="fas fa-home"></i> Dashboard
             </a>
-            <a href="{{ route('employee') }}" class="menu-item {{ request()->routeIs('employee') ? 'active' : '' }}">
+            <a href="{{ route('employee.index') }}" class="menu-item {{ request()->routeIs('employee.index') ? 'active' : '' }}">
                 <i class="fas fa-users"></i> Karyawan & Gaji
             </a>
             <a href="{{ route('menu.index') }}" class="menu-item {{ request()->routeIs('menu') ? 'active' : '' }}">
                 <i class="fas fa-coffee"></i> Manajemen Menu
             </a>
-            <a href="{{ route('inventory') }}" class="menu-item {{ request()->routeIs('inventory') ? 'active' : '' }}">
+            <a href="{{ route('inventory.index') }}" class="menu-item {{ request()->routeIs('inventory.index') ? 'active' : '' }}">
                 <i class="fas fa-boxes"></i> Stok (Gudang/Rombong)
             </a>
             <a href="{{ route('locations.index') }}" class="menu-item {{ request()->routeIs('locations.index') ? 'active' : '' }}">
