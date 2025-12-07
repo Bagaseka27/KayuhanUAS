@@ -6,7 +6,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Filter Data Absensi</h6>
+            <h6 class="m-0 font-weight-bold text-success">Filter Data Absensi</h6>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.absensi.monitoring') }}" method="GET">
@@ -27,7 +27,7 @@
                         <input type="date" class="form-control" id="tanggal_filter" name="tanggal" value="{{ $tanggalFilter }}">
                     </div>
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary w-100">Tampilkan Data</button>
+                        <button type="submit" class="btn btn-primary-custom btn-sm w-100">Tampilkan Data</button>
                     </div>
                 </div>
             </form>
@@ -36,7 +36,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Data Absensi Karyawan (Tanggal: {{ \Carbon\Carbon::parse($tanggalFilter)->translatedFormat('d F Y') }})</h6>
+            <h6 class="m-0 font-weight-bold text-success">Data Absensi Karyawan (Tanggal: {{ \Carbon\Carbon::parse($tanggalFilter)->translatedFormat('d F Y') }})</h6>
         </div>
         <div class="card-body">
     <div class="table-responsive">
@@ -73,7 +73,7 @@
                         {{-- Tombol Lihat Foto Datang --}}
                         <td>
                             @if($karyawan->absenDatang)
-                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#fotoModal" data-foto="{{ asset('storage/absensi/datang/' . $karyawan->absenDatang->FOTO) }}">Lihat Foto</button>
+                                <button class="btn btn-primary-custom btn-sm w-100" data-bs-toggle="modal" data-bs-target="#fotoModal" data-foto="{{ asset('storage/absensi/datang/' . $karyawan->absenDatang->FOTO) }}">Lihat Foto</button>
                             @else
                                 -
                             @endif
