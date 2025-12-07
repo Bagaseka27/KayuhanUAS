@@ -5,22 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kayuhan Coffee - Barista</title>
     
-    <!-- CSS Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
+    <button class="mobile-toggle-btn" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
 
     <div class="sidebar">
-        <!-- 1. BAGIAN PROFIL (KLIK UNTUK EDIT) -->
-        <!-- Atribut data-bs-toggle="modal" ini yang bikin popup muncul -->
         <div class="profile-section" data-bs-toggle="modal" data-bs-target="#modalProfil" title="Klik untuk Edit Profil">
             <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; overflow: hidden;">
-                <!-- Menampilkan Foto Profil Asli jika ada -->
                 @if(Auth::user()->photo)
                     <img src="{{ asset('storage/' . Auth::user()->photo) }}" style="width: 100%; height: 100%; object-fit: cover;">
                 @else
@@ -33,7 +31,6 @@
             </div>
         </div>
 
-        <!-- 2. MENU NAVIGASI -->
         <div class="sidebar-menu">
             <a href="{{ route('barista.dashboard') }}" class="menu-item {{ request()->routeIs('barista.dashboard') ? 'active' : '' }}">
                 <i class="fas fa-home"></i> Dashboard
@@ -52,7 +49,6 @@
             </a>
         </div>
 
-        <!-- 3. TOMBOL LOGOUT -->
         <div class="bottom-menu">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
@@ -63,7 +59,6 @@
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="main-content">
         <div class="container-fluid">
             <div class="white-content-wrapper"> 
@@ -74,7 +69,6 @@
         </div>
     </div>
 
-    <!-- 4. MODAL EDIT PROFIL (POPUP) -->
     <div class="modal fade" id="modalProfil" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -83,36 +77,29 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 
-                <!-- Form Update Profil -->
                 <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
                     <div class="modal-body">
-                        <!-- Preview Foto (Lingkaran) -->
                         <div class="text-center mb-3">
                             <div style="width: 100px; height: 100px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid var(--accent); overflow: hidden;">
-                                <!-- Image Preview Tag -->
                                 <img id="avatarPreview" 
-                                     src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : '' }}" 
-                                     class="{{ Auth::user()->photo ? '' : 'd-none' }}" 
-                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                    src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : '' }}" 
+                                    class="{{ Auth::user()->photo ? '' : 'd-none' }}" 
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                                 
-                                <!-- Icon Default -->
                                 <i id="avatarIcon" class="fas fa-user fa-3x text-muted {{ Auth::user()->photo ? 'd-none' : '' }}"></i>
                             </div>
                             
-                            <!-- Tombol Pilih File -->
                             <div class="mt-2">
                                 <label for="photoInput" class="btn btn-sm btn-outline-secondary" style="cursor: pointer;">
                                     <i class="fas fa-camera me-1"></i> Ganti Foto
                                 </label>
-                                <!-- Input File Asli (Sembunyi) -->
                                 <input type="file" id="photoInput" name="photo" class="d-none" accept="image/*" onchange="previewImage(event)">
                             </div>
                         </div>
                         
-                        <!-- Input Data Diri -->
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Email (Login)</label>
                             <input type="email" class="form-control bg-light" value="{{ Auth::user()->email }}" readonly>
@@ -143,10 +130,8 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Script Preview Gambar -->
     <script>
         function previewImage(event) {
             const input = event.target;
@@ -166,5 +151,58 @@
     </script>
     
     @stack('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            let hideTimer;
+            let isSidebarOpen = false;
+
+            // Fungsi untuk menyembunyikan tombol dengan class 'd-none'
+            function hideButton() {
+                // Sembunyikan hanya jika sidebar TIDAK terbuka
+                if (toggleBtn && !isSidebarOpen) {
+                    toggleBtn.classList.add('d-none');
+                }
+            }
+
+            // Fungsi untuk menampilkan tombol dan mengatur timer
+            function showButton() {
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('d-none');
+                    
+                    // Reset timer setiap kali tombol ditampilkan
+                    clearTimeout(hideTimer);
+                    hideTimer = setTimeout(hideButton, 3000); // Tombol menghilang setelah 3 detik (3000 ms)
+                }
+            }
+
+            // 1. Event listener untuk toggle sidebar (yang sudah ada)
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', function() {
+                    // Perbarui status sidebar
+                    isSidebarOpen = !sidebar.classList.contains('show');
+                    sidebar.classList.toggle('show');
+                    
+                    if (isSidebarOpen) {
+                        // Jika sidebar terbuka, jangan sembunyikan tombol
+                        clearTimeout(hideTimer);
+                    } else {
+                        // Jika sidebar ditutup, sembunyikan tombol setelah 3 detik
+                        showButton(); 
+                    }
+                });
+            }
+            
+            // 2. Event listener untuk mendeteksi scroll/sentuhan pada dokumen (mobile behavior)
+            // Menggunakan document.documentElement untuk menangkap scroll global
+            document.addEventListener('scroll', showButton);
+            document.addEventListener('touchstart', showButton);
+            document.addEventListener('mousemove', showButton); // Tambahkan mousemove untuk desktop debugging
+
+            // 3. Panggil sekali saat dimuat untuk memulai timer
+            showButton(); 
+        });
+    </script>
 </body>
 </html>

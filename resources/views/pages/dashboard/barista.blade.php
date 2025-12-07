@@ -9,7 +9,6 @@
             <p class="text-muted m-0">Selamat datang kembali, {{ Auth::user()->name ?? 'Barista Staff' }}!</p>
         </div>
         <div class="text-end">
-            {{-- Bagian Waktu Dibuat Dinamis --}}
             <h6 class="fw-bold text-primary-custom mb-0" id="current-date">{{ date('l, d M Y') }}</h6>
             <small class="text-muted">Waktu Server: <span id="current-time"></span></small>
         </div>
@@ -20,7 +19,7 @@
         {{-- CATATAN: Pastikan Controller mengirim variabel $penjualan_shift_ini --}}
         <div class="col-md-6">
             <div class="card-custom">
-                <p class="text-muted mb-2">Penjualan Shift Ini</p>
+                <p class="text-muted mb-2">Penjualan</p>
                 <h1 class="fw-bold text-primary-custom">
                     Rp {{ number_format($penjualan_shift_ini ?? 0, 0, ',', '.') }}
                 </h1>

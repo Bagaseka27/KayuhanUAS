@@ -75,7 +75,7 @@
             <h5 class="fw-bold text-primary-custom mb-3">Aksi Cepat</h5>
             <div class="row g-3">
                 <div class="col-md-3 col-6">
-                    <a href="{{ url('/employees') }}" class="quick-action-btn text-decoration-none">
+                    <a href="{{ url('/employee') }}" class="quick-action-btn text-decoration-none">
                         <i class="fas fa-user-plus"></i> Kelola Karyawan
                     </a>
                 </div>
@@ -85,7 +85,7 @@
                     </a>
                 </div>
                 <div class="col-md-3 col-6">
-                    <a href="#" class="quick-action-btn text-decoration-none">
+                    <a href="{{ url('/history') }}" class="quick-action-btn text-decoration-none">
                         <i class="fas fa-file-invoice"></i> Laporan Keuangan
                     </a>
                 </div>
