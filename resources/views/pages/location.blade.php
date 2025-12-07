@@ -57,7 +57,7 @@
         <div class="col-md-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold m-0"><i class="fas fa-bicycle me-2 text-accent"></i>Unit Rombong</h5>
-                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalAddRombong">
+                <button class="btn btn-primary-custom btn-sm" data-bs-toggle="modal" data-bs-target="#modalAddRombong">
                     <i class="fas fa-plus"></i> Tambah Unit
                 </button>
             </div>
