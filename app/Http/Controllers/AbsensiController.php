@@ -84,7 +84,6 @@ class AbsensiController extends Controller
                                     ->orderBy('DATETIME_DATANG', 'desc')
                                     ->get();
 
-        // KEMBALIKAN VIEW DENGAN DATA
         return view('pages.absensi', [
             'riwayatAbsensi' => $riwayatAbsensi,
             'absen_datang' => $absenDatangHariIni,
@@ -94,7 +93,7 @@ class AbsensiController extends Controller
         ]);
     }
 
-    // LOGIKA ABSEN MASUK (STORE DATANG) 
+    // ABSEN MASUK (STORE DATANG) 
     public function storeDatang(Request $request)
     {
         $email = $request->input('EMAIL');
@@ -109,7 +108,7 @@ class AbsensiController extends Controller
             return redirect()->route('barista.absensi.index')->with('error', 'Absensi Gagal! Anda tidak memiliki Jadwal pada tanggal ' . $today . '.');
         }
 
-        // PEMBATASAN: Cek apakah sudah Absen Masuk
+        // Cek apakah sudah Absen Masuk
         $sudahAbsen = AbsenDatang::where('EMAIL', $email)
                                  ->whereDate('DATETIME_DATANG', $today)
                                  ->exists();
@@ -125,6 +124,9 @@ class AbsensiController extends Controller
                 'TANGGAL' => $today,
                 'ID_CABANG' => $jadwalHariIni->ID_CABANG, 
                 'FOTO_FILE' => $fotoFile, 
+                'ID_CABANG' => $jadwalHariIni->ID_CABANG, 
+                'FOTO_FILE' => $fotoFile, 
+
             ]);
         } catch (\Exception $e) {
             \Log::error('Gagal menyimpan Absen Datang: ' . $e->getMessage());
@@ -134,7 +136,7 @@ class AbsensiController extends Controller
         return redirect()->route('barista.absensi.index')->with('success', 'Absen Masuk berhasil dicatat.');
     }
 
-    // LOGIKA ABSEN PULANG (STORE PULANG)
+   // ABSEN PULANG (STORE PULANG)
     public function storePulang(Request $request)
     {
         $email = $request->input('EMAIL');
@@ -142,7 +144,8 @@ class AbsensiController extends Controller
         $today = $dateTimePulang->toDateString();
         $fotoFile = $request->input('FOTO_FILE'); 
 
-        // PEMBATASAN: Cek Jadwal Hari Ini
+        // Cek Jadwal Hari Ini
+  
         $jadwalHariIni = Jadwal::where('EMAIL', $email)
                             ->where('TANGGAL', $today)
                             ->first();
@@ -151,7 +154,7 @@ class AbsensiController extends Controller
             return redirect()->route('barista.absensi.index')->with('error', 'Absensi Pulang Gagal! Anda tidak memiliki Jadwal pada tanggal ' . $today . '.');
         }
 
-        // PEMBATASAN: Cek apakah sudah Absen Pulang hari ini
+        // Cek apakah sudah Absen Pulang hari ini      
         $sudahAbsenPulang = AbsenPulang::where('EMAIL', $email)
                                      ->whereDate('DATETIME_PULANG', $today)
                                      ->exists();
@@ -166,15 +169,13 @@ class AbsensiController extends Controller
         if (!$absenDatang) {
             return redirect()->route('barista.absensi.index')->with('error', 'Absen Pulang Gagal! Anda belum Absen Masuk hari ini.');
         }
-
-        // Lakukan Penyimpanan Absen Pulang 
         try {
             AbsenPulang::create([
                 'EMAIL' => $email,
                 'DATETIME_PULANG' => $dateTimePulang,
                 'TANGGAL' => $today,
                 'ID_CABANG' => $jadwalHariIni->ID_CABANG, 
-                'FOTO_FILE' => $fotoFile, 
+                'FOTO_FILE' => $fotoFile,
             ]);
         } catch (\Exception $e) {
             \Log::error('Gagal menyimpan Absen Pulang: ' . $e->getMessage());
@@ -185,48 +186,47 @@ class AbsensiController extends Controller
         return redirect()->route('barista.absensi.index')->with('success', 'Absen Pulang berhasil dicatat.');
     }
 
-    // MONITORING ABSENSI (Index Pulang/Monitoring)
-    public function indexPulang(Request $request) 
+    // MONITORING ABSENSI (Index Pulang / Monitoring)
+        public function indexPulang(Request $request) 
     {
-        // filter dari request atau default hari ini
-        $tanggalFilter = $request->input('tanggal', Carbon::today()->toDateString());
-        $lokasiFilterId = $request->input('lokasi'); 
+            // filter dari request atau default hari ini
+            $tanggalFilter = $request->input('tanggal', Carbon::today()->toDateString());
+            $lokasiFilterId = $request->input('lokasi'); 
+            $lokasiFilter = Cabang::select('ID_CABANG as id', 'NAMA_LOKASI as nama')
+                                ->get()
+                                ->map(function ($cabang) {
+                                    return [
+                                        'id' => $cabang->id,
+                                        'nama' => $cabang->nama,
+                                    ];
+                                });
 
-        // DATA LOKASI FILTER (DIAMBIL DARI DATABASE UNTUK DROPDOWN)
-        $lokasiFilter = Cabang::select('ID_CABANG as id', 'NAMA_LOKASI as nama')
-                             ->get()
-                             ->map(function ($cabang) {
-                                return [
-                                    'id' => $cabang->id,
-                                    'nama' => $cabang->nama,
-                                ];
-                            });        
-        $karyawanList = Karyawan::query();
+            // Query dasar karyawan
+            $karyawanList = Karyawan::query();
 
-        // Filter Lokasi pada Karyawan Query
-        if ($lokasiFilterId) {
-            if (substr($lokasiFilterId, 0, 1) === 'C') {
-                $karyawanList->where('ID_CABANG', $lokasiFilterId);
-            } elseif (substr($lokasiFilterId, 0, 1) === 'R') {
-                $karyawanList->where('ID_ROMBONG', $lokasiFilterId);
+            // Filter lokasi (Cabang atau Rombong)
+            if ($lokasiFilterId) {
+                if (substr($lokasiFilterId, 0, 1) === 'C') {
+                    $karyawanList->where('ID_CABANG', $lokasiFilterId);
+                } elseif (substr($lokasiFilterId, 0, 1) === 'R') {
+                    $karyawanList->where('ID_ROMBONG', $lokasiFilterId);
+                }
             }
-        }
-        
-        // Relasi Absensi dan Cabang/Rombong
-        $karyawanList = $karyawanList
-            ->with([
-                'absenDatang' => function ($query) use ($tanggalFilter) {
-                    $query->whereDate('DATETIME_DATANG', $tanggalFilter);
-                },
-                'absenPulang' => function ($query) use ($tanggalFilter) {
-                    $query->whereDate('DATETIME_PULANG', $tanggalFilter);
-                },
-                'cabang', 
-                'rombong'
-            ])
-            ->get();
 
-        // KEMBALIKAN VIEW
-        return view('pages.absensi_monitoring', compact('karyawanList', 'lokasiFilter', 'tanggalFilter'));
+            // Relasi absensi & lokasi
+            $karyawanList = $karyawanList
+                ->with([
+                    'absenDatang' => function ($query) use ($tanggalFilter) {
+                        $query->whereDate('DATETIME_DATANG', $tanggalFilter);
+                    },
+                    'absenPulang' => function ($query) use ($tanggalFilter) {
+                        $query->whereDate('DATETIME_PULANG', $tanggalFilter);
+                    },
+                    'cabang',
+                    'rombong'
+                ])
+                ->get();
+
+            return view('pages.absensi_monitoring', compact('karyawanList', 'lokasiFilter', 'tanggalFilter'));
     }
 }

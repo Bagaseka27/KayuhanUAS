@@ -214,7 +214,7 @@
             const id = button.getAttribute('data-id');
 
             inputId.value = id;
-            form.action = `/${type}/${id}`; // e.g. /rombong/RM-001
+            form.action = `/${type}/${id}`; 
 
             dynamicFields.innerHTML = '';
 

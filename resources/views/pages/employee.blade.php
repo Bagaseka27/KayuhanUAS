@@ -5,7 +5,6 @@
 @section('content')
     {{-- CSS KHUSUS UNTUK HALAMAN INI (Tab Effect) --}}
     <style>
-        /* Hilangkan border default bootstrap */
         .nav-tabs {
             border-bottom: 2px solid #e9ecef;
         }
@@ -435,7 +434,7 @@
             new bootstrap.Modal(document.getElementById('modalKaryawan')).show();
         };
 
-        // GAJI LOGIC
+        // GAJI 
         const formGaji = document.getElementById("formGaji");
         const gajiEmployeeSelect = document.getElementById("gaji_employee_select");
         const gajiDaysInput = document.getElementById("gaji_days_input");
@@ -444,7 +443,6 @@
         const gajiBonusTotal = document.getElementById("gaji_bonus_total");
         const gajiKompensasi = document.getElementById("gaji_kompensasi_input");
 
-        // store selected jabatan rates globally for modal session
         let currentGajiPerHari = 0;
         let currentBonusPerCup = 0;
 
@@ -459,7 +457,6 @@
 
         window.resetGajiModal = resetGajiModal;
 
-        // when employee selected, fetch jabatan rates
         async function fetchJabatanRates(email) {
             if (!email) return;
             try {
@@ -494,11 +491,9 @@
             document.getElementById("gaji_period_input").value = periode;
             document.getElementById("gaji_days_input").value = days ?? 0;
             document.getElementById("gaji_basic_auto").value = basic ?? 0;
-            // set input bonus value as number of cups if possible (we don't have stored cups count, so leave INPUT_BONUS blank)
             document.getElementById("gaji_bonus_input").value = "";
             document.getElementById("gaji_bonus_total").value = totalBonus ?? 0;
             document.getElementById("gaji_kompensasi_input").value = kompensasi ?? 0;
-            // fetch current rates for this employee
             fetchJabatanRates(email);
             new bootstrap.Modal(document.getElementById('modalGaji')).show();
         };
@@ -524,11 +519,10 @@
             new bootstrap.Modal(document.getElementById('modalJadwal')).show();
         };
 
-        // sync hidden fields for cabang / rombong
         document.getElementById('id_cabang_select')?.addEventListener("change", (e) => { hiddenCabang.value = e.target.value; });
         document.getElementById('id_rombong_select')?.addEventListener("change", (e) => { hiddenRombong.value = e.target.value; });
 
-        // DELETE helper
+        // DELETE 
         window.confirmDelete = function(id, tipe) {
             if (!confirm(`Yakin ingin menghapus data ${tipe} dengan ID ${id} ini?`)) return;
             const formDel = document.createElement('form');
@@ -544,7 +538,6 @@
                 formDel.action = `/jadwal/delete/${encodeURIComponent(id)}`;
                 formDel.insertAdjacentHTML('beforeend', `<input type="hidden" name="_method" value="DELETE">`);
             } else {
-                // fallback: support jabatan delete via confirmDeleteJabatan
                 console.log('Tipe hapus tidak dikenali:', tipe);
                 return;
             }
@@ -552,7 +545,7 @@
             formDel.submit();
         };
 
-        // JABATAN CRUD helpers
+        // JABATAN CRUD 
         window.resetJabatanModal = () => {
             const formJ = document.getElementById('formJabatan');
             formJ.reset();

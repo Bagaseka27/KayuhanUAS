@@ -6,13 +6,13 @@
             <i class="fas fa-user"></i> 
         </div>
         <div class="d-flex flex-column" style="overflow:hidden;">
-            <!-- Hardcode Nama biar UI terlihat pro saat demo -->
+            <!-- Hardcode Nama  -->
             <span class="text-truncate fw-bold">{{ Auth::user()->name ?? 'Andi Wijaya' }}</span>
             <small style="font-size:0.7rem; opacity:0.8;">Role: Admin / Owner</small>
         </div>
     </div>
     
-    <!-- 2. BAGIAN MENU NAVIGASI (LENGKAP TANPA BATASAN) -->
+    <!-- 2. BAGIAN MENU NAVIGASI (TANPA BATASAN) -->
     <div class="sidebar-menu">
 
         <!-- 1. Dashboard -->

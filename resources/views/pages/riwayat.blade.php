@@ -166,17 +166,14 @@
 
 @push('styles')
 <style>
-    /* Menggunakan variabel CSS yang sudah didefinisikan */
     .text-primary-custom { color: var(--primary) !important; }
     .text-accent-custom { color: var(--accent) !important; } /* Emas */
-    
-    /* Card Primary untuk total pendapatan Barista */
     .bg-gradient-primary {
         background-color: var(--primary) !important;
         background-image: linear-gradient(180deg, var(--primary) 10%, #1c527f 100%) !important;
     }
     
-    /* Badge Payment (Meniru gaya kustom Anda) */
+    /* Badge Payment */
     .badge-payment { 
         border: 1px solid #dee2e6 !important; 
         font-weight: 500 !important;
@@ -213,32 +210,23 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil elemen waktu di Riwayat Transaksi
         const timeElement = document.getElementById('current-time-riwayat');
         
-        // Fungsi untuk mendapatkan waktu saat ini dan memformatnya (Memaksa ke WIB)
+        // Fungsi untuk mendapatkan waktu saat ini 
         function updateTimeRiwayat() {
-            // Guard clause jika elemen tidak ditemukan (penting untuk robust!)
             if (!timeElement) return; 
-            
             const now = new Date();
-            
-            // Menggunakan toLocaleTimeString untuk memformat waktu sesuai timezone
             const timeString = now.toLocaleTimeString('id-ID', {
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
-                // Opsional: memaksa timezone ke Asia/Jakarta jika browser default salah
                 timeZone: 'Asia/Jakarta' 
             });
             
             timeElement.textContent = timeString;
         }
 
-        // Panggil fungsi sekali saat dimuat
-        updateTimeRiwayat();
-        
-        // Perbarui setiap 1 detik (1000 milidetik)
+        updateTimeRiwayat();        
         setInterval(updateTimeRiwayat, 1000);
     });
 </script>

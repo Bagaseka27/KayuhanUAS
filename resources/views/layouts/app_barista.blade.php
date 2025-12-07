@@ -19,12 +19,12 @@
     <div class="sidebar">
         <div class="profile-section" data-bs-toggle="modal" data-bs-target="#modalProfil" title="Klik untuk Edit Profil">
             <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; overflow: hidden;">
-                @if(Auth::user()->foto)
-                    <img src="{{ asset('storage/' . Auth::user()->foto) }}" style="width: 100%; height: 100%; object-fit: cover;">
-                @else
-                    <i class="fas fa-user text-dark"></i>
-                @endif
-            </div>
+                <img id="avatarPreview"
+                    src="{{ $foto ? asset('storage/' . $foto) : '' }}"
+                    class="{{ $foto ? '' : 'd-none' }}"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+
+                </div>
             <div class="text-white profile-text">
                 <h6 class="m-0 fw-bold">{{ Auth::user()->name ?? 'Barista' }}</h6>
                 <small style="font-size: 0.7rem; opacity: 0.7;">Role: Barista</small>
@@ -84,10 +84,11 @@
                     <div class="modal-body">
                         <div class="text-center mb-3">
                             <div style="width: 100px; height: 100px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid var(--accent); overflow: hidden;">
-                                <img id="avatarPreview" 
-                                    src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : '' }}" 
-                                    class="{{ Auth::user()->foto ? '' : 'd-none' }}" 
+                                <img id="avatarPreview"
+                                    src="{{ $foto ? asset('storage/' . $foto) : '' }}"
+                                    class="{{ $foto ? '' : 'd-none' }}"
                                     style="width: 100%; height: 100%; object-fit: cover;">
+
                                 
                                 <i id="avatarIcon" class="fas fa-user fa-3x text-muted {{ Auth::user()->foto ? 'd-none' : '' }}"></i>
                             </div>
@@ -161,7 +162,6 @@
 
             // Fungsi untuk menyembunyikan tombol dengan class 'd-none'
             function hideButton() {
-                // Sembunyikan hanya jika sidebar TIDAK terbuka
                 if (toggleBtn && !isSidebarOpen) {
                     toggleBtn.classList.add('d-none');
                 }
@@ -172,31 +172,26 @@
                 if (toggleBtn) {
                     toggleBtn.classList.remove('d-none');
                     
-                    // Reset timer setiap kali tombol ditampilkan
                     clearTimeout(hideTimer);
-                    hideTimer = setTimeout(hideButton, 3000); // Tombol menghilang setelah 3 detik (3000 ms)
+                    hideTimer = setTimeout(hideButton, 3000); /
                 }
             }
 
             // 1. Event listener untuk toggle sidebar (yang sudah ada)
             if (toggleBtn && sidebar) {
                 toggleBtn.addEventListener('click', function() {
-                    // Perbarui status sidebar
                     isSidebarOpen = !sidebar.classList.contains('show');
                     sidebar.classList.toggle('show');
                     
                     if (isSidebarOpen) {
-                        // Jika sidebar terbuka, jangan sembunyikan tombol
                         clearTimeout(hideTimer);
                     } else {
-                        // Jika sidebar ditutup, sembunyikan tombol setelah 3 detik
                         showButton(); 
                     }
                 });
             }
             
             // 2. Event listener untuk mendeteksi scroll/sentuhan pada dokumen (mobile behavior)
-            // Menggunakan document.documentElement untuk menangkap scroll global
             document.addEventListener('scroll', showButton);
             document.addEventListener('touchstart', showButton);
             document.addEventListener('mousemove', showButton); // Tambahkan mousemove untuk desktop debugging

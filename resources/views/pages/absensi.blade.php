@@ -105,10 +105,8 @@
 
 @push('scripts')
 <script>
-    // Fungsi untuk mendapatkan waktu saat ini dan mengisinya ke input tersembunyi
     function updateDateTimeInput() {
         const now = new Date();
-        // Format ke YYYY-MM-DD HH:MM:SS
         const formattedDateTime = now.getFullYear() + '-' + 
             String(now.getMonth() + 1).padStart(2, '0') + '-' + 
             String(now.getDate()).padStart(2, '0') + ' ' + 
@@ -116,15 +114,12 @@
             String(now.getMinutes()).padStart(2, '0') + ':' + 
             String(now.getSeconds()).padStart(2, '0');
 
-        // Isi input DATETIME_DATANG di modal absen datang
+        // input DATETIME_DATANG di modal absen datang dan pulang
         document.getElementById('DATETIME_DATANG').value = formattedDateTime;
-        // Isi input DATETIME_PULANG di modal absen pulang
         document.getElementById('DATETIME_PULANG').value = formattedDateTime;
     }
 
-    // Panggil fungsi saat DOM dimuat
     document.addEventListener('DOMContentLoaded', updateDateTimeInput);
-    // Perbarui setiap 1 detik untuk memastikan waktu di form terbaru
     setInterval(updateDateTimeInput, 1000);
 </script>
 @endpush

@@ -48,8 +48,6 @@
 
         </form>
     </div>
-
-    <!-- KARTU RINGKASAN -->
     <div class="row mb-4">
 
         <!-- TOTAL PENDAPATAN -->
