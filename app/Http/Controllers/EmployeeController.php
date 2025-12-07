@@ -14,41 +14,31 @@ class EmployeeController extends Controller
 {
     public function index()
     {
+        $payrollsData = Gaji::with('karyawan')->get();
+        $jadwals = Jadwal::with(['karyawan','cabang'])->get();
 
-    $payrollsData = Gaji::with('karyawan')->get();
+        $karyawanData = Karyawan::with(['jabatan','cabang','rombong'])->get()->map(function($k){
+            return (object)[
+                'email' => $k->EMAIL,
+                'name' => $k->NAMA ?? 'N/A',
+                'no_telp' => $k->NO_HP ?? '',
+                'jabatan_name' => $k->jabatan->NAMA_JABATAN ?? '',
+                'ID_JABATAN' => $k->ID_JABATAN,
+                'ID_CABANG' => $k->ID_CABANG,
+                'ID_ROMBONG' => $k->ID_ROMBONG,
+                'role' => $k->ROLE,
+            ];
+        });
 
+        $jabatanList      = Jabatan::pluck('NAMA_JABATAN','ID_JABATAN');
+        $jabatanListFull  = Jabatan::all();
+        $cabangList       = Cabang::pluck('NAMA_LOKASI','ID_CABANG');
+        $rombongList      = Rombong::pluck('ID_ROMBONG','ID_ROMBONG');
+        $employeeDropdown = Karyawan::pluck('NAMA','EMAIL');
 
-    $jadwals = Jadwal::with(['karyawan','cabang'])->get();
-
-    $karyawanData = Karyawan::with(['jabatan','cabang','rombong'])->get()->map(function($k){
-        return (object)[
-            'email' => $k->EMAIL,
-            'name' => $k->NAMA ?? 'N/A',
-            'no_telp' => $k->NO_HP ?? '',
-            'jabatan_name' => $k->jabatan->NAMA_JABATAN ?? '',
-            'ID_JABATAN' => $k->ID_JABATAN,
-            'ID_CABANG' => $k->ID_CABANG,
-            'ID_ROMBONG' => $k->ID_ROMBONG,
-            'role' => $k->ROLE,
-        ];
-    });
-
-
-    $jabatanList = Jabatan::pluck('NAMA_JABATAN','ID_JABATAN');
-    $cabangList = Cabang::pluck('NAMA_LOKASI','ID_CABANG');
-    $rombongList = Rombong::pluck('ID_ROMBONG','ID_ROMBONG');
-    $employeeDropdown = Karyawan::pluck('NAMA','EMAIL');
-
-
-    return view('pages.employee', [
-    'karyawanData' => $karyawanData,
-    'jadwals' => $jadwals,
-    'payrollsData' => $payrollsData,
-    'jabatanList' => $jabatanList,
-    'cabangList' => $cabangList,
-    'rombongList' => $rombongList,
-    'employeeDropdown' => $employeeDropdown,
-    ]);
+        return view('pages.employee', compact(
+            'karyawanData','jadwals','payrollsData','jabatanList','jabatanListFull','cabangList','rombongList','employeeDropdown'
+        ));
     }
     // EmployeeController.php (Tambahkan fungsi ini)
 

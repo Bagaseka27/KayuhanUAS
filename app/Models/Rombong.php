@@ -22,14 +22,8 @@ class Rombong extends Model
         return $this->hasMany(Karyawan::class, 'ID_ROMBONG');
     }
 
-    public function stokawal()
-    {
-        return $this->hasOne(StokAwal::class, 'ID_ROMBONG');
-    }
-
-    public function stokakhir()
-    {
-        return $this->hasOne(StokAkhir::class, 'ID_ROMBONG');
+    public function stok() {
+        return $this->hasMany(RombongStok::class, 'rombong_id', 'ID_ROMBONG');
     }
 
     public function cabang(){

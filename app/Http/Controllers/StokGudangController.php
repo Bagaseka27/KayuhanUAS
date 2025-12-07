@@ -2,74 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\StokGudang;
 use Illuminate\Http\Request;
+use App\Models\StokGudang;
 
 class StokGudangController extends Controller
 {
-    public function index()
+    public function store(Request $req)
     {
-        return StokGudang::all();
-    }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'ID_BARANG'   => 'required|string|max:10|unique:stokgudang,ID_BARANG',
-            'NAMA_BARANG' => 'required|string|max:100',
-            'JUMLAH'      => 'required|integer|min:0', 
+        $req->validate([
+            'ID_BARANG'   => 'required',
+            'NAMA_BARANG' => 'required',
+            'MASUK'       => 'required|integer|min:0',
+            'KELUAR'      => 'required|integer|min:0',
         ]);
 
-        return StokGudang::create($validated);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $barang = StokGudang::find($id);
-        
-        $validated = $request->validate([
-            'NAMA_BARANG' => 'sometimes|string|max:100',
+        StokGudang::create([
+            'ID_BARANG'   => $req->ID_BARANG,
+            'NAMA_BARANG' => $req->NAMA_BARANG,
+            'MASUK'       => $req->MASUK,
+            'KELUAR'      => $req->KELUAR,
+            'JUMLAH'      => $req->MASUK - $req->KELUAR,
         ]);
 
-        $barang->update($validated);
-        return $barang;
+        return back()->with('success', 'Barang berhasil ditambahkan');
+    }
+
+    public function update(Request $req, $id)
+    {
+        $req->validate([
+            'NAMA_BARANG' => 'required',
+            'MASUK'       => 'required|integer|min:0',
+            'KELUAR'      => 'required|integer|min:0',
+        ]);
+
+        StokGudang::where('ID_BARANG', $id)->update([
+            'NAMA_BARANG' => $req->NAMA_BARANG,
+            'MASUK'       => $req->MASUK,
+            'KELUAR'      => $req->KELUAR,
+            'JUMLAH'      => $req->MASUK - $req->KELUAR,
+        ]);
+
+        return back()->with('success', 'Barang berhasil diperbarui');
     }
 
     public function destroy($id)
     {
-        return StokGudang::destroy($id);
-    }
-
-
-    public function barangMasuk(Request $request, $id)
-    {
-        $barang = StokGudang::find($id);
-
-        if (!$barang) return "Barang tidak ditemukan";
-
-        $request->validate(['JUMLAH_MASUK' => 'required|integer|min:1']);
-
-        $barang->JUMLAH = $barang->JUMLAH + $request->JUMLAH_MASUK;
-        $barang->save();
-
-        return $barang;
-    }
-
-    public function barangKeluar(Request $request, $id)
-    {
-        $barang = StokGudang::find($id);
-
-        if (!$barang) return "Barang tidak ditemukan";
-
-        $request->validate(['JUMLAH_KELUAR' => 'required|integer|min:1']);
-
-        if ($barang->JUMLAH < $request->JUMLAH_KELUAR) {
-            return "Stok tidak cukup!"; 
-        }
-
-        $barang->JUMLAH = $barang->JUMLAH - $request->JUMLAH_KELUAR;
-        $barang->save();
-
-        return $barang;
+        StokGudang::where('ID_BARANG', $id)->delete();
+        return back()->with('success', 'Barang berhasil dihapus');
     }
 }
