@@ -34,7 +34,7 @@ class DashboardController extends Controller
         $totalOmset = $transactionsThisMonth->sum('total_bayar');
         
         // KARYAWAN AKTIF (Asumsi: status role bukan 'Owner')
-        $activeStaff = Karyawan::where('posisi', '!=', 'Owner')->count();
+        $activeStaff = Karyawan::where('role', '!=', 'Owner')->count();
         
         // PROFIT BERSIH (Sangat Disederhanakan: Profit = 50% dari Omset, ganti sesuai rumus Anda)
         // Profit sebenarnya harus dihitung dari total_bayar - harga_dasar_per_item
