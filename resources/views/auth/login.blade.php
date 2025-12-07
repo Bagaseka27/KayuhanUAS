@@ -461,35 +461,55 @@
             50% { transform: scale(1.2); }
         }
 
-        /* Responsive */
+        /* ========== RESPONSIVE TAMBAHAN ========== */
         @media (max-width: 968px) {
+            body {
+                overflow: auto;
+            }
+            
             .login-split-container {
                 flex-direction: column;
+                height: auto;
+                min-height: 100vh;
             }
 
             .left-side {
-                flex: 0 0 250px;
+                flex: 0 0 auto;
+                min-height: 50vh;
+                padding: 30px 20px;
             }
 
             .logo-side img {
-                width: 120px;
-                height: 120px;
+                width: 140px;
+                height: 140px;
+            }
+
+            .logo-wrapper {
+                margin-bottom: 20px;
             }
 
             .brand-title {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
+                letter-spacing: 3px;
+                margin-bottom: 10px;
             }
 
             .brand-subtitle {
-                font-size: 1rem;
+                font-size: 1.1rem;
+                letter-spacing: 3px;
+            }
+
+            .decorative-line {
+                margin: 15px auto;
             }
 
             .right-side {
                 flex: 1;
+                min-height: 50vh;
             }
 
             .welcome-text {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
 
             .form-container {
@@ -499,8 +519,9 @@
 
         @media (max-width: 576px) {
             .left-side {
-                flex: 0 0 180px;
+                flex: 0 0 auto;
                 padding: 20px;
+                min-height: 50vh;
             }
 
             .logo-side img {
@@ -508,16 +529,62 @@
                 height: 90px;
             }
 
+            .logo-wrapper {
+                margin-bottom: 15px;
+            }
+
             .brand-title {
                 font-size: 1.8rem;
+                letter-spacing: 2px;
+            }
+
+            .brand-subtitle {
+                font-size: 0.9rem;
+                letter-spacing: 2px;
+            }
+
+            .decorative-line {
+                margin: 12px auto;
+                width: 100px;
+            }
+
+            .right-side {
+                padding: 25px 20px;
             }
 
             .welcome-text {
                 font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+
+            .welcome-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 30px;
             }
 
             .form-control {
                 padding: 16px 18px 16px 50px;
+                font-size: 1rem;
+            }
+
+            .input-icon {
+                left: 18px;
+                font-size: 1.1rem;
+            }
+
+            .btn-login {
+                padding: 16px;
+                font-size: 1.05rem;
+                letter-spacing: 1.5px;
+            }
+
+            .form-group {
+                margin-bottom: 22px;
+            }
+
+            .alert {
+                padding: 14px 16px;
+                font-size: 0.9rem;
             }
         }
     </style>

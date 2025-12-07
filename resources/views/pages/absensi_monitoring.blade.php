@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Monitoring Absensi Karyawan</h1>
+    <h2 class="fw-bold text-primary-custom mb-4">Monitoring Absensi Karyawan</h2>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
