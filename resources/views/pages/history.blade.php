@@ -10,7 +10,7 @@
 
         <!-- TOMBOL EXPORT EXCEL (SUDAH FIX & BERFUNGSI) -->
        <a href="{{ route('riwayat.export.excel') }}" 
-   class="btn btn-outline-success btn-sm">
+   class="btn btn-primary-custom btn-sm">
     <i class="fas fa-file-excel me-1"></i> Export Excel
 </a>
 
