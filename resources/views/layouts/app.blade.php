@@ -68,72 +68,74 @@
     <div class="main-content">
         @yield('content')
     </div>
+        <!-- MODAL EDIT PROFIL ADMIN -->
+        <div class="modal fade" id="modalProfil" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
 
-    <!-- MODAL EDIT PROFIL ADMIN -->
-    <div class="modal fade" id="modalProfil" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Edit Profil</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
 
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">Edit Profil</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
+                        <div class="modal-body">
 
-                    <div class="modal-body">
-                        
-                        <!-- FOTO PROFIL -->
-                        <div class="text-center mb-3">
-                            <div style="width: 90px; height: 90px; overflow: hidden; border-radius: 50%; margin: auto; border: 2px solid var(--accent); background: #eee;">
-                                <img id="previewFoto" 
-                                    src="{{ Auth::user()->foto ? asset('storage/'.Auth::user()->foto) : 'https://via.placeholder.com/90' }}" 
-                                    class="w-100 h-100" 
-                                    style="object-fit: cover;">
+                            <!-- FOTO PROFIL -->
+                            <div class="text-center mb-3">
+                                <div style="width: 90px; height: 90px; overflow: hidden; border-radius: 50%; margin: auto; border: 2px solid var(--accent); background: #eee;">
+                                    <img id="previewFoto"
+                                        src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://via.placeholder.com/90' }}"
+                                        class="w-100 h-100"
+                                        style="object-fit: cover;">
+                                </div>
+
+                                <label class="btn btn-outline-secondary btn-sm mt-2">
+                                    Ganti Foto
+                                    <input type="file" name="foto" class="d-none" accept="image/*" onchange="previewImage(event)">
+                                </label>
                             </div>
 
-                            <label class="btn btn-outline-secondary btn-sm mt-2">
-                                Ganti Foto
-                                <input type="file" name="foto" class="d-none" accept="image/*" onchange="previewImage(event)">
-                            </label>
+                            <!-- EMAIL -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Email (Login)</label>
+                                <input type="email" class="form-control bg-light" value="{{ Auth::user()->email }}" readonly>
+                            </div>
+
+                            <!-- NAMA -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Nama Lengkap</label>
+                                <input type="text" class="form-control" name="name" value="{{ Auth::user()->name }}" required>
+                            </div>
+
+                            <!-- NO HP -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">No HP</label>
+                                <input type="text" class="form-control" name="no_hp" value="{{ Auth::user()->no_hp ?? '' }}" required>
+                            </div>
+
+                            <!-- ROLE -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Role</label>
+                                <input type="text" class="form-control bg-light" value="{{ Auth::user()->role }}" readonly>
+                            </div>
+
                         </div>
 
-                        <!-- EMAIL -->
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Email (Login)</label>
-                            <input type="email" class="form-control bg-light" value="{{ Auth::user()->email }}" readonly>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Batal
+                            </button>
+                            <button type="submit" class="btn btn-primary-custom">
+                                Simpan Perubahan
+                            </button>
                         </div>
-
-                        <!-- NAMA -->
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="name" value="{{ Auth::user()->name }}" required>
-                        </div>
-
-                        <!-- NO HP -->
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">No HP</label>
-                            <input type="text" class="form-control" name="no_hp" 
-                                value="{{ Auth::user()->no_hp ?? '' }}" required>
-                        </div>
-
-                        <!-- ROLE -->
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Role</label>
-                            <input type="text" class="form-control bg-light" value="{{ Auth::user()->role }}" readonly>
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary-custom">Simpan Perubahan</button>
-                    </div>
-
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
    @stack('scripts')
     <script>

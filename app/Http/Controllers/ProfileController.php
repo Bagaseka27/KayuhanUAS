@@ -11,42 +11,36 @@ class ProfileController extends Controller
 {
     public function update(Request $request)
     {
-        /** @var \App\Models\User $user */
         $user = Auth::user();
-        $karyawan = Karyawan::find($user->email); // sinkron karyawan
+        $karyawan = Karyawan::find($user->email);
 
-        // VALIDASI
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:15',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'no_hp' => 'nullable|string|max:15',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // UPDATE NAMA + NO HP PADA USER
+        // update user
         $user->name = $request->name;
-        $user->phone = $request->phone;
+        $user->no_hp = $request->no_hp;
 
-        // JIKA ADA FOTO BARU
-        if ($request->hasFile('photo')) {
+        if ($request->hasFile('foto')) {
 
-            // Hapus foto lama (jika ada dan bukan default)
-            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
-                Storage::disk('public')->delete($user->photo);
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
             }
 
-            // Simpan foto baru
-            $path = $request->file('photo')->store('profile_photos', 'public');
-            $user->photo = $path;
+            $path = $request->file('foto')->store('profile_fotos', 'public');
+            $user->foto = $path;
         }
 
         $user->save();
 
+        // sync ke tabel karyawan
         if ($karyawan) {
-
             $karyawan->NAMA = $request->name;
-            $karyawan->NO_HP = $request->phone;
+            $karyawan->NO_HP = $request->no_hp;
 
-            // Sinkronkan foto juga
             if (isset($path)) {
                 $karyawan->FOTO = $path;
             }
@@ -56,4 +50,5 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Profil berhasil diperbarui!');
     }
+
 }

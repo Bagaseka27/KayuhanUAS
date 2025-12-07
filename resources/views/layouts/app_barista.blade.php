@@ -19,8 +19,8 @@
     <div class="sidebar">
         <div class="profile-section" data-bs-toggle="modal" data-bs-target="#modalProfil" title="Klik untuk Edit Profil">
             <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; overflow: hidden;">
-                @if(Auth::user()->photo)
-                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                @if(Auth::user()->foto)
+                    <img src="{{ asset('storage/' . Auth::user()->foto) }}" style="width: 100%; height: 100%; object-fit: cover;">
                 @else
                     <i class="fas fa-user text-dark"></i>
                 @endif
@@ -85,18 +85,18 @@
                         <div class="text-center mb-3">
                             <div style="width: 100px; height: 100px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid var(--accent); overflow: hidden;">
                                 <img id="avatarPreview" 
-                                    src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : '' }}" 
-                                    class="{{ Auth::user()->photo ? '' : 'd-none' }}" 
+                                    src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : '' }}" 
+                                    class="{{ Auth::user()->foto ? '' : 'd-none' }}" 
                                     style="width: 100%; height: 100%; object-fit: cover;">
                                 
-                                <i id="avatarIcon" class="fas fa-user fa-3x text-muted {{ Auth::user()->photo ? 'd-none' : '' }}"></i>
+                                <i id="avatarIcon" class="fas fa-user fa-3x text-muted {{ Auth::user()->foto ? 'd-none' : '' }}"></i>
                             </div>
                             
                             <div class="mt-2">
-                                <label for="photoInput" class="btn btn-sm btn-outline-secondary" style="cursor: pointer;">
+                                <label for="fotoInput" class="btn btn-sm btn-outline-secondary" style="cursor: pointer;">
                                     <i class="fas fa-camera me-1"></i> Ganti Foto
                                 </label>
-                                <input type="file" id="photoInput" name="photo" class="d-none" accept="image/*" onchange="previewImage(event)">
+                                <input type="file" id="fotoInput" name="foto" class="d-none" accept="image/*" onchange="previewImage(event)">
                             </div>
                         </div>
                         
@@ -112,8 +112,9 @@
 
                         <div class="mb-3">
                             <label class="form-label small fw-bold">No HP</label>
-                            <input type="text" name="phone" class="form-control" value="{{ Auth::user()->phone }}">
+                            <input type="text" name="no_hp" class="form-control" value="{{ Auth::user()->no_hp }}">
                         </div>
+
 
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Jabatan / Role</label>
