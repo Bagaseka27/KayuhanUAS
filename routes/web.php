@@ -20,7 +20,11 @@ use App\Http\Controllers\StokGudangController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\StokRombongController;
 use App\Http\Controllers\JabatanController;
+
 use App\Http\Controllers\DashboardBaristaController;
+
+use App\Http\Controllers\DashboardController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +55,7 @@ Route::post('/logout', function () {
 |--------------------------------------------------------------------------
 */
 Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
-Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('transaksi.export');
+#Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('transaksi.export');
 
 /*
 |--------------------------------------------------------------------------
@@ -61,7 +65,7 @@ Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('t
 Route::middleware(['auth', 'admin'])->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', fn () => view('pages.dashboard.admin'))->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ADMIN ROUTES (dalam middleware auth,admin)
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
@@ -195,3 +199,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+
+Route::get('/transaksi/export/excel', [TransaksiController::class, 'exportExcel'])
+    ->name('riwayat.export.excel');
+
+Route::get('/transaksi/cetak/pdf', [TransaksiController::class, 'cetakLaporan'])
+    ->name('riwayat.cetak.pdf');

@@ -5,6 +5,26 @@
 @section('content')
 
     <div class="d-flex justify-content-between align-items-center mb-4">
+<<<<<<< HEAD
+    <h2 class="fw-bold text-primary-custom mb-0">Riwayat Transaksi</h2>
+    <div class="d-flex gap-2">
+
+        <!-- TOMBOL EXPORT EXCEL (SUDAH FIX & BERFUNGSI) -->
+       <a href="{{ route('riwayat.export.excel') }}" 
+   class="btn btn-outline-success btn-sm">
+    <i class="fas fa-file-excel me-1"></i> Export Excel
+</a>
+
+        <!-- TOMBOL CETAK LAPORAN (TIDAK DIUBAH) -->
+        <a href="{{ route('riwayat.cetak.pdf') }}" 
+           class="btn btn-primary-custom btn-sm" target="_blank">
+            <i class="fas fa-print me-1"></i> Cetak Laporan
+        </a>
+
+    </div>
+</div>
+    <!-- Filter -->
+=======
         <h3 class="fw-bold text-primary-custom mb-0">Riwayat Transaksi</h3>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-success btn-sm">
@@ -17,6 +37,7 @@
     </div>
 
     <!-- FILTER TANGGAL -->
+>>>>>>> f841a3dd4bc7efd6ccfde9cb96208e3cf57f460d
     <div class="stat-card mb-4 py-3">
         <form method="GET" class="row g-3 align-items-end">
 

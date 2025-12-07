@@ -5,11 +5,43 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-primary-custom">Riwayat Transaksi</h1>
-        <div class="text-end">
-            {{-- Bagian Waktu Dibuat Dinamis --}}
-            <h6 class="fw-bold text-primary-custom mb-0" id="current-date">{{ date('l, d M Y') }}</h6>
-            <small class="text-muted">Waktu Server: <span id="current-time-riwayat"></span></small>
+        <h1 class="h3 mb-0 text-primary-custom">Riwayat Transaksi</h1>
+        
+        <div class="d-flex gap-2 align-items-center">
+            
+            {{-- BAGIAN FUNGSI EKSPORT & CETAK (HANYA UNTUK ADMIN) --}}
+            @if(Auth::check() && Auth::user()->role === 'Admin')
+                
+                {{-- Form Tersembunyi untuk Export Excel --}}
+                <form id="export-excel-form" method="GET" action="{{ route('riwayat.export.excel') }}" style="display: none;">
+                    <input type="hidden" name="from_date" value="{{ $fromDate ?? date('Y-m-d') }}">
+                    <input type="hidden" name="to_date" value="{{ $toDate ?? date('Y-m-d') }}">
+                </form>
+
+                {{-- Form Tersembunyi untuk Cetak Laporan --}}
+                <form id="cetak-laporan-form" method="GET" action="{{ route('riwayat.cetak.pdf') }}" style="display: none;">
+                    <input type="hidden" name="from_date" value="{{ $fromDate ?? date('Y-m-d') }}">
+                    <input type="hidden" name="to_date" value="{{ $toDate ?? date('Y-m-d') }}">
+                </form>
+
+                {{-- Tombol Export Excel --}}
+                <button class="btn btn-outline-success btn-sm" onclick="document.getElementById('export-excel-form').submit()">
+                    <i class="fas fa-file-excel me-1"></i> Export Excel
+                </button>
+                
+                {{-- Tombol Cetak Laporan --}}
+                <button class="btn btn-info-custom btn-sm" onclick="document.getElementById('cetak-laporan-form').submit()">
+                    <i class="fas fa-print me-1"></i> Cetak Laporan
+                </button>
+            
+            @endif
+            {{-- AKHIR BAGIAN FUNGSI EKSPORT & CETAK --}}
+
+            <div class="text-end ms-3">
+                {{-- Bagian Waktu Dibuat Dinamis --}}
+                <h6 class="fw-bold text-primary-custom mb-0" id="current-date">{{ date('l, d M Y') }}</h6>
+                <small class="text-muted">Waktu Server: <span id="current-time-riwayat"></span></small>
+            </div>
         </div>
     </div>
 
@@ -126,7 +158,7 @@
     
     {{-- Pagination Dinamis --}}
     <div class="d-flex justify-content-end mt-3">
-         {{ $riwayats->links() }}
+        {{ $riwayats->links() }}
     </div>
 </div>
 
