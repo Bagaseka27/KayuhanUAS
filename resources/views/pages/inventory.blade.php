@@ -3,17 +3,17 @@
 @section('title', 'Stok & Inventory - Kayuhan')
 
 @section('content')
-<h3 class="fw-bold text-primary-custom mb-4">Kontrol Stok & Logistik</h3>
+<h3 class="fw-bold text-primary-custom mb-4">Kontrol Stok</h3>
 
 <ul class="nav nav-tabs mb-4" id="inventoryTabs" role="tablist">
     <li class="nav-item">
         <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-gudang">
-            <i class="fas fa-warehouse me-2"></i>Stok Gudang (Master)
+            <i class="fas fa-warehouse me-2"></i>Stok Gudang
         </button>
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-rombong">
-            <i class="fas fa-truck-loading me-2"></i>Stok Rombong (Detail)
+            <i class="fas fa-truck-loading me-2"></i>Stok Rombong
         </button>
     </li>
 </ul>
@@ -24,7 +24,7 @@
     <div class="tab-pane fade show active" id="tab-gudang">
         <div class="d-flex justify-content-end mb-3">
             <button class="btn btn-primary-custom btn-sm" data-bs-toggle="modal" data-bs-target="#modalStokGudang" data-mode="create">
-                <i class="fas fa-plus me-2"></i> Tambah Barang Master
+                <i class="fas fa-plus me-2"></i> Tambah Barang
             </button>
         </div>
 
