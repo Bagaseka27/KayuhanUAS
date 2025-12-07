@@ -198,7 +198,7 @@
         <div class="tab-pane fade" id="tab-jadwal">
             <div class="d-flex justify-content-between mb-3">
                 <div class="alert alert-light border shadow-sm py-2 px-3 mb-0 d-flex align-items-center text-primary-custom">
-                    <i class="fas fa-info-circle me-2"></i> Jadwal diatur per minggu.
+                    <i class="fas fa-info-circle me-2"></i> Jadwal diatur per hari.
                 </div>
                 <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);" data-bs-toggle="modal" data-bs-target="#modalJadwal" onclick="resetJadwalModal()">
                     <i class="fas fa-calendar-plus me-2"></i> Buat Jadwal
