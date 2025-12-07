@@ -40,8 +40,13 @@
             <a href="{{ route('menu.index') }}" class="menu-item {{ request()->routeIs('menu') ? 'active' : '' }}">
                 <i class="fas fa-coffee"></i> Manajemen Menu
             </a>
+<<<<<<< HEAD
             <a href="{{ route('inventory') }}" class="menu-item {{ request()->routeIs('inventory') ? 'active' : '' }}">
                 <i class="fas fa-boxes"></i> Manajemen Stok
+=======
+            <a href="{{ route('inventory.index') }}" class="menu-item {{ request()->routeIs('inventory.index') ? 'active' : '' }}">
+                <i class="fas fa-boxes"></i> Stok (Gudang/Rombong)
+>>>>>>> 1d4468513a1aafbee4bf1b5d30432fd5d4c5e9d9
             </a>
             <a href="{{ route('locations.index') }}" class="menu-item {{ request()->routeIs('locations.index') ? 'active' : '' }}">
                 <i class="fas fa-map-marker-alt"></i> Manajemen Lokasi
