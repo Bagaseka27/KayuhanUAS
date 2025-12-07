@@ -20,7 +20,7 @@ use App\Http\Controllers\StokGudangController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\StokRombongController;
 use App\Http\Controllers\JabatanController;
-
+use App\Http\Controllers\DashboardBaristaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -169,9 +169,11 @@ Route::middleware(['auth', 'barista'])
     ->name('barista.')
     ->group(function () {
 
-    Route::get('/dashboard', [TransaksiController::class, 'indexDashboardBarista'])->name('dashboard');
+    Route::get('/dashboard', [DashboardBaristaController::class, 'index'])
+         ->name('dashboard');
 
     Route::get('/pos', [MenuController::class, 'pos'])->name('pos');
+
     Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
 
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
@@ -180,7 +182,8 @@ Route::middleware(['auth', 'barista'])
     Route::post('/absensi/datang', [AbsensiController::class, 'storeDatang'])->name('absensi.storeDatang');
     Route::post('/absensi/pulang', [AbsensiController::class, 'storePulang'])->name('absensi.storePulang');
 
-    Route::get('/riwayat', [TransaksiController::class, 'indexRiwayat'])->name('riwayat');
+    Route::get('/riwayat', [TransaksiController::class, 'indexRiwayatBarista'])
+         ->name('riwayat');
 });
 
 /*

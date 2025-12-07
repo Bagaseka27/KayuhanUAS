@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('PASSWORD', 255)->nullable();
             $table->string('NO_HP', 12)->nullable();
             $table->string('ROLE',10)->nullable();
+            $table->string('FOTO', 255)->nullable();
             $table->rememberToken()->nullable();
             $table->foreign('ID_JABATAN')->references('ID_JABATAN')->on('jabatan')->restrictOnDelete()->restrictOnUpdate();
             $table->timestamps();

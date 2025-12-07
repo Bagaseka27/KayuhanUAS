@@ -156,6 +156,36 @@ class TransaksiController extends Controller
             'toDate'
         ));
     }
+    public function indexRiwayatBarista(Request $request)
+    {
+        $fromDate = $request->input('from_date', now()->startOfMonth()->toDateString());
+        $toDate   = $request->input('to_date', now()->toDateString());
+
+        $email = Auth::user()->email;
+
+        $query = Transaksi::with(['detailtransaksi.menu'])
+                        ->where('EMAIL', $email)
+                        ->whereBetween('DATETIME', [
+                                $fromDate . ' 00:00:00',
+                                $toDate . ' 23:59:59'
+                        ]);
+
+        $total_pendapatan = (clone $query)->sum('TOTAL_BAYAR');
+        $pendapatan_tunai = (clone $query)->where('METODE_PEMBAYARAN', 'Tunai')->sum('TOTAL_BAYAR');
+        $pendapatan_qris  = (clone $query)->where('METODE_PEMBAYARAN', 'QRIS')->sum('TOTAL_BAYAR');
+
+        $riwayats = $query->orderBy('DATETIME', 'desc')->paginate(20);
+
+        return view('pages.history_barista', compact(
+            'riwayats',
+            'total_pendapatan',
+            'pendapatan_tunai',
+            'pendapatan_qris',
+            'fromDate',
+            'toDate'
+        ));
+    }
+
 
 
     

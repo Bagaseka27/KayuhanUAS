@@ -50,21 +50,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- LOOP DATA JADWAL (dari $schedules) --}}
-                    @forelse ($schedules ?? [] as $schedule)
-                    <tr>
-                        {{-- Key array ini sudah sesuai dengan yang di-format dari Controller --}}
-                        <td class="fw-bold">{{ $schedule['tanggal'] }}</td> 
-                        <td>{{ $schedule['nama'] }}</td>
-                        <td><span class="badge bg-light text-dark border">{{ $schedule['lokasi'] }}</span></td>
-                        <td>{{ $schedule['jam'] }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="text-center text-muted">Tidak ada jadwal shift hari ini.</td>
-                    </tr>
-                    @endforelse
+                    @if ($schedule)
+                        <tr>
+                            <td class="fw-bold">
+                                {{ \Carbon\Carbon::parse($schedule->TANGGAL)->format('d M Y') }}
+                            </td>
+
+                            <td>
+                                {{ $schedule->karyawan->NAMA ?? '-' }}
+                            </td>
+
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    {{ $schedule->cabang->NAMA_LOKASI ?? '-' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ \Carbon\Carbon::parse($schedule->JAM_MULAI)->format('H:i') }}
+                                -
+                                {{ \Carbon\Carbon::parse($schedule->JAM_SELESAI)->format('H:i') }}
+                            </td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">
+                                Tidak ada jadwal shift hari ini.
+                            </td>
+                        </tr>
+                    @endif
                 </tbody>
+
+
             </table>
         </div>
     </div>

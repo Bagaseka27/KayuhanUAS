@@ -73,56 +73,76 @@
     <div class="modal fade" id="modalProfil" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Edit Profil</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center mb-3">
-                        <div style="width: 80px; height: 80px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 2px solid var(--accent);">
-                            <i class="fas fa-user fa-3x text-muted"></i>
-                        </div>
-                        <button class="btn btn-sm btn-outline-secondary mt-2">Ganti Foto</button>
+                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Edit Profil</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    
-                    <form action="#" method="POST">
-                        @csrf
-                        <!-- 1. Email (Readonly) -->
+
+                    <div class="modal-body">
+                        
+                        <!-- FOTO PROFIL -->
+                        <div class="text-center mb-3">
+                            <div style="width: 90px; height: 90px; overflow: hidden; border-radius: 50%; margin: auto; border: 2px solid var(--accent); background: #eee;">
+                                <img id="previewFoto" 
+                                    src="{{ Auth::user()->foto ? asset('storage/'.Auth::user()->foto) : 'https://via.placeholder.com/90' }}" 
+                                    class="w-100 h-100" 
+                                    style="object-fit: cover;">
+                            </div>
+
+                            <label class="btn btn-outline-secondary btn-sm mt-2">
+                                Ganti Foto
+                                <input type="file" name="foto" class="d-none" accept="image/*" onchange="previewImage(event)">
+                            </label>
+                        </div>
+
+                        <!-- EMAIL -->
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Email (Login)</label>
-                            <input type="email" class="form-control bg-light" value="{{ Auth::user()->email ?? '' }}" readonly>
+                            <input type="email" class="form-control bg-light" value="{{ Auth::user()->email }}" readonly>
                         </div>
 
-                        <!-- 2. Nama Lengkap -->
+                        <!-- NAMA -->
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Nama Lengkap</label>
-                            <input type="text" class="form-control" value="{{ Auth::user()->name ?? '' }}">
+                            <input type="text" class="form-control" name="name" value="{{ Auth::user()->name }}" required>
                         </div>
 
-                        <!-- 3. No HP (BARU DITAMBAHKAN) -->
+                        <!-- NO HP -->
                         <div class="mb-3">
                             <label class="form-label small fw-bold">No HP</label>
-                            <input type="text" class="form-control" value="08123456789">
+                            <input type="text" class="form-control" name="no_hp" 
+                                value="{{ Auth::user()->no_hp ?? '' }}" required>
                         </div>
 
-                        <!-- 4. Jabatan / Role -->
+                        <!-- ROLE -->
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Role</label>
-                            <input type="text" class="form-control bg-light" value="Admin / Owner" readonly>
+                            <input type="text" class="form-control bg-light" value="{{ Auth::user()->role }}" readonly>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary-custom">Simpan Perubahan</button>
-                </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary-custom">Simpan Perubahan</button>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
    @stack('scripts')
     <script>
+
+        function previewImage(event) {
+            const output = document.getElementById('previewFoto');
+            output.src = URL.createObjectURL(event.target.files[0]);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('sidebarToggle');
             const sidebar = document.querySelector('.sidebar');
