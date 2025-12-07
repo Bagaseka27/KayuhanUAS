@@ -12,10 +12,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('jabatan', function (Blueprint $table) {
-            $table->integer('ID_JABATAN')->primary();
+            $table->increments('ID_JABATAN');  // AUTO_INCREMENT PRIMARY KEY
             $table->string('NAMA_JABATAN', 50)->nullable();
             $table->integer('GAJI_POKOK_PER_HARI')->nullable();
-            $table->integer('BONUS_PER_HARI')->nullable();
+            $table->integer('BONUS_PER_CUP')->nullable();
             $table->timestamps();
         });
     }

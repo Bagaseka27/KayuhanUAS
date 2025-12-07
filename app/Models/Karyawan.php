@@ -20,6 +20,7 @@ class Karyawan extends Model
         'NO_HP',
         'ROLE',
         'ID_CABANG',
+        'ID_JABATAN',
         'ID_ROMBONG',
         'remember_token'
     ];

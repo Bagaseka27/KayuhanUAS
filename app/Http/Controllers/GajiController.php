@@ -2,43 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Gaji;
 use Illuminate\Http\Request;
+use App\Models\Gaji;
+use App\Models\Karyawan;
 
 class GajiController extends Controller
 {
-    public function index()
-    {
-        Gaji::with('karyawan')->get();
-        return view('gaji.index',compact('gajis'));
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'EMAIL'             => 'required|string|exists:karyawan,EMAIL',
-            'PERIODE'           => 'required|string',
-            'JUMLAH_HARI_MASUK' => 'required|integer',
-            'TOTAL_GAJI_POKOK'  => 'required|integer',
-            'TOTAL_BONUS'       => 'required|integer',
-            'TOTAL_KOMPENSASI'  => 'required|integer',
+            'EMAIL' => 'required|exists:karyawan,EMAIL',
+            'PERIODE' => 'required|string',
+            'JUMLAH_HARI_MASUK' => 'required|integer|min:0',
+            'INPUT_BONUS' => 'nullable|integer|min:0', // jumlah cup
+            'TOTAL_KOMPENSASI' => 'nullable|integer|min:0',
         ]);
 
-        $validated['TOTAL_GAJI_AKHIR'] =
-            $validated['TOTAL_GAJI_POKOK'] +
-            $validated['TOTAL_BONUS'] +
-            $validated['TOTAL_KOMPENSASI'];
+        $karyawan = Karyawan::with('jabatan')->where('EMAIL', $validated['EMAIL'])->first();
+        if (!$karyawan || !$karyawan->jabatan) {
+            return redirect()->back()->with('error','Data jabatan karyawan tidak ditemukan');
+        }
 
-        Gaji::create($validated);
+        $gajiPerHari = (float) $karyawan->jabatan->GAJI_POKOK_PER_HARI;
+        $bonusPerCup = (float) $karyawan->jabatan->BONUS_PER_CUP;
 
-        return redirect()->back()->with('success', 'Gaji berhasil ditambahkan');
-    }
+        $jumlahHari = (int) $validated['JUMLAH_HARI_MASUK'];
+        $inputBonusCups = (int) ($validated['INPUT_BONUS'] ?? 0);
+        $kompensasi = (int) ($validated['TOTAL_KOMPENSASI'] ?? 0);
 
+        $totalGajiPokok = $jumlahHari * $gajiPerHari;
+        $totalBonus = $inputBonusCups * $bonusPerCup;
+        $totalAkhir = $totalGajiPokok + $totalBonus + $kompensasi;
 
+        Gaji::create([
+            'EMAIL' => $validated['EMAIL'],
+            'PERIODE' => $validated['PERIODE'],
+            'JUMLAH_HARI_MASUK' => $jumlahHari,
+            'TOTAL_GAJI_POKOK' => $totalGajiPokok,
+            'TOTAL_BONUS' => $totalBonus,
+            'TOTAL_KOMPENSASI' => $kompensasi,
+            'TOTAL_GAJI_AKHIR' => $totalAkhir,
+        ]);
 
-    public function show($id)
-    {
-        return Gaji::find($id);
+        return redirect()->back()->with('success','Gaji berhasil ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -46,29 +52,47 @@ class GajiController extends Controller
         $gaji = Gaji::findOrFail($id);
 
         $validated = $request->validate([
-            'PERIODE'           => 'sometimes|string',
-            'JUMLAH_HARI_MASUK' => 'sometimes|integer',
-            'TOTAL_GAJI_POKOK'  => 'sometimes|integer',
-            'TOTAL_BONUS'       => 'sometimes|integer',
-            'TOTAL_KOMPENSASI'  => 'sometimes|integer',
+            'PERIODE' => 'sometimes|string',
+            'JUMLAH_HARI_MASUK' => 'sometimes|integer|min:0',
+            'INPUT_BONUS' => 'sometimes|integer|min:0',
+            'TOTAL_KOMPENSASI' => 'sometimes|integer|min:0',
         ]);
 
-        $gaji->update($validated);
+        $karyawan = $gaji->karyawan()->with('jabatan')->first();
+        if (!$karyawan || !$karyawan->jabatan) {
+            return redirect()->back()->with('error','Data jabatan karyawan tidak ditemukan');
+        }
 
-        $gaji->TOTAL_GAJI_AKHIR =
-            $gaji->TOTAL_GAJI_POKOK +
-            $gaji->TOTAL_BONUS +
-            $gaji->TOTAL_KOMPENSASI;
+        $gajiPerHari = (float) $karyawan->jabatan->GAJI_POKOK_PER_HARI;
+        $bonusPerCup = (float) $karyawan->jabatan->BONUS_PER_CUP;
 
-        $gaji->save();
+        $hari = $validated['JUMLAH_HARI_MASUK'] ?? $gaji->JUMLAH_HARI_MASUK;
+        $inputBonusCups = $validated['INPUT_BONUS'] ?? null;
 
-        return redirect()->back()->with('success', 'Gaji berhasil diupdate');
+        if ($inputBonusCups !== null) {
+            $totalBonus = $inputBonusCups * $bonusPerCup;
+        } else {
+            $totalBonus = $gaji->TOTAL_BONUS;
+        }
+
+        $totalGajiPokok = $hari * $gajiPerHari;
+        $kompensasi = $validated['TOTAL_KOMPENSASI'] ?? $gaji->TOTAL_KOMPENSASI;
+
+        $gaji->update([
+            'PERIODE' => $validated['PERIODE'] ?? $gaji->PERIODE,
+            'JUMLAH_HARI_MASUK' => $hari,
+            'TOTAL_GAJI_POKOK' => $totalGajiPokok,
+            'TOTAL_BONUS' => $totalBonus,
+            'TOTAL_KOMPENSASI' => $kompensasi,
+            'TOTAL_GAJI_AKHIR' => $totalGajiPokok + $totalBonus + $kompensasi,
+        ]);
+
+        return redirect()->back()->with('success','Gaji berhasil diupdate');
     }
-
 
     public function destroy($id)
     {
         Gaji::destroy($id);
-        return redirect()->back()->with('success', 'Gaji berhasil dihapus');
+        return redirect()->back()->with('success','Gaji berhasil dihapus');
     }
 }

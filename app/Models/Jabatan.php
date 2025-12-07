@@ -20,7 +20,7 @@ class Jabatan extends Model
     protected $fillable = [
         'NAMA_JABATAN',
         'GAJI_POKOK_PER_HARI',
-        'BONUS_PER_HARI'
+        'BONUS_PER_CUP'
     ];
 
     public function karyawan()
