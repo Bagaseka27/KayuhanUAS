@@ -107,22 +107,31 @@ class TransaksiController extends Controller
     // ------------------------------------------------------------------
     public function indexRiwayat(Request $request)
     {
+<<<<<<< HEAD
         // Mendapatkan query dasar dengan eager loading relasi
         $query = Transaksi::with(['karyawan', 'detailtransaksi.menu']);
                             
         // --- 1. FILTER TANGGAL ---
+=======
+        // Filter tanggal
+>>>>>>> f841a3dd4bc7efd6ccfde9cb96208e3cf57f460d
         $fromDate = $request->input('from_date', now()->startOfMonth()->toDateString());
-        $toDate = $request->input('to_date', now()->toDateString());
-        $query->whereBetween('DATETIME', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
+        $toDate   = $request->input('to_date', now()->toDateString());
 
-        // --- 2. LOGIKA PEMISAHAN PERAN (Filter Barista) ---
         $is_admin = Auth::check() && Auth::user()->role === 'Admin';
+        $email    = Auth::user()->email ?? null;
 
-        if (!$is_admin) {
-            // JIKA BARISTA: Filter oleh email
-            $query->where('EMAIL', Auth::user()->email);
-        }
+        // =============================
+        // 1. QUERY DATA TABEL (PAGE)
+        // =============================
+        $riwayats = Transaksi::with(['karyawan', 'detailtransaksi.menu'])
+            ->when(!$is_admin, fn($q) => $q->where('EMAIL', $email))
+            ->whereBetween('DATETIME', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59'])
+            ->orderBy('DATETIME','desc')
+            ->paginate(20)
+            ->appends($request->except('page'));
 
+<<<<<<< HEAD
         // --- 3. KALKULASI RINGKASAN ---
         // Kalkulasi total pendapatan
         $total_pendapatan = (clone $query)->sum('TOTAL_BAYAR');
@@ -147,7 +156,45 @@ class TransaksiController extends Controller
             // BARISTA menggunakan pages.riwayat
             return view('pages.riwayat', $compactData);
         }
+=======
+        // =============================
+        // 2. QUERY RINGKASAN (TERPISAH)
+        // =============================
+        $summaryQuery = Transaksi::when(!$is_admin, fn($q) => $q->where('EMAIL', $email))
+            ->whereBetween('DATETIME', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
+
+        $total_pendapatan = $summaryQuery->sum('TOTAL_BAYAR');
+
+        $pendapatan_tunai = (clone $summaryQuery)
+            ->where('METODE_PEMBAYARAN', 'Tunai')
+            ->sum('TOTAL_BAYAR');
+
+        $pendapatan_qris = (clone $summaryQuery)
+            ->where('METODE_PEMBAYARAN', 'QRIS')
+            ->sum('TOTAL_BAYAR');
+
+        // Total item
+        $total_items_terjual = DetailTransaksi::whereIn(
+                'ID_TRANSAKSI',
+                $summaryQuery->pluck('ID_TRANSAKSI')
+            )->sum('JML_ITEM');
+
+        // =============================
+        // RETURN VIEW
+        // =============================
+        return view('pages.history', compact(
+            'riwayats',
+            'total_pendapatan',
+            'pendapatan_tunai',
+            'pendapatan_qris',
+            'total_items_terjual',
+            'fromDate',
+            'toDate'
+        ));
+>>>>>>> f841a3dd4bc7efd6ccfde9cb96208e3cf57f460d
     }
+
+
     
     // ------------------------------------------------------------------
     // 4. EXPORT EXCEL (Maatwebsite/Laravel-Excel)
