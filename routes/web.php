@@ -20,6 +20,7 @@ use App\Http\Controllers\StokGudangController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\StokRombongController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\DashboardController;
 
 
 /*
@@ -61,7 +62,7 @@ Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('t
 Route::middleware(['auth', 'admin'])->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', fn () => view('pages.dashboard.admin'))->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ADMIN ROUTES (dalam middleware auth,admin)
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
