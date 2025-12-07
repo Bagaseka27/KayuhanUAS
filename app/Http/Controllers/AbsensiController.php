@@ -144,7 +144,7 @@ class AbsensiController extends Controller
                 'TANGGAL' => $today,
                 'ID_CABANG' => $jadwalHariIni->ID_CABANG, // Ambil dari data Jadwal yang sudah dicek
                 'FOTO_FILE' => $fotoFile, // Simpan nama/path file foto
-                // Tambahkan field lain sesuai kebutuhan tabel AbsenDatang Anda
+
             ]);
         } catch (\Exception $e) {
             // Log error jika penyimpanan gagal
@@ -155,17 +155,15 @@ class AbsensiController extends Controller
         return redirect()->route('barista.absensi.index')->with('success', 'Absen Masuk berhasil dicatat.');
     }
 
-    // =========================================================
-    // 🛑 BAGIAN 4: LOGIKA ABSEN PULANG (STORE PULANG) - Diperbaiki
-    // =========================================================
+
     public function storePulang(Request $request)
     {
         $email = $request->input('EMAIL');
         $dateTimePulang = Carbon::parse($request->input('DATETIME_PULANG'));
         $today = $dateTimePulang->toDateString();
-        $fotoFile = $request->input('FOTO_FILE'); // Asumsi ini berisi path/nama file foto
+        $fotoFile = $request->input('FOTO_FILE'); 
 
-        // 🛑 1. PEMBATASAN: Cek Jadwal Hari Ini
+  
         $jadwalHariIni = Jadwal::where('EMAIL', $email)
                             ->where('TANGGAL', $today)
                             ->first();
@@ -174,7 +172,7 @@ class AbsensiController extends Controller
             return redirect()->route('barista.absensi.index')->with('error', 'Absensi Pulang Gagal! Anda tidak memiliki Jadwal pada tanggal ' . $today . '.');
         }
 
-        // 🛑 2. PEMBATASAN: Cek apakah sudah Absen Pulang hari ini
+      
         $sudahAbsenPulang = AbsenPulang::where('EMAIL', $email)
                                      ->whereDate('DATETIME_PULANG', $today)
                                      ->exists();
@@ -182,24 +180,23 @@ class AbsensiController extends Controller
             return redirect()->route('barista.absensi.index')->with('error', 'Anda sudah Absen Pulang hari ini.');
         }
 
-        // 🛑 3. PEMBATASAN: Pastikan sudah Absen Datang
         $absenDatang = AbsenDatang::where('EMAIL', $email)
                                      ->whereDate('DATETIME_DATANG', $today)
-                                     ->first(); // Ambil record-nya untuk menghitung durasi
+                                     ->first(); 
         if (!$absenDatang) {
-            // Ini akan memicu pesan error yang Anda lihat di screenshot
+       
             return redirect()->route('barista.absensi.index')->with('error', 'Absen Pulang Gagal! Anda belum Absen Masuk hari ini.');
         }
 
-        // ✅ 4. Lakukan Penyimpanan Absen Pulang (LOGIKA HILANG, KINI DITAMBAHKAN)
+        
         try {
             AbsenPulang::create([
                 'EMAIL' => $email,
                 'DATETIME_PULANG' => $dateTimePulang,
                 'TANGGAL' => $today,
-                'ID_CABANG' => $jadwalHariIni->ID_CABANG, // Ambil dari data Jadwal
-                'FOTO_FILE' => $fotoFile, // Simpan nama/path file foto
-                // Anda bisa menambahkan logika hitung durasi kerja di sini
+                'ID_CABANG' => $jadwalHariIni->ID_CABANG, 
+                'FOTO_FILE' => $fotoFile, 
+
             ]);
         } catch (\Exception $e) {
             \Log::error('Gagal menyimpan Absen Pulang: ' . $e->getMessage());
@@ -210,16 +207,13 @@ class AbsensiController extends Controller
         return redirect()->route('barista.absensi.index')->with('success', 'Absen Pulang berhasil dicatat.');
     }
 
-    // =========================================================
-    // 🟢 BAGIAN 5: MONITORING ABSENSI (Index Pulang/Monitoring)
-    // =========================================================
     public function indexPulang(Request $request) 
     {
-        // 1. Dapatkan filter dari request atau default hari ini
+
         $tanggalFilter = $request->input('tanggal', Carbon::today()->toDateString());
         $lokasiFilterId = $request->input('lokasi'); 
 
-        // 2. DATA LOKASI FILTER (DIAMBIL DARI DATABASE UNTUK DROPDOWN)
+
         $lokasiFilter = Cabang::select('ID_CABANG as id', 'NAMA_LOKASI as nama')
                              ->get()
                              ->map(function ($cabang) {
@@ -228,11 +222,10 @@ class AbsensiController extends Controller
                                     'nama' => $cabang->nama,
                                 ];
                             });
-        
-        // 3. DATA KARYAWAN LIST (QUERY)
+   
         $karyawanList = Karyawan::query();
 
-        // 4. Terapkan Filter Lokasi pada Karyawan Query
+   
         if ($lokasiFilterId) {
             if (substr($lokasiFilterId, 0, 1) === 'C') {
                 $karyawanList->where('ID_CABANG', $lokasiFilterId);
@@ -241,7 +234,7 @@ class AbsensiController extends Controller
             }
         }
         
-        // 5. Muat Relasi Absensi dan Cabang/Rombong
+      
         $karyawanList = $karyawanList
             ->with([
                 'absenDatang' => function ($query) use ($tanggalFilter) {

@@ -3,7 +3,7 @@
 @section('title', 'Stok & Inventory - Kayuhan')
 
 @section('content')
-<h3 class="fw-bold text-primary-custom mb-4">Kontrol Stok & Logistik</h3>
+<h3 class="fw-bold text-primary-custom mb-4">Kontrol Stok</h3>
 
 <ul class="nav nav-tabs mb-4" id="inventoryTabs" role="tablist">
     <li class="nav-item">

@@ -19,6 +19,7 @@ class Karyawan extends Model
         'PASSWORD',
         'NO_HP',
         'ROLE',
+        'FOTO',
         'ID_CABANG',
         'ID_JABATAN',
         'ID_ROMBONG',
@@ -42,12 +43,12 @@ class Karyawan extends Model
 
     public function absenDatang()
     {
-        return $this->hasOne(AbsenDatang::class, 'EMAIL');
+        return $this->hasOne(AbsenDatang::class, 'EMAIL','EMAIL');
     }
 
     public function absenPulang()
     {
-        return $this->hasOne(AbsenPulang::class, 'EMAIL');
+        return $this->hasOne(AbsenPulang::class, 'EMAIL','EMAIL');
     }
 
     public function gaji()

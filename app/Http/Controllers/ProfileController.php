@@ -16,32 +16,27 @@ class ProfileController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'no_hp' => 'nullable|string|max:15',
+            'no_hp' => 'nullable|string|max:12',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // update user
+        // Update nama di users
         $user->name = $request->name;
-        $user->no_hp = $request->no_hp;
-
-        if ($request->hasFile('foto')) {
-
-            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
-                Storage::disk('public')->delete($user->foto);
-            }
-
-            $path = $request->file('foto')->store('profile_fotos', 'public');
-            $user->foto = $path;
-        }
-
         $user->save();
 
-        // sync ke tabel karyawan
+        // Update karyawan
         if ($karyawan) {
             $karyawan->NAMA = $request->name;
             $karyawan->NO_HP = $request->no_hp;
 
-            if (isset($path)) {
+            // Cek & simpan foto baru
+            if ($request->hasFile('foto')) {
+
+                if ($karyawan->FOTO && Storage::disk('public')->exists($karyawan->FOTO)) {
+                    Storage::disk('public')->delete($karyawan->FOTO);
+                }
+
+                $path = $request->file('foto')->store('profile_fotos', 'public');
                 $karyawan->FOTO = $path;
             }
 

@@ -19,12 +19,12 @@
     <div class="sidebar">
         <div class="profile-section" data-bs-toggle="modal" data-bs-target="#modalProfil" title="Klik untuk Edit Profil">
             <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; overflow: hidden;">
-                @if(Auth::user()->foto)
-                    <img src="{{ asset('storage/' . Auth::user()->foto) }}" style="width: 100%; height: 100%; object-fit: cover;">
-                @else
-                    <i class="fas fa-user text-dark"></i>
-                @endif
-            </div>
+                <img id="avatarPreview"
+                    src="{{ $foto ? asset('storage/' . $foto) : '' }}"
+                    class="{{ $foto ? '' : 'd-none' }}"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+
+                </div>
             <div class="text-white profile-text">
                 <h6 class="m-0 fw-bold">{{ Auth::user()->name ?? 'Barista' }}</h6>
                 <small style="font-size: 0.7rem; opacity: 0.7;">Role: Barista</small>
@@ -84,10 +84,11 @@
                     <div class="modal-body">
                         <div class="text-center mb-3">
                             <div style="width: 100px; height: 100px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid var(--accent); overflow: hidden;">
-                                <img id="avatarPreview" 
-                                    src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : '' }}" 
-                                    class="{{ Auth::user()->foto ? '' : 'd-none' }}" 
+                                <img id="avatarPreview"
+                                    src="{{ $foto ? asset('storage/' . $foto) : '' }}"
+                                    class="{{ $foto ? '' : 'd-none' }}"
                                     style="width: 100%; height: 100%; object-fit: cover;">
+
                                 
                                 <i id="avatarIcon" class="fas fa-user fa-3x text-muted {{ Auth::user()->foto ? 'd-none' : '' }}"></i>
                             </div>

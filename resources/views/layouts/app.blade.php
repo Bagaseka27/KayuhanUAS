@@ -21,14 +21,19 @@
     <div class="sidebar">
         <!-- Profile Section (Bisa Diklik) -->
         <div class="profile-section" data-bs-toggle="modal" data-bs-target="#modalProfil" title="Klik untuk Edit Profil">
-            <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                <i class="fas fa-user text-dark"></i>
+            <!-- Avatar -->
+            <div style="width: 45px; height: 45px; overflow: hidden; border-radius: 50%; border: 2px solid #fff; margin-right: 10px;">
+                <img src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/45' }}" 
+                    alt="Avatar" class="w-100 h-100" style="object-fit: cover;">
             </div>
+
+            <!-- Nama & Role -->
             <div class="text-white profile-text">
                 <h6 class="m-0 fw-bold">{{ Auth::user()->name ?? 'Admin' }}</h6>
-                <small style="font-size: 0.7rem; opacity: 0.7;">Role: Admin / Owner</small>
+                <small style="font-size: 0.7rem; opacity: 0.7;">Role: {{ Auth::user()->role ?? 'Admin / Owner' }}</small>
             </div>
         </div>
+
 
         <div class="sidebar-menu">
             <a href="{{ route('dashboard') }}" class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -42,7 +47,7 @@
             </a>
 
             <a href="{{ route('inventory.index') }}" class="menu-item {{ request()->routeIs('inventory.index') ? 'active' : '' }}">
-                <i class="fas fa-boxes"></i> Stok (Gudang/Rombong)
+                <i class="fas fa-boxes"></i> Manajemen Stok
             </a>
             <a href="{{ route('locations.index') }}" class="menu-item {{ request()->routeIs('locations.index') ? 'active' : '' }}">
                 <i class="fas fa-map-marker-alt"></i> Manajemen Lokasi
@@ -87,7 +92,7 @@
                             <div class="text-center mb-3">
                                 <div style="width: 90px; height: 90px; overflow: hidden; border-radius: 50%; margin: auto; border: 2px solid var(--accent); background: #eee;">
                                     <img id="previewFoto"
-                                        src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://via.placeholder.com/90' }}"
+                                        src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/90' }}"
                                         class="w-100 h-100"
                                         style="object-fit: cover;">
                                 </div>
@@ -113,7 +118,7 @@
                             <!-- NO HP -->
                             <div class="mb-3">
                                 <label class="form-label small fw-bold">No HP</label>
-                                <input type="text" class="form-control" name="no_hp" value="{{ Auth::user()->no_hp ?? '' }}" required>
+                                <input type="text" class="form-control" name="no_hp" value="{{ $no_hp ?? '' }}" required>
                             </div>
 
                             <!-- ROLE -->
