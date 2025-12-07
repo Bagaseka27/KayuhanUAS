@@ -21,7 +21,7 @@
     </style>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold text-dark mb-0">Manajemen Menu</h3>
+        <h2 class="fw-bold text-primary-custom mb-4">Manajemen Menu</h2>
         
         {{-- Tombol Tambah Menu --}}
         @if(Auth::user()->role == 'Admin')

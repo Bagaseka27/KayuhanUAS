@@ -14,6 +14,9 @@
     
 </head>
 <body>
+    <button class="mobile-toggle-btn" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
 
     <div class="sidebar">
         <!-- Profile Section (Bisa Diklik) -->
@@ -32,16 +35,16 @@
                 <i class="fas fa-home"></i> Dashboard
             </a>
             <a href="{{ route('employee.index') }}" class="menu-item {{ request()->routeIs('employee.index') ? 'active' : '' }}">
-                <i class="fas fa-users"></i> Karyawan & Gaji
+                <i class="fas fa-users"></i> Manajemen Karyawan
             </a>
             <a href="{{ route('menu.index') }}" class="menu-item {{ request()->routeIs('menu') ? 'active' : '' }}">
                 <i class="fas fa-coffee"></i> Manajemen Menu
             </a>
             <a href="{{ route('inventory') }}" class="menu-item {{ request()->routeIs('inventory') ? 'active' : '' }}">
-                <i class="fas fa-boxes"></i> Stok (Gudang/Rombong)
+                <i class="fas fa-boxes"></i> Manajemen Stok
             </a>
             <a href="{{ route('locations.index') }}" class="menu-item {{ request()->routeIs('locations.index') ? 'active' : '' }}">
-                <i class="fas fa-map-marker-alt"></i> Lokasi (Cabang & Rombong)
+                <i class="fas fa-map-marker-alt"></i> Manajemen Lokasi
             </a>
             <a href="{{ route('history') }}" class="menu-item {{ request()->routeIs('history') ? 'active' : '' }}">
                 <i class="fas fa-history"></i> Manajemen Transaksi
@@ -117,6 +120,59 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    @stack('scripts')
+   @stack('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            let hideTimer;
+            let isSidebarOpen = false;
+
+            // Fungsi untuk menyembunyikan tombol dengan class 'd-none'
+            function hideButton() {
+                // Sembunyikan hanya jika sidebar TIDAK terbuka
+                if (toggleBtn && !isSidebarOpen) {
+                    toggleBtn.classList.add('d-none');
+                }
+            }
+
+            // Fungsi untuk menampilkan tombol dan mengatur timer
+            function showButton() {
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('d-none');
+                    
+                    // Reset timer setiap kali tombol ditampilkan
+                    clearTimeout(hideTimer);
+                    hideTimer = setTimeout(hideButton, 3000); // Tombol menghilang setelah 3 detik (3000 ms)
+                }
+            }
+
+            // 1. Event listener untuk toggle sidebar (yang sudah ada)
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', function() {
+                    // Perbarui status sidebar
+                    isSidebarOpen = !sidebar.classList.contains('show');
+                    sidebar.classList.toggle('show');
+                    
+                    if (isSidebarOpen) {
+                        // Jika sidebar terbuka, jangan sembunyikan tombol
+                        clearTimeout(hideTimer);
+                    } else {
+                        // Jika sidebar ditutup, sembunyikan tombol setelah 3 detik
+                        showButton(); 
+                    }
+                });
+            }
+            
+            // 2. Event listener untuk mendeteksi scroll/sentuhan pada dokumen (mobile behavior)
+            // Menggunakan document.documentElement untuk menangkap scroll global
+            document.addEventListener('scroll', showButton);
+            document.addEventListener('touchstart', showButton);
+            document.addEventListener('mousemove', showButton); // Tambahkan mousemove untuk desktop debugging
+
+            // 3. Panggil sekali saat dimuat untuk memulai timer
+            showButton(); 
+        });
+    </script>
 </body>
 </html>

@@ -11,7 +11,7 @@
     @endphp
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold text-primary-custom mb-0">Riwayat Transaksi</h3>
+        <h2 class="fw-bold text-primary-custom mb-0">Riwayat Transaksi</h2>
         <div class="d-flex gap-2">
             <!-- Tombol Export (UI Only) -->
             <button class="btn btn-outline-success btn-sm">
