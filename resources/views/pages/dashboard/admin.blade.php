@@ -11,8 +11,10 @@
             <p class="text-muted">Selamat datang, <span class="fw-bold">{{ Auth::user()->name }}</span> (Owner)!</p>
         </div>
         <div class="d-none d-md-block text-end">
-            <p class="mb-0 fw-bold text-primary-custom">{{ date('l, d M Y') }}</p>
-            <small class="text-muted">System Status: Online</small>
+            <div class="text-end">
+                <span class="fw-bold">{{ now()->translatedFormat('l, d M Y') }}</span><br>
+                <span>Waktu Server: <span id="current-time">--:--:--</span></span>
+            </div>
         </div>
     </div>
 
@@ -136,5 +138,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const timeElement = document.getElementById('current-time');
+
+    function updateTime() {
+        const now = new Date();
+
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Update pertama kali
+    updateTime();
+
+    // Update setiap 1 detik
+    setInterval(updateTime, 1000);
+});
+</script>
+
 
 @endpush
