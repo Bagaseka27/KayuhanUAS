@@ -52,7 +52,7 @@ Route::post('/logout', function () {
 |--------------------------------------------------------------------------
 */
 Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
-Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('transaksi.export');
+#Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('transaksi.export');
 
 /*
 |--------------------------------------------------------------------------
@@ -193,3 +193,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+
+Route::get('/transaksi/export/excel', [TransaksiController::class, 'exportExcel'])
+    ->name('riwayat.export.excel');
+
+Route::get('/transaksi/cetak/pdf', [TransaksiController::class, 'cetakLaporan'])
+    ->name('riwayat.cetak.pdf');
