@@ -21,7 +21,6 @@ class Karyawan extends Model
         'ROLE',
         'FOTO',
         'ID_CABANG',
-        'ID_JABATAN',
         'ID_ROMBONG',
         'remember_token'
     ];

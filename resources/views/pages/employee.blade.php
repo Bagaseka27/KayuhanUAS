@@ -96,7 +96,7 @@
                 <div class="table-responsive">
                     <table class="table custom-table mb-0 align-middle">
                         <thead class="bg-light text-secondary text-uppercase small fw-bold">
-                            <tr><th class="py-3 ps-4">EMAIL (PK)</th><th>NAMA</th><th>NO HP</th><th class="ps-4 text-start" style="width: 120px;">AKSI</th></tr>
+                            <tr><th class="py-3 ps-4">EMAIL (PK)</th><th>NAMA</th><th>NO HP</th><th class="text-center pe-4">AKSI</th></tr>
                         </thead>
                         <tbody class="bg-white">
                             @php
@@ -125,7 +125,7 @@
                 <div class="table-responsive">
                     <table class="table custom-table mb-0 align-middle">
                         <thead class="bg-light text-secondary text-uppercase small fw-bold">
-                            <tr><th class="py-3 ps-4">EMAIL (PK)</th><th>ID JABATAN</th><th>ID ROMBONG</th><th>ID CABANG</th><th>NAMA</th><th>NO HP</th><th>POSISI</th><th class="ps-4 text-start" style="width: 120px;">AKSI</th></tr>
+                            <tr><th class="py-3 ps-4">EMAIL (PK)</th><th>ID JABATAN</th><th>ID ROMBONG</th><th>ID CABANG</th><th>NAMA</th><th>NO HP</th><th>POSISI</th><th class="text-center pe-4">AKSI</th></tr>
                         </thead>
                         <tbody class="bg-white">
                             @php $baristaData = $karyawanData->filter(fn($data) => ($data->role ?? '') == 'Barista' || ($data->jabatan_name ?? '') == 'Barista'); @endphp
@@ -197,7 +197,7 @@
         <div class="tab-pane fade" id="tab-jadwal">
             <div class="d-flex justify-content-between mb-3">
                 <div class="alert alert-light border shadow-sm py-2 px-3 mb-0 d-flex align-items-center text-primary-custom">
-                    <i class="fas fa-info-circle me-2"></i> Jadwal diatur per hari.
+                    <i class="fas fa-info-circle me-2"></i> Jadwal diatur per minggu.
                 </div>
                 <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);" data-bs-toggle="modal" data-bs-target="#modalJadwal" onclick="resetJadwalModal()">
                     <i class="fas fa-calendar-plus me-2"></i> Buat Jadwal
@@ -434,7 +434,7 @@
             new bootstrap.Modal(document.getElementById('modalKaryawan')).show();
         };
 
-        // GAJI 
+        // GAJI LOGIC
         const formGaji = document.getElementById("formGaji");
         const gajiEmployeeSelect = document.getElementById("gaji_employee_select");
         const gajiDaysInput = document.getElementById("gaji_days_input");
@@ -519,10 +519,11 @@
             new bootstrap.Modal(document.getElementById('modalJadwal')).show();
         };
 
+        
         document.getElementById('id_cabang_select')?.addEventListener("change", (e) => { hiddenCabang.value = e.target.value; });
         document.getElementById('id_rombong_select')?.addEventListener("change", (e) => { hiddenRombong.value = e.target.value; });
 
-        // DELETE 
+        // DELETE helper
         window.confirmDelete = function(id, tipe) {
             if (!confirm(`Yakin ingin menghapus data ${tipe} dengan ID ${id} ini?`)) return;
             const formDel = document.createElement('form');
@@ -538,6 +539,7 @@
                 formDel.action = `/jadwal/delete/${encodeURIComponent(id)}`;
                 formDel.insertAdjacentHTML('beforeend', `<input type="hidden" name="_method" value="DELETE">`);
             } else {
+                
                 console.log('Tipe hapus tidak dikenali:', tipe);
                 return;
             }
@@ -545,7 +547,7 @@
             formDel.submit();
         };
 
-        // JABATAN CRUD 
+        // JABATAN CRUD helpers
         window.resetJabatanModal = () => {
             const formJ = document.getElementById('formJabatan');
             formJ.reset();

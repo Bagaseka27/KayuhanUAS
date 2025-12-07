@@ -48,7 +48,7 @@ class EmployeeController extends Controller
         $validatedData = $request->validate([
             'NAMA'          => 'required|string|max:255',
             'ID_JABATAN'    => 'required|exists:jabatan,ID_JABATAN',
-            'NO_TELP'       => 'required|string|max:15',
+            'NO_HP'       => 'required|string|max:15',
             'ALAMAT'        => 'nullable|string|max:255',
         ]);
         
