@@ -23,7 +23,6 @@
                 <h6 class="text-white-50">Total Omset Bulan Ini</h6>
                 {{-- PERBAIKAN: Menambahkan guard ?? 0 --}}
                 <h3 class="fw-bold">Rp {{ number_format($totalOmset ?? 0, 0, ',', '.') }}</h3>
-                <small class="text-white-50"><i class="fas fa-arrow-up"></i> +12% bulan ini</small>
             </div>
         </div>
         <div class="col-md-4">
@@ -31,16 +30,16 @@
                 <h6 class="text-muted">Profit Bersih</h6>
                 {{-- PERBAIKAN: Menambahkan guard ?? 0 --}}
                 <h3 class="fw-bold text-success">Rp {{ number_format($profitBersih ?? 0, 0, ',', '.') }}</h3>
-                <small class="text-muted">Target: Rp {{ number_format($targetProfit ?? 0, 0, ',', '.') }}</small>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stat-card">
                 <h6 class="text-muted">Karyawan Aktif</h6>
-                {{-- PERBAIKAN: Menambahkan guard ?? 0 --}}
                 <h3 class="fw-bold text-primary-custom">{{ $activeStaff ?? 0 }} Staff</h3>
                 {{-- PERBAIKAN: Menghitung Barista dengan guard --}}
-                <small class="text-muted">1 Admin, {{ ($activeStaff ?? 1) - 1 }} Barista</small>
+                <small class="text-muted">
+                    {{ $adminCount }} Admin, {{ $baristaCount }} Barista
+                </small>
             </div>
         </div>
 
@@ -63,10 +62,10 @@
                     </form>
                 </div>
                 
-                <div style="height: 350px;">
-                    {{-- ID CANVAS UNTUK JAVASCRIPT --}}
+                <div class="chart-container" style="position: relative; height: 350px;">
                     <canvas id="salesTrendChart"></canvas>
                 </div>
+
             </div>
         </div>
 
@@ -105,74 +104,37 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Ambil data dari Controller (menambahkan guard kosong [] untuk JS)
-    const salesData = @json($salesTrendData ?? ['labels' => [], 'data' => []]);
-    
-    // 2. Konfigurasi Chart.js
+
+    const salesData = {
+        labels: @json($salesTrendData['labels']),
+        data: @json($salesTrendData['data'])
+    };
+
     const ctx = document.getElementById('salesTrendChart').getContext('2d');
-    
+
+    // 👉 Tambahkan di sini
+    console.log("CTX:", ctx);
+    console.log("Sales Data:", salesData);
+
     new Chart(ctx, {
-        type: 'bar', // Anda bisa ganti ke 'line'
+        type: 'bar',
         data: {
-            labels: salesData.labels, // Nama bulan: Jan, Feb, Mar, dst.
+            labels: salesData.labels,
             datasets: [{
                 label: "Total Penjualan (Rp)",
-                backgroundColor: 'rgba(0, 61, 46, 0.8)', // Warna Hijau Gelap
+                data: salesData.data,
+                backgroundColor: 'rgba(0, 61, 46, 0.8)',
                 borderColor: 'rgba(0, 61, 46, 1)',
-                data: salesData.data, // Data penjualan bulanan
                 borderWidth: 1,
                 borderRadius: 5,
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Penjualan (Rp)',
-                    },
-                    // Format label Y-axis (misalnya 500000 menjadi Rp 500rb)
-                    ticks: {
-                        callback: function(value, index, ticks) {
-                            if (value >= 1000000) {
-                                return 'Rp ' + (value / 1000000).toFixed(1) + ' Jt';
-                            } else if (value >= 1000) {
-                                return 'Rp ' + (value / 1000) + ' Rb';
-                            }
-                            return 'Rp ' + value.toLocaleString('id-ID'); // Format Rupiah
-                        }
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.y !== null) {
-                                label += 'Rp ' + context.parsed.y.toLocaleString('id-ID'); // Format Rupiah
-                            }
-                            return label;
-                        }
-                    }
-                }
-            }
+            maintainAspectRatio: false
         }
     });
 });
 </script>
+
 @endpush
