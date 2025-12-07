@@ -15,8 +15,7 @@ class LocationController extends Controller
         $rombongs = Rombong::all();
         $cabangList = Cabang::pluck('NAMA_LOKASI', 'ID_CABANG')->all();
 
-        // Mengubah panggilan view dari 'locations' menjadi 'location'
-        return view('pages.location', [ // <-- PASTIKAN INI HANYA 'location'
+        return view('pages.location', [ 
             'cabangs' => $cabangs,
             'rombongs' => $rombongs,
             'cabangList' => $cabangList,

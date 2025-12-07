@@ -71,7 +71,6 @@ body {
     display: flex; align-items: center; gap: 12px;
     margin-bottom: 10px;
     width: 100%;
-    /* Styling tambahan dari Barista */
     box-sizing: border-box;
 }
 
@@ -113,7 +112,6 @@ body {
     width: 100%; 
     white-space: normal; 
     line-height: 1.3; 
-    /* Style Barista yang hilang: */
     margin: 0 10px; 
     width: auto;
 }
@@ -158,7 +156,7 @@ body {
 
 .main-content {
     margin-left: 260px;
-    padding: 40px; /* Ambil padding yang lebih besar dari Barista */
+    padding: 40px; 
     width: calc(100% - 260px); 
     min-height: 100vh;
     transition: 0.3s;
@@ -170,10 +168,10 @@ body {
 
 /* 1. KARTU UTAMA (Floating White Card) */
 .card, .card-custom, .stat-card {
-    background: var(--surface); /* #FFFFFF */
+    background: var(--surface); 
     border-radius: 16px;
     border: none !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Bayangan modern */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
     padding: 25px; 
     height: 100%;
     transition: 0.3s;

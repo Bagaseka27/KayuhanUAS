@@ -19,7 +19,6 @@ class Admin
             return $next($request);
         }
 
-        // Kalau bukan admin, redirect ke dashboard barista
         return redirect('/barista/dashboard');
     }
 }

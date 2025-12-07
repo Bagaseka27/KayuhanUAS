@@ -19,7 +19,6 @@ class Barista
             return $next($request);
         }
 
-        // Kalau bukan barista, redirect ke dashboard admin
         return redirect('/dashboard');
     }
 }

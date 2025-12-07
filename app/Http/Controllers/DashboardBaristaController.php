@@ -14,18 +14,18 @@ class DashboardBaristaController extends Controller
         $today = Carbon::today()->toDateString();
         $email = Auth::user()->email;
 
-        // 1️⃣ Total pendapatan shift hari ini
+        // Total pendapatan shift hari ini
         $penjualan_shift_ini = Transaksi::where('EMAIL', $email)
             ->whereDate('DATETIME', $today)
             ->sum('TOTAL_BAYAR');
 
-        // 2️⃣ Total item terjual hari ini
+        // Total item terjual hari ini
         $total_items_terjual = Transaksi::where('EMAIL', $email)
             ->whereDate('DATETIME', $today)
             ->join('detailtransaksi', 'transaksi.ID_TRANSAKSI', '=', 'detailtransaksi.ID_TRANSAKSI')
             ->sum('detailtransaksi.JML_ITEM');
 
-        // 3️⃣ Ambil jadwal barista hari ini
+        // Ambil jadwal barista hari ini
         $schedule = Jadwal::with(['karyawan', 'cabang'])
             ->where('EMAIL', $email)
             ->whereDate('TANGGAL', $today)

@@ -15,9 +15,7 @@ use Carbon\Carbon;
 
 class TransaksiController extends Controller
 {
-    // ================================================================
-    // 1. PENYIMPANAN DATA TRANSAKSI (POS)
-    // ================================================================
+    // PENYIMPANAN DATA TRANSAKSI (POS)
     public function store(Request $request)
     {
         $request->validate([
@@ -74,9 +72,7 @@ class TransaksiController extends Controller
         }
     }
 
-    // ================================================================
-    // 2. DASHBOARD BARISTA
-    // ================================================================
+    // DASHBOARD BARISTA
     public function indexDashboardBarista()
     {
         $today     = now()->toDateString();
@@ -107,9 +103,7 @@ class TransaksiController extends Controller
         ));
     }
 
-    // ================================================================
-    // 3. RIWAYAT TRANSAKSI (Admin & Barista)
-    // ================================================================
+    // RIWAYAT TRANSAKSI (Admin & Barista)
     public function indexRiwayat(Request $request)
     {
         $fromDate = $request->input('from_date', now()->startOfMonth()->toDateString());
@@ -176,9 +170,7 @@ class TransaksiController extends Controller
         ));
     }
 
-    // ================================================================
-    // 4. EXPORT EXCEL
-    // ================================================================
+    // EXPORT EXCEL
     public function exportExcel(Request $request)
     {
         $fromDate   = $request->input('from_date', now()->startOfMonth()->toDateString());
@@ -195,9 +187,7 @@ class TransaksiController extends Controller
         return Excel::download(new TransaksiExport($query), $fileName);
     }
 
-    // ================================================================
-    // 5. CETAK PDF
-    // ================================================================
+    // CETAK PDF
     public function cetakLaporan(Request $request)
     {
         $fromDate   = $request->input('from_date', now()->startOfMonth()->toDateString());
@@ -229,9 +219,7 @@ class TransaksiController extends Controller
         return $pdf->download("Laporan_PDF_{$rolePrefix}_{$fromDate}_sd_{$toDate}.pdf");
     }
 
-    // ================================================================
-    // 6. CRUD DASAR
-    // ================================================================
+    // CRUD DASAR
     public function index()
     {
         return Transaksi::with('menu', 'karyawan')->get();

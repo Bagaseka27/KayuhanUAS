@@ -6,21 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailTransaksi extends Model
 {
-    // Nama tabel di database (sesuai ERD: detailTRX atau detail_transaksi)
     protected $table = 'detailtransaksi';
-    
-    // Asumsi menggunakan ID auto-increment standar
     protected $primaryKey = 'id'; 
     public $incrementing = true;
-    
-    // Detail item tidak perlu created_at dan updated_at
     public $timestamps = false; 
 
-    // Kolom yang dapat diisi secara massal (sesuai payload dari POS)
     protected $fillable = [
-        'ID_TRANSAKSI', // Foreign Key ke tabel 'transaksi'
-        'ID_PRODUK',    // Foreign Key ke tabel 'menu'
-        'JML_ITEM',     // Jumlah produk yang dibeli
+        'ID_TRANSAKSI', 
+        'ID_PRODUK',    
+        'JML_ITEM',     
     ];
 
     // Relasi: DetailTransaksi dimiliki oleh satu Transaksi

@@ -92,8 +92,6 @@ class KaryawanController extends Controller
 
         $validated = $request->validate($rules);
 
-
-        // Jika role berubah/terset ke Admin, kosongkan lokasi
         if (isset($validated['ROLE']) && $validated['ROLE'] === 'Admin') {
             $validated['ID_CABANG'] = null;
             $validated['ID_ROMBONG'] = null;
@@ -106,30 +104,20 @@ class KaryawanController extends Controller
             unset($validated['PASSWORD']);
         }
 
-
         DB::beginTransaction();
         try {
             $karyawan->update($validated);
-
-
             $userUpdateData = [
             'name' => $validated['NAMA'] ?? $karyawan->NAMA,
             'role' => $validated['ROLE'] ?? $karyawan->ROLE,
             ];
 
-
             if (isset($validated['PASSWORD'])) {
                 $userUpdateData['password'] = $validated['PASSWORD'];
             }
-
-
             User::where('email', $email)->update($userUpdateData);
-
-
             DB::commit();
             return redirect()->route('employee.index')->with('success','Data karyawan berhasil diupdate');
-
-
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Gagal update Karyawan/User: '.$e->getMessage());

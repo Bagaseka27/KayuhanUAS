@@ -52,7 +52,7 @@ class StokRombongController extends Controller
                 'barang_id'  => $item['id'],
                 'rombong_id' => $req->rombong_tujuan,
                 'stok_awal'  => $item['qty'],
-                'stok_akhir' => $item['qty'], // default sama
+                'stok_akhir' => $item['qty'], 
             ]);
         }
 

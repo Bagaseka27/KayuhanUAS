@@ -14,36 +14,33 @@ class TransaksiExport implements FromQuery, WithHeadings, WithMapping, ShouldAut
 
     public function __construct(Builder $query)
     {
-        // 1. Terima Query Builder yang sudah difilter dari Controller
+    
         $this->query = $query;
     }
 
     public function query()
     {
-        // 2. Terapkan eager loading untuk relasi yang dibutuhkan:
-        // 'karyawan' untuk nama kasir
-        // 'detailtransaksi.menu' untuk detail produk
+        //'detailtransaksi.menu' untuk detail produk
         return $this->query->with(['karyawan', 'detailtransaksi.menu'])
                            ->orderBy('DATETIME', 'desc');
     }
 
     public function headings(): array
     {
-        // Penyesuaian header agar lebih akurat dengan data yang digabungkan
         return [
             'ID Transaksi',
             'Waktu Transaksi',
             'Kasir (Nama)', 
             'Metode Pembayaran',
             'Total Pembayaran',
-            'Detail Item & Kuantitas', // Kolom gabungan
+            'Detail Item & Kuantitas', 
             'Total Item Terjual',
         ];
     }
 
     public function map($transaksi): array
     {
-        // Inisialisasi variabel untuk perhitungan
+        // Variabel untuk perhitungan
         $totalItems = 0;
         $detailItemsString = '';
 
@@ -53,21 +50,20 @@ class TransaksiExport implements FromQuery, WithHeadings, WithMapping, ShouldAut
         if ($details->isNotEmpty()) {
             $mappedDetails = $details->map(function ($detail) use (&$totalItems) {
                 $namaProduk = $detail->menu->NAMA_PRODUK ?? 'Produk Dihapus';
-                $totalItems += $detail->JML_ITEM; // Hitung total item
+                $totalItems += $detail->JML_ITEM; 
                 return "{$detail->JML_ITEM}x {$namaProduk}";
-            })->implode('; '); // Gabungkan menjadi string tunggal
+            })->implode('; ');
             
             $detailItemsString = $mappedDetails;
         }
-
 
         // 4. Mapping data ke baris Excel
         return [
             $transaksi->ID_TRANSAKSI,
             \Carbon\Carbon::parse($transaksi->DATETIME)->format('Y-m-d H:i:s'),
-            $transaksi->karyawan->NAMA ?? $transaksi->EMAIL, // Fallback ke email jika nama kosong
+            $transaksi->karyawan->NAMA ?? $transaksi->EMAIL, 
             $transaksi->METODE_PEMBAYARAN,
-            $transaksi->TOTAL_BAYAR, // Biarkan sebagai angka jika Excel akan memformatnya
+            $transaksi->TOTAL_BAYAR, 
             $detailItemsString,
             $totalItems,
         ];

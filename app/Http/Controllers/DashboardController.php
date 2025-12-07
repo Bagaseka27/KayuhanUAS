@@ -12,17 +12,15 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    /**
-     * Menampilkan dashboard utama (untuk peran Admin/Owner).
-     */
+
     public function index(Request $request)
     {
-        // PENTING: Inisialisasi Timezone Database ke Jakarta (+07:00)
+        // Inisialisasi Timezone Database ke Jakarta (+07:00)
         DB::statement("SET time_zone = '+07:00'");
         
         $appTimezone = config('app.timezone'); 
         
-        // 1. Filter Tahun
+        // Filter Tahun
         $selectedYear = $request->input('tahun', 2025);
         
         // 2. Metrik Dashboard (untuk bulan saat ini)
@@ -33,22 +31,18 @@ class DashboardController extends Controller
         $transactionsThisMonth = Transaksi::whereRaw('YEAR(DATETIME) = ?', [$currentYear])
             ->whereRaw('MONTH(DATETIME) = ?', [$currentMonth])
             ->get();
-        
-        // --- Metrik ---
 
         
         // TOTAL OMSET BULAN INI
         $totalOmset = $transactionsThisMonth->sum('total_bayar');
         
-        // KARYAWAN AKTIF (Asumsi: status role bukan 'Owner')
+        // KARYAWAN AKTIF 
         $activeStaff = Karyawan::where('role', '!=', 'Owner')->count();
-
         $totalOmset = $transactionsThisMonth->sum('TOTAL_BAYAR');
         $activeStaff = Karyawan::where('role', '!=', 'Owner')->count(); 
-
         $profitBersih = $totalOmset * 0.50; 
         
-        // 3. Data Tren Penjualan Bulanan (untuk Chart)
+        // Data Tren Penjualan Bulanan (untuk Chart)
         $salesTrendData = $this->getMonthlySalesTrend($selectedYear);
 
         // Kirim semua variabel yang diperlukan ke View Admin
@@ -69,8 +63,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Mengambil data total penjualan bulanan untuk chart tren.
-     * @param int $year Tahun yang difilter
+     * @param int 
      * @return array
      */
     protected function getMonthlySalesTrend(int $year): array

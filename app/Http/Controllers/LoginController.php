@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    /**
-     * Menampilkan form login.
-     */
     public function showLoginForm()
     {
         return view('auth.login');
@@ -21,9 +18,6 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Menangani proses login.
-     */
     public function login(Request $request)
     {
         // 1. Validasi input
@@ -36,7 +30,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
-            // 3. Redirect berdasarkan role
+            // Redirect berdasarkan role
             $user = Auth::user();
             
             if ($user->role == 'Admin') {
@@ -45,11 +39,10 @@ class LoginController extends Controller
                 return redirect('/barista/dashboard');
             }
             
-            // Default redirect kalau role tidak dikenali
             return redirect('/');
         }
 
-        // 4. Login gagal
+        // Login gagal
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan salah.',
         ])->onlyInput('email');

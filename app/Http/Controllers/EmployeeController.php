@@ -40,29 +40,24 @@ class EmployeeController extends Controller
             'karyawanData','jadwals','payrollsData','jabatanList','jabatanListFull','cabangList','rombongList','employeeDropdown'
         ));
     }
-    // EmployeeController.php (Tambahkan fungsi ini)
 
     public function update(Request $request, $email)
     {
-        $karyawan = Karyawan::findOrFail($email); // Cari karyawan berdasarkan email (PK)
+        $karyawan = Karyawan::findOrFail($email); 
         
         $validatedData = $request->validate([
-            // Email tidak perlu unique lagi karena kita sedang mengedit data yang sudah ada
             'NAMA'          => 'required|string|max:255',
             'ID_JABATAN'    => 'required|exists:jabatan,ID_JABATAN',
             'NO_TELP'       => 'required|string|max:15',
             'ALAMAT'        => 'nullable|string|max:255',
-            // Tambahkan kolom lain yang di-update jika ada, seperti ID_CABANG, ID_ROMBONG
         ]);
         
         $karyawan->update($validatedData);
         return redirect()->route('employee.index')->with('success', 'Data karyawan berhasil diperbarui!');
     }
 
-    // Tambahkan fungsi destroy juga (opsional untuk tombol hapus)
     public function destroy($email)
     {
-        // 1. Cari dan hapus Karyawan berdasarkan EMAIL (PK)
         $deleted = Karyawan::destroy($email);
 
         if ($deleted) {

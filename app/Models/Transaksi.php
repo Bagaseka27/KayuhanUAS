@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     protected $table = 'transaksi';
-    // Gunakan primary key yang Anda definisikan di ERD
     protected $primaryKey = 'ID_TRANSAKSI'; 
-    public $incrementing = false; // Karena ID_TRANSAKSI adalah custom string
+    public $incrementing = false; 
 
     protected $fillable = [
         'ID_TRANSAKSI',
@@ -22,7 +21,6 @@ class Transaksi extends Model
     ];
 
     // Relasi: Transaksi memiliki banyak Detail Transaksi (1-to-Many)
-    // Relasi ini yang dicari Controller saat menyimpan keranjang
     public function detailtransaksi()
     {
         return $this->hasMany(DetailTransaksi::class, 'ID_TRANSAKSI', 'ID_TRANSAKSI');
