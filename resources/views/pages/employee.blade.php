@@ -97,7 +97,7 @@
                 <div class="table-responsive">
                     <table class="table custom-table mb-0 align-middle">
                         <thead class="bg-light text-secondary text-uppercase small fw-bold">
-                            <tr><th class="py-3 ps-4">EMAIL (PK)</th><th>NAMA</th><th>NO HP</th><th class="text-center pe-4">AKSI</th></tr>
+                            <tr><th class="py-3 ps-4">EMAIL (PK)</th><th>NAMA</th><th>NO HP</th><th class="ps-4 text-start" style="width: 120px;">AKSI</th></tr>
                         </thead>
                         <tbody class="bg-white">
                             @php
@@ -126,7 +126,7 @@
                 <div class="table-responsive">
                     <table class="table custom-table mb-0 align-middle">
                         <thead class="bg-light text-secondary text-uppercase small fw-bold">
-                            <tr><th class="py-3 ps-4">EMAIL (PK)</th><th>ID JABATAN</th><th>ID ROMBONG</th><th>ID CABANG</th><th>NAMA</th><th>NO HP</th><th>POSISI</th><th class="text-center pe-4">AKSI</th></tr>
+                            <tr><th class="py-3 ps-4">EMAIL (PK)</th><th>ID JABATAN</th><th>ID ROMBONG</th><th>ID CABANG</th><th>NAMA</th><th>NO HP</th><th>POSISI</th><th class="ps-4 text-start" style="width: 120px;">AKSI</th></tr>
                         </thead>
                         <tbody class="bg-white">
                             @php $baristaData = $karyawanData->filter(fn($data) => ($data->role ?? '') == 'Barista' || ($data->jabatan_name ?? '') == 'Barista'); @endphp
