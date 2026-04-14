@@ -49,7 +49,6 @@ class EmployeeController extends Controller
             'NAMA'          => 'required|string|max:255',
             'ID_JABATAN'    => 'required|exists:jabatan,ID_JABATAN',
             'NO_HP'       => 'required|string|max:15',
-            'ALAMAT'        => 'nullable|string|max:255',
         ]);
         
         $karyawan->update($validatedData);
