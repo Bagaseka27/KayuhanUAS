@@ -13,11 +13,11 @@ class Transaksi extends Model
     protected $fillable = [
         'ID_TRANSAKSI',
         'EMAIL',
-        'JUMLAH_ITEM',
-        'HARGA_ITEM',
         'DATETIME',
         'TOTAL_BAYAR',
         'METODE_PEMBAYARAN',
+        'STATUS',
+        'XENDIT_ID'
     ];
 
     // Relasi: Transaksi memiliki banyak Detail Transaksi (1-to-Many)

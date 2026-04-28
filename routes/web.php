@@ -54,7 +54,7 @@ Route::post('/logout', function () {
 | EXPORT ROUTES
 |--------------------------------------------------------------------------
 */
-Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
+#Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
 #Route::get('/transaksi/export', [TransaksiController::class, 'export'])->name('transaksi.export');
 
 /*

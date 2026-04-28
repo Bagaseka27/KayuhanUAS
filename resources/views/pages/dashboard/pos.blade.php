@@ -4,7 +4,6 @@
 
 @section('content')
 
-    {{-- Data Menu Diambil dari MenuController@indexPos --}}
     @php
         if (!isset($menuItems)) { $menuItems = collect([]); } 
 
@@ -14,16 +13,13 @@
         ];
     @endphp
 
-    {{-- START: Debugging Block --}}
     @if (!empty($error))
         <div class="alert alert-warning mb-4">
             <strong>Peringatan Menu:</strong> {{ $error }}
         </div>
     @endif
-    {{-- END: Debugging Block --}}
 
     <div class="row g-4">
-        <!-- Bagian Kiri: Daftar Menu -->
         <div class="col-md-8">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold text-primary-custom">Point of Sales</h4>
@@ -41,21 +37,16 @@
                          data-name="{{ $menu->NAMA_PRODUK }}"
                          data-price="{{ $menu->HARGA_JUAL }}">
                         
-                        {{-- === PERBAIKAN TAMPILAN FOTO === --}}
-                        {{-- Menambahkan bg-light agar ada frame, height dinaikkan ke 120px --}}
                         <div class="mb-3 d-flex align-items-center justify-content-center bg-white border" 
                              style="height: 120px; width: 100%; overflow: hidden; border-radius: 10px;">
                             @if($menu->FOTO)
-                                {{-- Menggunakan object-fit: contain agar foto UTUH menyesuaikan kotak --}}
                                 <img src="{{ asset('storage/' . $menu->FOTO) }}" 
                                      alt="{{ $menu->NAMA_PRODUK }}" 
                                      style="width: 100%; height: 100%; object-fit: contain;">
                             @else
-                                {{-- Jika tidak ada, tampilkan ikon default --}}
                                 <i class="{{ $iconMap[$menu->KATEGORI ?? 'Coffee'] ?? 'fas fa-utensils' }} fa-4x text-primary-custom opacity-50"></i>
                             @endif
                         </div>
-                        {{-- ==================================== --}}
 
                         <h6 class="fw-bold mb-1 text-dark">{{ $menu->NAMA_PRODUK }}</h6>
                         <span class="text-success fw-bold">Rp {{ number_format($menu->HARGA_JUAL, 0, ',', '.') }}</span>
@@ -67,7 +58,6 @@
             </div>
         </div>
 
-        <!-- Bagian Kanan: Keranjang (Tetap Sama) -->
         <div class="col-md-4">
             <div class="card-custom d-flex flex-column" style="height: calc(100vh - 40px); position: sticky; top: 20px;">
                 <h5 class="fw-bold mb-3 border-bottom pb-3">Keranjang</h5>
@@ -105,6 +95,19 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="qrisModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <h5 class="fw-bold">Scan QRIS Kayuhan</h5>
+                <div id="qris-placeholder" class="my-3 d-flex justify-content-center align-items-center" style="min-height: 250px;">
+                    <div class="spinner-border text-warning" role="status"></div>
+                </div>
+                <div class="alert alert-info small">Total: <strong id="qris-total-text"></strong></div>
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -121,8 +124,18 @@
         const searchInput = document.getElementById('search-input');
         const menuItemsCards = document.querySelectorAll('.menu-item-card');
         
-        const ROUTE_STORE = '{{ route('transaksi.store') }}';
+        // Inisialisasi Modal Bootstrap
+        const qrisModalElement = document.getElementById('qrisModal');
+        const qrisModal = new bootstrap.Modal(qrisModalElement);
+        const qrisPlaceholder = document.getElementById('qris-placeholder');
+        const qrisTotalText = document.getElementById('qris-total-text');
+
+        const ROUTE_STORE = '{{ route('barista.transaksi.store') }}';
         const CSRF_TOKEN = '{{ csrf_token() }}';
+
+        function formatRupiah(angka) {
+            return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
 
         function updateCartUI() {
             let total = 0;
@@ -155,10 +168,6 @@
             cartTotalSpan.textContent = 'Rp ' + formatRupiah(total);
             checkoutButton.disabled = total === 0; 
             checkoutButton.setAttribute('data-total', total);
-        }
-
-        function formatRupiah(angka) {
-            return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
         searchInput.addEventListener('input', function() {
@@ -204,13 +213,23 @@
         });
 
         checkoutButton.addEventListener('click', async function() {
+            const total = parseInt(this.dataset.total);
+            const metode = paymentMethodSelect.value;
+
             this.disabled = true;
             loadingSpinner.classList.remove('d-none');
             checkoutMessage.classList.add('d-none');
 
+            // Jika QRIS, siapkan modal
+            if (metode === 'QRIS') {
+                qrisTotalText.textContent = 'Rp ' + formatRupiah(total);
+                qrisPlaceholder.innerHTML = '<div class="spinner-border text-warning" role="status"></div>';
+                qrisModal.show();
+            }
+
             const payload = {
-                total_bayar: parseInt(this.dataset.total),
-                metode: paymentMethodSelect.value,
+                total_bayar: total,
+                metode: metode,
                 items: Object.keys(cart).map(id => ({ id_produk: id, jml_item: cart[id].qty })),
                 _token: CSRF_TOKEN 
             };
@@ -218,30 +237,47 @@
             try {
                 const response = await fetch(ROUTE_STORE, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN },
                     body: JSON.stringify(payload)
                 });
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    checkoutMessage.className = 'alert alert-success mt-3';
-                    checkoutMessage.textContent = `✅ Berhasil! Mengarahkan...`;
-                    checkoutMessage.classList.remove('d-none');
-                    if (result.redirect_url) window.location.href = result.redirect_url; 
-                    else {
+                    if (metode === 'QRIS' && result.qr_string) {
+                        // Generate QR Image
+                        const qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${result.qr_string}`;
+                        qrisPlaceholder.innerHTML = `<img src="${qrImgUrl}" class="img-fluid" style="width: 250px;" alt="QRIS">`;
+                        
+                        // Kosongkan keranjang setelah QR muncul (asumsi transaksi tercatat pending)
                         for (let k in cart) delete cart[k];
                         updateCartUI();
+                    } else {
+                        checkoutMessage.className = 'alert alert-success mt-3';
+                        checkoutMessage.textContent = `✅ Berhasil! Mengarahkan...`;
+                        checkoutMessage.classList.remove('d-none');
+                        if (result.redirect_url) {
+                            window.location.href = result.redirect_url;
+                        } else {
+                            for (let k in cart) delete cart[k];
+                            updateCartUI();
+                        }
                     }
                 } else {
                     throw new Error(result.message || 'Transaksi gagal');
                 }
             } catch (error) {
+                if (metode === 'QRIS') qrisModal.hide();
                 checkoutMessage.className = 'alert alert-danger mt-3';
                 checkoutMessage.textContent = `❌ ${error.message}`;
                 checkoutMessage.classList.remove('d-none');
             } finally {
                 loadingSpinner.classList.add('d-none');
-                if(!checkoutMessage.classList.contains('alert-success')) this.disabled = false;
+                if(!checkoutMessage.classList.contains('alert-success') && metode !== 'QRIS') {
+                    this.disabled = false;
+                }
             }
         });
 
