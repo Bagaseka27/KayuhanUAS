@@ -45,6 +45,55 @@
             </div>
         </div>
 
+        <!-- Menu Terlaris Harian -->
+        <div class="card-custom mt-4">
+
+            <p class="text-muted mb-3">Menu Terjual Hari Ini</p>
+
+            @if($menu_hari_ini->count() > 0)
+
+                @foreach($menu_hari_ini as $menu)
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span>{{ $menu->NAMA_PRODUK }}</span>
+                    <span class="badge bg-success">
+                        {{ $menu->total_terjual }} cup
+                    </span>
+                </div>
+                @endforeach
+
+            @else
+                <p class="text-muted">Belum ada penjualan hari ini.</p>
+            @endif
+
+        </div>
+
+        <!-- Menu Terlaris Bulanan-->
+        <div class="card-custom mt-4 mb-4">
+
+            <p class="text-muted mb-3">Top 5 Menu Terlaris Bulan Ini</p>
+
+            @foreach($menu_terlaris as $menu)
+
+            <div class="mb-3">
+
+                <div class="d-flex justify-content-between">
+                    <span>{{ $menu->NAMA_PRODUK }}</span>
+                    <span>{{ $menu->total_terjual }} cup</span>
+                </div>
+
+                <div class="progress mt-1" style="height:8px;">
+                    <div 
+                        class="progress-bar bg-success"
+                        style="width: {{ ($menu->total_terjual / $menu_terlaris[0]->total_terjual) * 100 }}%">
+                    </div>
+                </div>
+
+            </div>
+
+            @endforeach
+
+        </div>
+
         <!-- 3. Grafik Penjualan (Memanfaatkan Chart.js) -->
         <div class="col-12 mt-4">
             <div class="stat-card p-4">
