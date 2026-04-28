@@ -38,6 +38,25 @@
         </div>
     </div>
 
+    <div class="card-custom mt-4 mb-4">
+        <p class="text-muted mb-4">Menu Terjual Hari Ini</p>
+
+        @if(isset($menu_terjual) && $menu_terjual->count() > 0)
+            <ul class="list-group list-group-flush">
+                @foreach($menu_terjual as $menu)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $menu->NAMA_PRODUK }}
+                        <span class="badge bg-primary">
+                            {{ $menu->total_terjual }} cup
+                        </span>
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <p class="text-muted">Belum ada menu terjual.</p>
+        @endif
+    </div>
+
     <div class="card-custom p-0 overflow-hidden">
         <div class="table-responsive">
             <table class="table table-custom mb-0">

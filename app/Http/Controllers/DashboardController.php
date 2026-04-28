@@ -15,6 +15,8 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+        $today = Carbon::today()->toDateString();
+
         // Inisialisasi Timezone Database ke Jakarta (+07:00)
         DB::statement("SET time_zone = '+07:00'");
         
@@ -35,6 +37,34 @@ class DashboardController extends Controller
         
         // TOTAL OMSET BULAN INI
         $totalOmset = $transactionsThisMonth->sum('total_bayar');
+
+        // Menu Terlaris Harian
+        $menu_hari_ini = DB::table('transaksi')
+        ->join('detailtransaksi', 'transaksi.ID_TRANSAKSI', '=', 'detailtransaksi.ID_TRANSAKSI')
+        ->join('menu', 'detailtransaksi.ID_PRODUK', '=', 'menu.ID_PRODUK')
+        ->whereDate('transaksi.DATETIME', $today)
+        ->select(
+            'menu.NAMA_PRODUK',
+            DB::raw('SUM(detailtransaksi.JML_ITEM) as total_terjual')
+        )
+        ->groupBy('menu.NAMA_PRODUK')
+        ->orderByDesc('total_terjual')
+        ->get();
+
+        // Menu Terlaris Bulanan
+        $menu_terlaris = DB::table('transaksi')
+        ->join('detailtransaksi', 'transaksi.ID_TRANSAKSI', '=', 'detailtransaksi.ID_TRANSAKSI')
+        ->join('menu', 'detailtransaksi.ID_PRODUK', '=', 'menu.ID_PRODUK')
+        ->whereMonth('transaksi.DATETIME', now()->month)
+        ->whereYear('transaksi.DATETIME', now()->year)
+        ->select(
+            'menu.NAMA_PRODUK',
+            DB::raw('SUM(detailtransaksi.JML_ITEM) as total_terjual')
+        )
+        ->groupBy('menu.NAMA_PRODUK')
+        ->orderByDesc('total_terjual')
+        ->limit(5)
+        ->get();
         
         // KARYAWAN AKTIF 
         $activeStaff = Karyawan::where('role', '!=', 'Owner')->count();
@@ -59,6 +89,9 @@ class DashboardController extends Controller
 
             'salesTrendData' => $salesTrendData,
             'selectedYear' => $selectedYear,
+
+            'menu_terlaris' => $menu_terlaris,
+            'menu_hari_ini'=> $menu_hari_ini
         ]);
     }
 
