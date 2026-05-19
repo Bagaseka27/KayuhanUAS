@@ -9,13 +9,13 @@
     <div class="d-flex gap-2">
 
         <!-- TOMBOL EXPORT EXCEL (SUDAH FIX & BERFUNGSI) -->
-       <a href="{{ route('riwayat.export.excel') }}" 
+       <a href="{{ route('riwayat.export.excel', ['from_date' => $fromDate, 'to_date' => $toDate]) }}" 
    class="btn btn-primary-custom btn-sm">
     <i class="fas fa-file-excel me-1"></i> Export Excel
 </a>
 
         <!-- TOMBOL CETAK LAPORAN (TIDAK DIUBAH) -->
-        <a href="{{ route('riwayat.cetak.pdf') }}" 
+        <a href="{{ route('riwayat.cetak.pdf', ['from_date' => $fromDate, 'to_date' => $toDate]) }}" 
            class="btn btn-primary-custom btn-sm" target="_blank">
             <i class="fas fa-print me-1"></i> Cetak Laporan
         </a>

@@ -22,6 +22,7 @@ use App\Http\Controllers\StokRombongController;
 use App\Http\Controllers\JabatanController;
 
 use App\Http\Controllers\DashboardBaristaController;
+use App\Http\Controllers\PaymentQrisController;
 
 use App\Http\Controllers\DashboardController;
 
@@ -206,3 +207,16 @@ Route::get('/transaksi/export/excel', [TransaksiController::class, 'exportExcel'
 
 Route::get('/transaksi/cetak/pdf', [TransaksiController::class, 'cetakLaporan'])
     ->name('riwayat.cetak.pdf');
+
+/*
+|--------------------------------------------------------------------------
+| PAYMENT QRIS ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::prefix('payment')->name('payment.')->group(function () {
+    Route::post('/qris/generate', [PaymentQrisController::class, 'generateQr'])->name('generate');
+    Route::get('/qris', [PaymentQrisController::class, 'showPayment'])->name('show');
+    Route::get('/status/{referenceId}', [PaymentQrisController::class, 'checkStatus'])->name('status');
+    Route::post('/webhook', [PaymentQrisController::class, 'webhook'])->name('webhook');
+});
+

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TransaksiExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
 use Illuminate\Http\Request;
@@ -116,7 +119,7 @@ class TransaksiController extends Controller
             ->paginate(20)
             ->appends($request->all());
 
-        return view('pages.history', compact(
+        return view('pages.history_barista', compact(
             'riwayats', 'fromDate', 'toDate', 
             'total_pendapatan', 'pendapatan_tunai', 'pendapatan_qris'
         ));
@@ -171,5 +174,50 @@ class TransaksiController extends Controller
         DetailTransaksi::where('ID_TRANSAKSI', $id)->delete();
         Transaksi::destroy($id);
         return redirect()->back()->with('success', 'Transaksi berhasil dihapus.');
+    }
+
+
+    public function exportExcel(Request $request)
+    {
+        $fromDate = $request->input('from_date', now()->startOfMonth()->toDateString());
+        $toDate   = $request->input('to_date', now()->toDateString());
+
+        $query = \App\Models\Transaksi::whereBetween('DATETIME', [
+            "{$fromDate} 00:00:00",
+            "{$toDate} 23:59:59"
+        ])/*->where('STATUS', 'SUCCESS')*/;
+
+        $namaFile = 'laporan_transaksi_' . $fromDate . '_sd_' . $toDate . '.xlsx';
+
+        return Excel::download(new TransaksiExport($query), $namaFile);
+    }
+
+    /**
+     * CETAK LAPORAN PDF
+     */
+    public function cetakLaporan(Request $request)
+    {
+        $fromDate = $request->input('from_date', now()->startOfMonth()->toDateString());
+        $toDate   = $request->input('to_date', now()->toDateString());
+
+        $riwayats = \App\Models\Transaksi::whereBetween('DATETIME', [
+                "{$fromDate} 00:00:00",
+                "{$toDate} 23:59:59"
+            ])
+            /*->where('STATUS', 'SUCCESS')*/
+            ->with(['karyawan', 'detailtransaksi.menu'])
+            ->orderBy('DATETIME', 'desc')
+            ->get();
+
+        $total_pendapatan = $riwayats->sum('TOTAL_BAYAR');
+        $pendapatan_tunai = $riwayats->where('METODE_PEMBAYARAN', 'Tunai')->sum('TOTAL_BAYAR');
+        $pendapatan_qris  = $riwayats->where('METODE_PEMBAYARAN', 'QRIS')->sum('TOTAL_BAYAR');
+
+        $pdf = Pdf::loadView('exports.laporan_pdf', compact(
+            'riwayats', 'fromDate', 'toDate',
+            'total_pendapatan', 'pendapatan_tunai', 'pendapatan_qris'
+        ))->setPaper('a4', 'landscape');
+
+        return $pdf->stream('laporan_transaksi_' . $fromDate . '_sd_' . $toDate . '.pdf');
     }
 }

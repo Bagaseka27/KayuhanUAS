@@ -8,9 +8,8 @@
     <h3 class="fw-bold text-primary-custom mb-0">Riwayat Transaksi</h3>
 </div>
 
-<!-- FILTER -->
 <div class="stat-card mb-4 py-3">
-    <form method="GET" class="row g-3 align-items-end">
+    <form method="GET" action="{{ route('barista.riwayat') }}" class="row g-3 align-items-end">
 
         <div class="col-md-3">
             <label class="small text-muted fw-bold">Dari Tanggal</label>
@@ -33,42 +32,41 @@
     </form>
 </div>
 
-<!-- STATISTICS -->
 <div class="row mb-4">
 
     <div class="col-md-4">
-        <div class="stat-card  shadow-sm">
+        <div class="stat-card shadow-sm text-center">
             <div class="text-xs fw-bold text-uppercase mb-1">TOTAL PENDAPATAN</div>
-            <div class="h4 mb-0 fw-bold">
+            <div class="h4 mb-0 fw-bold text-primary-custom">
                 Rp {{ number_format($total_pendapatan, 0, ',', '.') }}
             </div>
-            <small>Semua metode pembayaran</small>
+            <small class="text-muted">Semua metode pembayaran</small>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="stat-card shadow-sm">
-            <div class="text-xs fw-bold text-primary-custom text-uppercase mb-1">PENDAPATAN TUNAI</div>
+        <div class="stat-card shadow-sm text-center">
+            <div class="text-xs fw-bold text-uppercase mb-1">PENDAPATAN TUNAI</div>
             <div class="h4 mb-0 fw-bold">
                 Rp {{ number_format($pendapatan_tunai, 0, ',', '.') }}
             </div>
+            <small class="text-muted">Metode: Tunai</small>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="stat-card shadow-sm">
-            <div class="text-xs fw-bold text-primary-custom text-uppercase mb-1">PENDAPATAN QRIS</div>
+        <div class="stat-card shadow-sm text-center">
+            <div class="text-xs fw-bold text-uppercase mb-1">PENDAPATAN QRIS</div>
             <div class="h4 mb-0 fw-bold">
                 Rp {{ number_format($pendapatan_qris, 0, ',', '.') }}
             </div>
+            <small class="text-muted">Metode: QRIS</small>
         </div>
     </div>
 
 </div>
 
-<!-- TABEL RIWAYAT -->
 <div class="stat-card p-0 overflow-hidden">
-
     <div class="table-responsive">
         <table class="table custom-table mb-0 table-hover">
             <thead class="bg-light">
@@ -83,16 +81,16 @@
             </thead>
 
             <tbody>
-
             @forelse($riwayats as $trx)
                 <tr>
                     <td class="fw-bold">{{ $trx->ID_TRANSAKSI }}</td>
-                    <td>{{ \Carbon\Carbon::parse($trx->DATETIME)->format('d M, H:i') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($trx->DATETIME)->format('d M Y, H:i') }}</td>
 
                     <td>
                         @foreach($trx->detailtransaksi as $detail)
-                            {{ $detail->JML_ITEM }}x {{ $detail->menu->NAMA_PRODUK ?? '-' }}
-                            @if(!$loop->last), @endif
+                            <span class="d-block text-nowrap">
+                                {{ $detail->JML_ITEM }}x {{ $detail->menu->NAMA_PRODUK ?? '-' }}
+                            </span>
                         @endforeach
                     </td>
 
@@ -114,20 +112,19 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center py-3 text-muted">
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <i class="fas fa-receipt d-block mb-2 h3"></i>
                         Belum ada transaksi pada periode ini.
                     </td>
                 </tr>
             @endforelse
-
             </tbody>
         </table>
     </div>
-
 </div>
 
-<div class="d-flex justify-content-end mt-3">
-    {{ $riwayats->links() }}
+<div class="d-flex justify-content-end mt-4 mb-5">
+    {{ $riwayats->withPath(route('barista.riwayat'))->links() }}
 </div>
 
 @endsection
