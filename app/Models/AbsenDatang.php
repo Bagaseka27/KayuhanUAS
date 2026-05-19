@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 class AbsenDatang extends Model
 {
     protected $table = 'absendatang';
-    protected $primaryKey = 'EMAIL';
-    protected $keyType = 'string';
     public $incrementing = false;
     public $timestamps = true;
     
@@ -15,7 +13,9 @@ class AbsenDatang extends Model
     protected $fillable = [
         'EMAIL',
         'FOTO',
-        'DATETIME_DATANG'
+        'DATETIME_DATANG',
+        'TANGGAL',
+        'ID_CABANG'
     ];
     
     public function karyawan()
@@ -23,3 +23,4 @@ class AbsenDatang extends Model
         return $this->belongsTo(Karyawan::class, 'EMAIL', 'EMAIL');
     }
 }
+

@@ -14,6 +14,37 @@ use Illuminate\Support\Facades\Storage;
 
 class AbsensiController extends Controller
 {
+    // Method untuk menampilkan foto dari database
+    public function getFotoDatang($email, $date)
+    {
+        $absenDatang = AbsenDatang::where('EMAIL', $email)
+                                   ->where('TANGGAL', $date)
+                                   ->first();
+        
+        if (!$absenDatang || !$absenDatang->FOTO) {
+            return response()->json(['error' => 'Foto tidak ditemukan'], 404);
+        }
+        
+        return response($absenDatang->FOTO)
+                    ->header('Content-Type', 'image/png')
+                    ->header('Cache-Control', 'public, max-age=3600');
+    }
+
+    public function getFotoPulang($email, $date)
+    {
+        $absenPulang = AbsenPulang::where('EMAIL', $email)
+                                   ->where('TANGGAL', $date)
+                                   ->first();
+        
+        if (!$absenPulang || !$absenPulang->FOTO) {
+            return response()->json(['error' => 'Foto tidak ditemukan'], 404);
+        }
+        
+        return response($absenPulang->FOTO)
+                    ->header('Content-Type', 'image/png')
+                    ->header('Cache-Control', 'public, max-age=3600');
+    }
+    
     // TAMPILAN DASHBOARD (AbsensiController@index)
     public function index()
     {
@@ -99,7 +130,6 @@ class AbsensiController extends Controller
         $email = $request->input('EMAIL');
         $dateTimeDatang = Carbon::parse($request->input('DATETIME_DATANG')); 
         $today = $dateTimeDatang->toDateString(); 
-        $fotoFile = $request->input('FOTO_FILE'); 
         $jadwalHariIni = Jadwal::where('EMAIL', $email)
                             ->where('TANGGAL', $today)
                             ->first();
@@ -118,15 +148,20 @@ class AbsensiController extends Controller
 
         // Lakukan Penyimpanan Absen Datang
         try {
+            $fotoData = null;
+            
+            // Proses file foto jika ada
+            if ($request->hasFile('FOTO_FILE')) {
+                $fotoFile = $request->file('FOTO_FILE');
+                $fotoData = file_get_contents($fotoFile->getRealPath());
+            }
+            
             AbsenDatang::create([
                 'EMAIL' => $email,
                 'DATETIME_DATANG' => $dateTimeDatang,
                 'TANGGAL' => $today,
                 'ID_CABANG' => $jadwalHariIni->ID_CABANG, 
-                'FOTO_FILE' => $fotoFile, 
-                'ID_CABANG' => $jadwalHariIni->ID_CABANG, 
-                'FOTO_FILE' => $fotoFile, 
-
+                'FOTO' => $fotoData, 
             ]);
         } catch (\Exception $e) {
             \Log::error('Gagal menyimpan Absen Datang: ' . $e->getMessage());
@@ -142,7 +177,6 @@ class AbsensiController extends Controller
         $email = $request->input('EMAIL');
         $dateTimePulang = Carbon::parse($request->input('DATETIME_PULANG'));
         $today = $dateTimePulang->toDateString();
-        $fotoFile = $request->input('FOTO_FILE'); 
 
         // Cek Jadwal Hari Ini
   
@@ -170,12 +204,20 @@ class AbsensiController extends Controller
             return redirect()->route('barista.absensi.index')->with('error', 'Absen Pulang Gagal! Anda belum Absen Masuk hari ini.');
         }
         try {
+            $fotoData = null;
+            
+            // Proses file foto jika ada
+            if ($request->hasFile('FOTO_FILE')) {
+                $fotoFile = $request->file('FOTO_FILE');
+                $fotoData = file_get_contents($fotoFile->getRealPath());
+            }
+            
             AbsenPulang::create([
                 'EMAIL' => $email,
                 'DATETIME_PULANG' => $dateTimePulang,
                 'TANGGAL' => $today,
                 'ID_CABANG' => $jadwalHariIni->ID_CABANG, 
-                'FOTO_FILE' => $fotoFile,
+                'FOTO' => $fotoData,
             ]);
         } catch (\Exception $e) {
             \Log::error('Gagal menyimpan Absen Pulang: ' . $e->getMessage());

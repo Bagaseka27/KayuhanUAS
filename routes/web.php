@@ -161,6 +161,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     */
     Route::get('/absensi-monitoring', [AbsensiController::class, 'indexPulang'])
         ->name('admin.absensi.monitoring');
+    
+    // Routes untuk menampilkan foto dari database
+    Route::get('/absensi/foto-datang/{email}/{date}', [AbsensiController::class, 'getFotoDatang'])->name('admin.absensi.foto-datang');
+    Route::get('/absensi/foto-pulang/{email}/{date}', [AbsensiController::class, 'getFotoPulang'])->name('admin.absensi.foto-pulang');
 });
 
 
@@ -186,6 +190,10 @@ Route::middleware(['auth', 'barista'])
     Route::get('/absensi', [AbsensiController::class, 'indexDatang'])->name('absensi.index');
     Route::post('/absensi/datang', [AbsensiController::class, 'storeDatang'])->name('absensi.storeDatang');
     Route::post('/absensi/pulang', [AbsensiController::class, 'storePulang'])->name('absensi.storePulang');
+    
+    // Routes untuk menampilkan foto dari database
+    Route::get('/absensi/foto-datang/{email}/{date}', [AbsensiController::class, 'getFotoDatang'])->name('absensi.foto-datang');
+    Route::get('/absensi/foto-pulang/{email}/{date}', [AbsensiController::class, 'getFotoPulang'])->name('absensi.foto-pulang');
 
     Route::get('/riwayat', [TransaksiController::class, 'indexRiwayatBarista'])
          ->name('riwayat');

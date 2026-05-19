@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class AbsenPulang extends Model
 {
     protected $table = 'absenpulang';
-    protected $primaryKey = 'EMAIL';
-    protected $keyType = 'string';
     public $incrementing = false;
     public $timestamps = true; 
     
@@ -16,7 +14,9 @@ class AbsenPulang extends Model
     protected $fillable = [
         'EMAIL',
         'FOTO',
-        'DATETIME_PULANG'
+        'DATETIME_PULANG',
+        'TANGGAL',
+        'ID_CABANG'
     ];
 
     public function karyawan()

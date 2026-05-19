@@ -77,31 +77,14 @@
                                     @php
                                         $fotoDatang = $karyawan->absenDatang->FOTO ?? null;
                                         $fotoDatangUrl = 'https://via.placeholder.com/150?text=No+Photo';
-                                        $fotoExists = false;
-                                        $debugPath = '';
                                         
                                         if ($fotoDatang) {
-                                            // Cek beberapa kemungkinan path
-                                            $paths = [
-                                                ['path' => storage_path('app/public/absensi/datang/' . $fotoDatang), 'url' => asset('storage/absensi/datang/' . $fotoDatang)],
-                                                ['path' => public_path('storage/absensi/datang/' . $fotoDatang), 'url' => asset('storage/absensi/datang/' . $fotoDatang)],
-                                                ['path' => public_path('absensi/datang/' . $fotoDatang), 'url' => asset('absensi/datang/' . $fotoDatang)],
-                                            ];
-                                            
-                                            foreach ($paths as $pathData) {
-                                                if (file_exists($pathData['path'])) {
-                                                    $fotoExists = true;
-                                                    $fotoDatangUrl = $pathData['url'];
-                                                    $debugPath = $pathData['path'];
-                                                    break;
-                                                }
-                                            }
-                                            
-                                            // Jika file tidak ditemukan, tetap coba tampilkan dengan path standar
-                                            if (!$fotoExists) {
-                                                $fotoDatangUrl = asset('storage/absensi/datang/' . $fotoDatang);
-                                                $debugPath = 'File not found in any checked paths';
-                                            }
+                                            // Gunakan route untuk menampilkan foto dari database
+                                            $tanggalAbsen = \Carbon\Carbon::parse($karyawan->absenDatang->DATETIME_DATANG)->toDateString();
+                                            $fotoDatangUrl = route('admin.absensi.foto-datang', [
+                                                'email' => $karyawan->EMAIL,
+                                                'date' => $tanggalAbsen
+                                            ]);
                                         }
                                     @endphp
                                     
@@ -111,14 +94,9 @@
                                                 data-bs-target="#fotoModal"
                                                 data-foto="{{ $fotoDatangUrl }}"
                                                 data-nama="{{ $karyawan->NAMA }}"
-                                                data-waktu="Datang"
-                                                data-exists="{{ $fotoExists ? 'yes' : 'no' }}">
+                                                data-waktu="Datang">
                                             <i class="fas fa-image"></i> Lihat Foto
                                         </button>
-                                        @if(!$fotoExists)
-                                            <small class="text-danger d-block mt-1">File tidak ditemukan</small>
-                                            <small class="text-muted d-block" style="font-size: 10px;">{{ $debugPath }}</small>
-                                        @endif
                                     @else
                                         <span class="badge bg-warning text-dark">Tidak Ada Foto</span>
                                     @endif
@@ -137,31 +115,14 @@
                                     @php
                                         $fotoPulang = $karyawan->absenPulang->FOTO ?? null;
                                         $fotoPulangUrl = 'https://via.placeholder.com/150?text=No+Photo';
-                                        $fotoPulangExists = false;
-                                        $debugPath = '';
                                         
                                         if ($fotoPulang) {
-                                            // Cek beberapa kemungkinan path
-                                            $paths = [
-                                                ['path' => storage_path('app/public/absensi/pulang/' . $fotoPulang), 'url' => asset('storage/absensi/pulang/' . $fotoPulang)],
-                                                ['path' => public_path('storage/absensi/pulang/' . $fotoPulang), 'url' => asset('storage/absensi/pulang/' . $fotoPulang)],
-                                                ['path' => public_path('absensi/pulang/' . $fotoPulang), 'url' => asset('absensi/pulang/' . $fotoPulang)],
-                                            ];
-                                            
-                                            foreach ($paths as $pathData) {
-                                                if (file_exists($pathData['path'])) {
-                                                    $fotoPulangExists = true;
-                                                    $fotoPulangUrl = $pathData['url'];
-                                                    $debugPath = $pathData['path'];
-                                                    break;
-                                                }
-                                            }
-                                            
-                                            // Jika file tidak ditemukan, tetap coba tampilkan dengan path standar
-                                            if (!$fotoPulangExists) {
-                                                $fotoPulangUrl = asset('storage/absensi/pulang/' . $fotoPulang);
-                                                $debugPath = 'File not found in any checked paths';
-                                            }
+                                            // Gunakan route untuk menampilkan foto dari database
+                                            $tanggalAbsen = \Carbon\Carbon::parse($karyawan->absenPulang->DATETIME_PULANG)->toDateString();
+                                            $fotoPulangUrl = route('admin.absensi.foto-pulang', [
+                                                'email' => $karyawan->EMAIL,
+                                                'date' => $tanggalAbsen
+                                            ]);
                                         }
                                     @endphp
                                     
@@ -171,14 +132,9 @@
                                                 data-bs-target="#fotoModal"
                                                 data-foto="{{ $fotoPulangUrl }}"
                                                 data-nama="{{ $karyawan->NAMA }}"
-                                                data-waktu="Pulang"
-                                                data-exists="{{ $fotoPulangExists ? 'yes' : 'no' }}">
+                                                data-waktu="Pulang">
                                             <i class="fas fa-image"></i> Lihat Foto
                                         </button>
-                                        @if(!$fotoPulangExists)
-                                            <small class="text-danger d-block mt-1">File tidak ditemukan</small>
-                                            <small class="text-muted d-block" style="font-size: 10px;">{{ $debugPath }}</small>
-                                        @endif
                                     @else
                                         <span class="badge bg-warning text-dark">Tidak Ada Foto</span>
                                     @endif
@@ -224,7 +180,6 @@
                 var fotoUrl = button.getAttribute('data-foto');
                 var namaKaryawan = button.getAttribute('data-nama');
                 var waktu = button.getAttribute('data-waktu');
-                var exists = button.getAttribute('data-exists');
                 
                 var modalImage = fotoModal.querySelector('#modal-foto-absen');
                 var modalNama = fotoModal.querySelector('#modal-nama-karyawan');
@@ -234,18 +189,12 @@
                 modalImage.src = fotoUrl;
                 modalNama.textContent = namaKaryawan;
                 modalWaktu.textContent = waktu;
-                
-                // Tambahkan info debug
-                if (exists === 'no') {
-                    fotoInfo.innerHTML = '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> File foto tidak ditemukan di server. Menampilkan placeholder.</div>';
-                } else {
-                    fotoInfo.innerHTML = '';
-                }
+                fotoInfo.innerHTML = '';
                 
                 // Handle error saat load gambar
                 modalImage.onerror = function() {
                     this.src = 'https://via.placeholder.com/400x300?text=Foto+Tidak+Dapat+Dimuat';
-                    fotoInfo.innerHTML = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Gagal memuat foto dari URL: <br><small>' + fotoUrl + '</small></div>';
+                    fotoInfo.innerHTML = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Gagal memuat foto. Foto mungkin sudah dihapus atau file corrupted.</div>';
                 };
             });
         });
