@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\AbsensiNewController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MenuController;
@@ -159,7 +160,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     | MONITORING ABSENSI
     |--------------------------------------------------------------------------
     */
-    Route::get('/absensi-monitoring', [AbsensiController::class, 'indexPulang'])
+    Route::get('/absensi-monitoring', [AbsensiNewController::class, 'monitoring'])
         ->name('admin.absensi.monitoring');
     
     // Routes untuk menampilkan foto dari database
@@ -187,13 +188,12 @@ Route::middleware(['auth', 'barista'])
 
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 
-    Route::get('/absensi', [AbsensiController::class, 'indexDatang'])->name('absensi.index');
-    Route::post('/absensi/datang', [AbsensiController::class, 'storeDatang'])->name('absensi.storeDatang');
-    Route::post('/absensi/pulang', [AbsensiController::class, 'storePulang'])->name('absensi.storePulang');
-    
-    // Routes untuk menampilkan foto dari database
-    Route::get('/absensi/foto-datang/{email}/{date}', [AbsensiController::class, 'getFotoDatang'])->name('absensi.foto-datang');
-    Route::get('/absensi/foto-pulang/{email}/{date}', [AbsensiController::class, 'getFotoPulang'])->name('absensi.foto-pulang');
+    // New Absensi System with Camera & Maps
+    Route::get('/absensi', [AbsensiNewController::class, 'index'])->name('absensi.index');
+    Route::post('/absensi/datang', [AbsensiNewController::class, 'submitDatang'])->name('absensi.submitDatang');
+    Route::post('/absensi/pulang', [AbsensiNewController::class, 'submitPulang'])->name('absensi.submitPulang');
+    Route::post('/absensi/tidak-hadir', [AbsensiNewController::class, 'submitTidakHadir'])->name('absensi.submitTidakHadir');
+    Route::get('/absensi/foto/{id}/{type}', [AbsensiNewController::class, 'getFoto'])->name('absensi.getFoto');
 
     Route::get('/riwayat', [TransaksiController::class, 'indexRiwayatBarista'])
          ->name('riwayat');

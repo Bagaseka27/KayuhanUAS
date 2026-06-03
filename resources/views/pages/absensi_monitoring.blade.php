@@ -47,54 +47,64 @@
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th style="width: 15%;">Nama Karyawan</th>
+                            <th style="width: 13%;">Nama Karyawan</th>
                             <th style="width: 15%;">Email</th>
                             <th style="width: 10%;">Lokasi</th>
-                            <th style="width: 15%;">Waktu Datang</th>
+                            <th style="width: 10%;">Status</th>
+                            <th style="width: 12%;">Waktu Datang</th>
                             <th style="width: 10%;">Foto Datang</th>
-                            <th style="width: 15%;">Waktu Pulang</th>
+                            <th style="width: 12%;">Waktu Pulang</th>
                             <th style="width: 10%;">Foto Pulang</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($karyawanList as $karyawan)
+                            @php
+                                
+                                $absensi = $karyawan->absensi ?? null;
+                            @endphp
                             <tr>
                                 <td>{{ $karyawan->NAMA }}</td>
                                 <td>{{ $karyawan->EMAIL }}</td>
                                 <td>
                                     {{ $karyawan->cabang->NAMA_LOKASI ?? $karyawan->rombong->NAMA_LOKASI ?? 'Tidak Ada' }}
                                 </td>
+
+                                
                                 <td>
-                                    @if($karyawan->absenDatang)
-                                        {{ \Carbon\Carbon::parse($karyawan->absenDatang->DATETIME_DATANG)->format('H:i:s') }}
+                                    @if($absensi?->isTidakHadir())
+                                        <span class="badge bg-warning text-dark">
+                                            Tidak Hadir ({{ $absensi->getAlasanLabel() }})
+                                        </span>
+                                    @elseif($absensi?->STATUS === 'TERLAMBAT')
+                                        <span class="badge bg-danger">Terlambat</span>
+                                        @if($absensi->KOMPENSASI < 0)
+                                            <br><small class="text-danger">-Rp {{ number_format(abs($absensi->KOMPENSASI)) }}</small>
+                                        @endif
+                                    @elseif($absensi?->STATUS === 'HADIR')
+                                        <span class="badge bg-success">Hadir</span>
                                     @else
                                         <span class="badge bg-secondary">Belum Absen</span>
                                     @endif
                                 </td>
 
-                                {{-- Tombol Foto Datang --}}
+                                
                                 <td>
-                                    @php
-                                        $fotoDatang = $karyawan->absenDatang->FOTO ?? null;
-                                        $fotoDatangUrl = 'https://via.placeholder.com/150?text=No+Photo';
-                                        
-                                        if ($fotoDatang) {
-                                            // Gunakan route untuk menampilkan foto dari database
-                                            $tanggalAbsen = \Carbon\Carbon::parse($karyawan->absenDatang->DATETIME_DATANG)->toDateString();
-                                            $fotoDatangUrl = route('admin.absensi.foto-datang', [
-                                                'email' => $karyawan->EMAIL,
-                                                'date' => $tanggalAbsen
-                                            ]);
-                                        }
-                                    @endphp
-                                    
-                                    @if($fotoDatang)
+                                    @if($absensi?->isSudahAbsenDatang())
+                                        {{ $absensi->DATETIME_DATANG->format('H:i:s') }}
+                                        @if($absensi->LOKASI_DATANG)
+                                            <br><small class="text-muted">{{ $absensi->LOKASI_DATANG }}</small>
+                                        @endif
+                                    @else
+                                        <span class="badge bg-secondary">Belum Absen</span>
+                                    @endif
+                                </td>
+
+                                
+                                <td>
+                                    @if($absensi?->FOTO_DATANG)
                                         <button class="btn btn-primary-custom btn-sm w-100"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#fotoModal"
-                                                data-foto="{{ $fotoDatangUrl }}"
-                                                data-nama="{{ $karyawan->NAMA }}"
-                                                data-waktu="Datang">
+                                                onclick="lihatFoto('{{ addslashes($absensi->FOTO_DATANG) }}', '{{ $karyawan->NAMA }}', 'Datang')">
                                             <i class="fas fa-image"></i> Lihat Foto
                                         </button>
                                     @else
@@ -102,37 +112,23 @@
                                     @endif
                                 </td>
 
+                                
                                 <td>
-                                    @if($karyawan->absenPulang)
-                                        {{ \Carbon\Carbon::parse($karyawan->absenPulang->DATETIME_PULANG)->format('H:i:s') }}
+                                    @if($absensi?->isSudahAbsenPulang())
+                                        {{ $absensi->DATETIME_PULANG->format('H:i:s') }}
+                                        @if($absensi->LOKASI_PULANG)
+                                            <br><small class="text-muted">{{ $absensi->LOKASI_PULANG }}</small>
+                                        @endif
                                     @else
                                         <span class="badge bg-secondary">Belum Absen</span>
                                     @endif
                                 </td>
 
-                                {{-- Tombol Foto Pulang --}}
+                                
                                 <td>
-                                    @php
-                                        $fotoPulang = $karyawan->absenPulang->FOTO ?? null;
-                                        $fotoPulangUrl = 'https://via.placeholder.com/150?text=No+Photo';
-                                        
-                                        if ($fotoPulang) {
-                                            // Gunakan route untuk menampilkan foto dari database
-                                            $tanggalAbsen = \Carbon\Carbon::parse($karyawan->absenPulang->DATETIME_PULANG)->toDateString();
-                                            $fotoPulangUrl = route('admin.absensi.foto-pulang', [
-                                                'email' => $karyawan->EMAIL,
-                                                'date' => $tanggalAbsen
-                                            ]);
-                                        }
-                                    @endphp
-                                    
-                                    @if($fotoPulang)
+                                    @if($absensi?->FOTO_PULANG)
                                         <button class="btn btn-info btn-sm w-100"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#fotoModal"
-                                                data-foto="{{ $fotoPulangUrl }}"
-                                                data-nama="{{ $karyawan->NAMA }}"
-                                                data-waktu="Pulang">
+                                                onclick="lihatFoto('{{ addslashes($absensi->FOTO_PULANG) }}', '{{ $karyawan->NAMA }}', 'Pulang')">
                                             <i class="fas fa-image"></i> Lihat Foto
                                         </button>
                                     @else
@@ -141,7 +137,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="7" class="text-center">Tidak ada data absensi yang ditemukan.</td></tr>
+                            <tr><td colspan="8" class="text-center">Tidak ada data absensi yang ditemukan.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -149,7 +145,7 @@
         </div>
     </div>
 
-    {{-- Modal Foto --}}
+  
     <div class="modal fade" id="fotoModal" tabindex="-1" aria-labelledby="fotoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -169,36 +165,6 @@
             </div>
         </div>
     </div>
-
-    {{-- Script Modal --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var fotoModal = document.getElementById('fotoModal');
-            
-            fotoModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var fotoUrl = button.getAttribute('data-foto');
-                var namaKaryawan = button.getAttribute('data-nama');
-                var waktu = button.getAttribute('data-waktu');
-                
-                var modalImage = fotoModal.querySelector('#modal-foto-absen');
-                var modalNama = fotoModal.querySelector('#modal-nama-karyawan');
-                var modalWaktu = fotoModal.querySelector('#modal-waktu');
-                var fotoInfo = fotoModal.querySelector('#foto-info');
-                
-                modalImage.src = fotoUrl;
-                modalNama.textContent = namaKaryawan;
-                modalWaktu.textContent = waktu;
-                fotoInfo.innerHTML = '';
-                
-                // Handle error saat load gambar
-                modalImage.onerror = function() {
-                    this.src = 'https://via.placeholder.com/400x300?text=Foto+Tidak+Dapat+Dimuat';
-                    fotoInfo.innerHTML = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Gagal memuat foto. Foto mungkin sudah dihapus atau file corrupted.</div>';
-                };
-            });
-        });
-    </script>
 </div>
 
 @push('styles')
@@ -211,4 +177,19 @@
     }
 </style>
 @endpush
+
+@push('scripts')
+<script>
+    function lihatFoto(base64, nama, waktu) {
+        document.getElementById('modal-nama-karyawan').textContent = nama;
+        document.getElementById('modal-waktu').textContent = waktu;
+        document.getElementById('modal-foto-absen').src = base64;
+        document.getElementById('foto-info').innerHTML = '';
+
+        var modal = new bootstrap.Modal(document.getElementById('fotoModal'));
+        modal.show();
+    }
+</script>
+@endpush
+
 @endsection

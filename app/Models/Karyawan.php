@@ -50,6 +50,11 @@ class Karyawan extends Model
         return $this->hasOne(AbsenPulang::class, 'EMAIL','EMAIL');
     }
 
+    public function absensi()
+    {
+        return $this->hasOne(Absensi::class, 'EMAIL', 'EMAIL');
+    }
+
     public function gaji()
     {
         return $this->hasMany(Gaji::class, 'EMAIL','EMAIL');
