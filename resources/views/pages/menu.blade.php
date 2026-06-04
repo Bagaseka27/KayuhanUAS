@@ -44,7 +44,6 @@
         @endif
     </div>
 
-
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -68,7 +67,7 @@
                             <td class="ps-4">
                                 @if($menu->FOTO)
                                     <img src="{{ asset('storage/' . $menu->FOTO) }}" alt="Foto" 
-                                        style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
                                 @else
                                     <span class="text-muted small">No Img</span>
                                 @endif
@@ -176,11 +175,14 @@
     @endif
 @endsection
 
+{{-- Ubah penulisan stack ke pembungkus DOM yang aman guna menghindari silent crash javascript --}}
 @push('scripts')
 <script>
-    const ROUTE_STORE = "{{ route('menu.store') }}";
-    const ROUTE_UPDATE_TEMPLATE = "{{ route('menu.update', '0') }}"; 
-    const ROUTE_DELETE_TEMPLATE = "{{ route('menu.destroy', '0') }}";
+    document.addEventListener('DOMContentLoaded', function () {
+        window.ROUTE_STORE = "{{ route('menu.store') }}";
+        window.ROUTE_UPDATE_TEMPLATE = "{{ route('menu.update', '0') }}"; 
+        window.ROUTE_DELETE_TEMPLATE = "{{ route('menu.destroy', '0') }}";
+    });
 
     function previewImage(event) {
         const input = event.target;
@@ -201,7 +203,7 @@
     function openCreateModal() {
         const form = document.getElementById('formMenu');
         form.reset();
-        form.action = ROUTE_STORE;
+        form.action = window.ROUTE_STORE;
         
         document.getElementById('modalTitle').innerText = "Tambah Menu Baru";
         document.getElementById('method-spoofing').innerHTML = ''; 
@@ -214,8 +216,11 @@
 
     function openEditModal(id, nama, kategori, h_dasar, h_jual, fotoUrl) {
         const form = document.getElementById('formMenu');
-        var myModal = new bootstrap.Modal(document.getElementById('modalMenu'));
-        myModal.show();
+        var modalEl = document.getElementById('modalMenu');
+        if(modalEl) {
+            var myModal = new bootstrap.Modal(modalEl);
+            myModal.show();
+        }
 
         document.getElementById('modalTitle').innerText = "Edit Menu: " + nama;
         document.getElementById('ID_PRODUK').value = id;
@@ -239,7 +244,7 @@
             textPreview.classList.remove('d-none');
         }
 
-        let updateUrl = ROUTE_UPDATE_TEMPLATE.replace('/0', '/' + id);
+        let updateUrl = window.ROUTE_UPDATE_TEMPLATE.replace('/0', '/' + id);
         form.action = updateUrl;
         document.getElementById('method-spoofing').innerHTML = '<input type="hidden" name="_method" value="PUT">';
     }
@@ -248,7 +253,7 @@
         if (confirm('Apakah Anda yakin ingin menghapus menu ID: ' + id + '?')) {
             let form = document.createElement('form');
             form.method = 'POST';
-            let deleteUrl = ROUTE_DELETE_TEMPLATE.replace('/0', '/' + id);
+            let deleteUrl = window.ROUTE_DELETE_TEMPLATE.replace('/0', '/' + id);
             form.action = deleteUrl;
             let csrf = document.createElement('input');
             csrf.type = 'hidden';

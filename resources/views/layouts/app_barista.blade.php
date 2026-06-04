@@ -41,6 +41,9 @@
             <a href="{{ route('barista.menu') }}" class="menu-item {{ request()->routeIs('barista.menu') ? 'active' : '' }}">
                 <i class="fas fa-coffee"></i> Manajemen Menu
             </a>
+            <a href="/barista/stok-rombong" class="menu-item {{ request()->is('barista/stok-rombong*') ? 'active' : '' }}">
+                <i class="fas fa-box"></i> Stok Rombong
+            </a>
             <a href="{{ route('barista.absensi.index') }}" class="menu-item {{ request()->routeIs('barista.absensi.*') ? 'active' : '' }}">
                 <i class="fas fa-clipboard-check"></i> Presensi
             </a>

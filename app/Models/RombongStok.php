@@ -8,13 +8,17 @@ class RombongStok extends Model
 {
     protected $table = 'rombong_stok';
 
+    // TAMBAHKAN 3 BARIS INI UNTUK MENYELAMATKAN STRING PRIMARY KEY
+    protected $primaryKey = null; 
+    public $incrementing = false;          
+    protected $keyType = 'string';         
+
     protected $fillable = [
         'barang_id',
         'rombong_id',
         'stok_awal',
         'stok_akhir'
     ];
-
 
     public function barang()
     {

@@ -13,7 +13,17 @@ class MenuController extends Controller
     {
         $menuItems = Menu::all();
         $categories = ['Coffee', 'Non-Coffee'];
-        return view('pages.menu', compact('menuItems', 'categories'));
+        
+        // Cek apakah user yang login memiliki role barista
+        if (auth()->user()->role === 'Barista') {
+            // Kirimkan variabel layout khusus barista ke file blade
+            return view('pages.menu', compact('menuItems', 'categories'))
+                    ->with('layout', 'layouts.app_barista');
+        }
+
+        // Jika admin atau role lain, gunakan layout default admin
+        return view('pages.menu', compact('menuItems', 'categories'))
+                ->with('layout', 'layouts.app');
     }
 
     public function pos()

@@ -7,10 +7,12 @@ use App\Models\StokGudang;
 
 class StokGudangController extends Controller
 {
+    // Hanya boleh diakses Admin (Bisa pasang middleware di route atau constructor)
+    
     public function store(Request $req)
     {
         $req->validate([
-            'ID_BARANG'   => 'required',
+            'ID_BARANG'   => 'required|unique:stokgudang,ID_BARANG', // Validasi agar ID tidak kembar
             'NAMA_BARANG' => 'required',
             'MASUK'       => 'required|integer|min:0',
             'KELUAR'      => 'required|integer|min:0',
@@ -24,7 +26,7 @@ class StokGudangController extends Controller
             'JUMLAH'      => $req->MASUK - $req->KELUAR,
         ]);
 
-        return back()->with('success', 'Barang berhasil ditambahkan');
+        return back()->with('success', 'Barang gudang berhasil ditambahkan');
     }
 
     public function update(Request $req, $id)
@@ -39,15 +41,15 @@ class StokGudangController extends Controller
             'NAMA_BARANG' => $req->NAMA_BARANG,
             'MASUK'       => $req->MASUK,
             'KELUAR'      => $req->KELUAR,
-            'JUMLAH'      => $req->MASUK - $req->KELUAR,
+            'JUMLAH'      => $req->MASUK - $req->KELUAR, // Kalkulasi otomatis jumlah akhir gudang
         ]);
 
-        return back()->with('success', 'Barang berhasil diperbarui');
+        return back()->with('success', 'Barang gudang berhasil diperbarui');
     }
 
     public function destroy($id)
     {
         StokGudang::where('ID_BARANG', $id)->delete();
-        return back()->with('success', 'Barang berhasil dihapus');
+        return back()->with('success', 'Barang gudang berhasil dihapus');
     }
 }

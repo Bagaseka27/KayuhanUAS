@@ -188,6 +188,13 @@ Route::middleware(['auth', 'barista'])
 
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 
+    // ==================== ROUTE INVENTORY BARISTA ====================
+    // Halaman utama stok rombong (View)
+    Route::get('/stok-rombong', [StokRombongController::class, 'baristaIndex'])->name('barista.inventory.index');
+        
+    // Proses input stok batch (Tambah barang + potong stok gudang)
+    Route::post('/inventory/batch-store', [StokRombongController::class, 'baristaBatchStore'])->name('inventory.batchStore');
+
     // New Absensi System with Camera & Maps
     Route::get('/absensi', [AbsensiNewController::class, 'index'])->name('absensi.index');
     Route::post('/absensi/datang', [AbsensiNewController::class, 'submitDatang'])->name('absensi.submitDatang');
