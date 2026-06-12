@@ -17,9 +17,14 @@ class JabatanController extends Controller
     {
         $validated = $request->validate([
             'NAMA_JABATAN' => 'required|string|max:50',
-            'GAJI_POKOK_PER_HARI' => 'required|numeric',
-            'BONUS_PER_CUP' => 'required|numeric',
+            'UPAH_PER_JAM' => 'required|numeric|min:0',
+            'BONUS_PENJUALAN_PER_CUP' => 'required|numeric|min:0',
         ]);
+
+        // Handle manual input untuk NAMA_JABATAN
+        if ($validated['NAMA_JABATAN'] === 'Lainnya') {
+            $validated['NAMA_JABATAN'] = $request->input('NAMA_JABATAN_MANUAL', 'Jabatan Lainnya');
+        }
 
         Jabatan::create($validated);
 
@@ -31,8 +36,8 @@ class JabatanController extends Controller
         $jabatan = Jabatan::findOrFail($id);
         $validated = $request->validate([
             'NAMA_JABATAN' => 'sometimes|string|max:50',
-            'GAJI_POKOK_PER_HARI' => 'sometimes|numeric',
-            'BONUS_PER_CUP' => 'sometimes|numeric',
+            'UPAH_PER_JAM' => 'sometimes|numeric|min:0',
+            'BONUS_PENJUALAN_PER_CUP' => 'sometimes|numeric|min:0',
         ]);
         $jabatan->update($validated);
         return redirect()->back()->with('success','Jabatan berhasil diupdate');

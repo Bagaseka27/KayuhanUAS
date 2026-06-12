@@ -21,7 +21,7 @@
         </a>
         
         <!-- 2. Karyawan & Gaji -->
-        <a href="{{ url('/employees') }}" class="menu-item {{ Request::is('employees') ? 'active' : '' }}">
+        <a href="{{ route('employee.index') }}" class="menu-item {{ Request::is('employee') ? 'active' : '' }}">
             <i class="fas fa-users"></i> Karyawan & Gaji
         </a>
 

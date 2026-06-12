@@ -55,9 +55,9 @@ class Karyawan extends Model
         return $this->hasOne(Absensi::class, 'EMAIL', 'EMAIL');
     }
 
-    public function gaji()
+    public function gajiHarian()
     {
-        return $this->hasMany(Gaji::class, 'EMAIL','EMAIL');
+        return $this->hasMany(GajiHarian::class, 'EMAIL', 'EMAIL');
     }
 
     public function jadwal()
@@ -68,6 +68,22 @@ class Karyawan extends Model
     public function transaksi()
     {
         return $this->hasMany(Transaksi::class, 'EMAIL');
+    }
+
+    public function tabungan()
+    {
+        return $this->hasOne(Tabungan::class, 'EMAIL', 'EMAIL');
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($karyawan) {
+            \App\Models\Tabungan::firstOrCreate([
+                'EMAIL' => $karyawan->EMAIL
+            ], [
+                'SALDO' => 0
+            ]);
+        });
     }
 }
 

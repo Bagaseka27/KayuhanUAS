@@ -155,16 +155,17 @@
 
         {{-- Gaji Tab --}}
         <div class="tab-pane fade" id="tab-gaji">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center bg-white px-3 py-2 rounded-3 shadow-sm">
-                    <label class="fw-bold me-2 text-primary-custom">Periode:</label>
-                    <input type="month" class="form-control border-0 bg-transparent fw-bold" value="{{ now()->format('Y-m') }}">
-                </div>
-                <button class="btn text-white fw-bold py-2 px-3 rounded-3" style="background-color: var(--primary);" data-bs-toggle="modal" data-bs-target="#modalGaji" onclick="resetGajiModal()">
-                    <i class="fas fa-plus me-2"></i> Tambah Data Gaji
+            <div class="d-flex gap-3 mb-4">
+                <a href="{{ route('gaji.daftarPengambilan') }}" class="btn text-white fw-bold py-2.5 px-4 rounded-3 shadow-sm" style="background-color: var(--primary);">
+                    <i class="fas fa-hand-holding-usd me-2"></i> Pengambilan Gaji
+                </a>
+                <a href="{{ route('gaji.daftarPenyimpanan') }}" class="btn text-white fw-bold py-2.5 px-4 rounded-3 shadow-sm" style="background-color: #d4a373;">
+                    <i class="fas fa-piggy-bank me-2"></i> Penyimpanan Gaji
+                </a>
+                <button type="button" class="btn text-white fw-bold py-2.5 px-4 rounded-3 shadow-sm" style="background-color: #2a9d8f; border: none;" data-bs-toggle="modal" data-bs-target="#modalTabungan">
+                    <i class="fas fa-wallet me-2"></i> Tabungan
                 </button>
             </div>
-
             <div class="stat-card p-0 overflow-hidden shadow-sm border-0 rounded-4">
                 <div class="table-responsive">
                     <table class="table custom-table mb-0 align-middle">
@@ -182,7 +183,9 @@
                                 <td>Rp {{ number_format($gaji->TOTAL_KOMPENSASI, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($gaji->TOTAL_GAJI_AKHIR, 0, ',', '.') }}</td>
                                 <td>
-                                    <button onclick="fillGajiModal('{{ $gaji->ID_GAJI }}','{{ $gaji->EMAIL }}','{{ $gaji->karyawan->NAMA ?? 'N/A' }} ({{ $gaji->karyawan->jabatan_name ?? 'N/A' }})','{{ $gaji->PERIODE }}','{{ $gaji->TOTAL_GAJI_POKOK }}','{{ $gaji->JUMLAH_HARI_MASUK }}','{{ $gaji->TOTAL_BONUS }}','{{ $gaji->TOTAL_KOMPENSASI }}')" class="btn btn-sm btn-warning">Edit</button>
+                                    <a href="{{ route('gaji.show', $gaji->ID_GAJI) }}" class="btn btn-sm btn-info" title="Lihat Detail">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </a>
                                     <button onclick="confirmDelete('{{ $gaji->ID_GAJI }}', 'Gaji')" class="btn btn-sm btn-danger">Hapus</button>
                                 </td>
                             </tr>
@@ -246,17 +249,17 @@
                 <div class="table-responsive">
                     <table class="table custom-table mb-0 align-middle">
                         <thead class="bg-light text-secondary text-uppercase small fw-bold">
-                            <tr><th>ID</th><th>Nama Jabatan</th><th>Gaji / Hari</th><th>Bonus / Cup</th><th class="text-center">Aksi</th></tr>
+                            <tr><th>ID</th><th>Nama Jabatan</th><th>Gaji / Jam</th><th>Bonus / Cup</th><th class="text-center">Aksi</th></tr>
                         </thead>
                         <tbody class="bg-white">
                             @forelse($jabatanListFull as $j)
                             <tr>
                                 <td>{{ $j->ID_JABATAN }}</td>
                                 <td>{{ $j->NAMA_JABATAN }}</td>
-                                <td>Rp {{ number_format($j->GAJI_POKOK_PER_HARI, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($j->UPAH_PER_JAM, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($j->BONUS_PER_CUP, 0, ',', '.') }}</td>
                                 <td class="text-center">
-                                    <button class="btn btn-warning btn-sm" onclick="fillJabatanModal('{{ $j->ID_JABATAN }}','{{ $j->NAMA_JABATAN }}','{{ $j->GAJI_POKOK_PER_HARI }}','{{ $j->BONUS_PER_CUP }}')">Edit</button>
+                                    <button class="btn btn-warning btn-sm" onclick="fillJabatanModal('{{ $j->ID_JABATAN }}','{{ $j->NAMA_JABATAN }}','{{ $j->UPAH_PER_JAM }}','{{ $j->BONUS_PER_CUP }}')">Edit</button>
                                     <button class="btn btn-danger btn-sm" onclick="confirmDeleteJabatan('{{ $j->ID_JABATAN }}')">Hapus</button>
                                 </td>
                             </tr>
@@ -318,43 +321,6 @@
         </div>
     </form></div></div>
 
-    {{-- MODAL GAJI --}}
-    <div class="modal fade" id="modalGaji" tabindex="-1"><div class="modal-dialog">
-    <form action="{{ route('gaji.store') }}" method="POST" id="formGaji" class="modal-content border-0 shadow">@csrf
-        <div class="modal-header text-white" style="background-color: var(--primary);">
-            <h5 class="modal-title fw-bold">Hitung Gaji</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-
-        <div class="modal-body p-4">
-            <div class="mb-3">
-                <label class="fw-bold text-secondary">Pilih Karyawan</label>
-                <select name="EMAIL" id="gaji_employee_select" class="form-select" required>
-                    @foreach($karyawanData as $emp)
-                        <option value="{{ $emp->email }}">{{ $emp->name }} ({{ $emp->jabatan_name ?? '' }})</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3"><label class="fw-bold text-secondary">Periode</label><input type="month" name="PERIODE" id="gaji_period_input" class="form-control" required></div>
-
-            <div class="mb-3"><label class="fw-bold text-secondary">Jumlah Hari Masuk</label><input type="number" name="JUMLAH_HARI_MASUK" id="gaji_days_input" class="form-control" required min="0"></div>
-
-            <div class="mb-3"><label class="fw-bold text-secondary">Total Gaji Pokok (Auto)</label><input type="number" name="TOTAL_GAJI_POKOK" id="gaji_basic_auto" class="form-control bg-light" readonly></div>
-
-            <div class="mb-3"><label class="fw-bold text-secondary">Bonus (jumlah cup)</label><input type="number" name="INPUT_BONUS" id="gaji_bonus_input" class="form-control" min="0"></div>
-
-            <div class="mb-3"><label class="fw-bold text-secondary">Total Bonus (Auto)</label><input type="number" name="TOTAL_BONUS" id="gaji_bonus_total" class="form-control bg-light" readonly></div>
-
-            <div class="mb-3"><label class="fw-bold text-secondary">Kompensasi</label><input type="number" name="TOTAL_KOMPENSASI" id="gaji_kompensasi_input" class="form-control" value="0" min="0"></div>
-        </div>
-
-        <div class="modal-footer bg-light">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-            <button type="submit" class="btn btn-primary text-white fw-bold">Simpan</button>
-        </div>
-    </form></div></div>
-
     {{-- MODAL JADWAL --}}
     <div class="modal fade" id="modalJadwal" tabindex="-1"><div class="modal-dialog">
     <form action="{{ route('jadwal.store') }}" method="POST" id="formJadwal" class="modal-content border-0 shadow">@csrf
@@ -378,17 +344,81 @@
         <div class="modal-header text-white" style="background-color: var(--primary);"><h5 class="modal-title fw-bold">Kelola Jabatan</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
         <div class="modal-body p-4">
             <div class="mb-3"><label class="fw-bold text-secondary">Nama Jabatan</label><input type="text" name="NAMA_JABATAN" id="jabatan_nama" class="form-control" required></div>
-            <div class="mb-3"><label class="fw-bold text-secondary">Gaji Pokok / Hari</label><input type="number" name="GAJI_POKOK_PER_HARI" id="jabatan_gaji" class="form-control" required></div>
-            <div class="mb-3"><label class="fw-bold text-secondary">Bonus / CUP</label><input type="number" name="BONUS_PER_CUP" id="jabatan_bonus" class="form-control" required></div>
+            <div class="mb-3">
+                <label class="fw-bold text-secondary">Upah / Jam (Rp)</label>
+                <input type="number" name="UPAH_PER_JAM" id="jabatan_upah_jam" class="form-control" value="5000" min="0" step="0.01" required>
+                <small class="text-muted">Default: 5000</small>
+            </div>
+            <div class="mb-3">
+                <label class="fw-bold text-secondary">Bonus / Cup Penjualan (Rp)</label>
+                <input type="number" name="BONUS_PENJUALAN_PER_CUP" id="jabatan_bonus_cup" class="form-control" min="0" step="0.01" required>
+                <small class="text-muted">Bonus diberikan jika penjualan > 50 cup</small>
+            </div>
         </div>
         <div class="modal-footer bg-light"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary text-white fw-bold">Simpan</button></div>
     </form></div></div>
+
+    {{-- MODAL TABUNGAN BARISTA --}}
+    <div class="modal fade" id="modalTabungan" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header text-white border-0 py-3" style="background-color: #2a9d8f;">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-wallet me-2"></i> Akumulasi Tabungan Barista
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" style="background-color: #f4f7f6;">
+                    <div class="row g-3">
+                        @php
+                            $baristasTabungan = \App\Models\Karyawan::with('tabungan')
+                                ->where('ROLE', 'Barista')
+                                ->get();
+                        @endphp
+                        @forelse($baristasTabungan as $bt)
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm rounded-3">
+                                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h5 class="fw-bold text-dark mb-1" style="font-family: 'Outfit', sans-serif; font-size: 1.1rem;">{{ $bt->NAMA }}</h5>
+                                        <small class="text-muted">{{ $bt->EMAIL }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="text-muted small d-block mb-1">Total Tabungan</span>
+                                        <h5 class="fw-bold text-success mb-0" style="font-size: 1.15rem;">Rp {{ number_format($bt->tabungan?->SALDO ?? 0, 0, ',', '.') }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="col-12 text-center text-muted py-4">
+                            <i class="fas fa-info-circle me-2"></i> Belum ada data barista.
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-white p-3 rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
 @push('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        // Active tab from URL hash
+        const hash = window.location.hash;
+        if (hash) {
+            const tabEl = document.querySelector(`button[data-bs-target="${hash}"]`);
+            if (tabEl) {
+                const tab = new bootstrap.Tab(tabEl);
+                tab.show();
+            }
+        }
+
         const form = document.getElementById('formKaryawan');
         const roleSelect = document.getElementById('role_select');
         const cabangSelect = document.getElementById('id_cabang_select');
@@ -434,69 +464,6 @@
             new bootstrap.Modal(document.getElementById('modalKaryawan')).show();
         };
 
-        // GAJI LOGIC
-        const formGaji = document.getElementById("formGaji");
-        const gajiEmployeeSelect = document.getElementById("gaji_employee_select");
-        const gajiDaysInput = document.getElementById("gaji_days_input");
-        const gajiBasicAuto = document.getElementById("gaji_basic_auto");
-        const gajiBonusInput = document.getElementById("gaji_bonus_input");
-        const gajiBonusTotal = document.getElementById("gaji_bonus_total");
-        const gajiKompensasi = document.getElementById("gaji_kompensasi_input");
-
-        let currentGajiPerHari = 0;
-        let currentBonusPerCup = 0;
-
-        function resetGajiModal() {
-            formGaji.reset();
-            formGaji.action = "{{ route('gaji.store') }}";
-            const m = formGaji.querySelector('input[name="_method"]'); if (m) m.remove();
-            gajiEmployeeSelect.removeAttribute("disabled");
-            currentGajiPerHari = 0; currentBonusPerCup = 0;
-            gajiBasicAuto.value = ""; gajiBonusTotal.value = "";
-        }
-
-        window.resetGajiModal = resetGajiModal;
-
-        async function fetchJabatanRates(email) {
-            if (!email) return;
-            try {
-                const res = await fetch(`/api/jabatan-karyawan/${encodeURIComponent(email)}`);
-                if (!res.ok) throw new Error('Gagal ambil data jabatan');
-                const data = await res.json();
-                currentGajiPerHari = parseFloat(data.gaji_per_hari) || 0;
-                currentBonusPerCup = parseFloat(data.bonus_per_cup) || 0;
-                recalcGaji();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function recalcGaji() {
-            const hari = parseInt(gajiDaysInput.value) || 0;
-            gajiBasicAuto.value = Math.round(hari * currentGajiPerHari);
-            const bonusCups = parseInt(gajiBonusInput.value) || 0;
-            gajiBonusTotal.value = Math.round(bonusCups * currentBonusPerCup);
-        }
-
-        gajiEmployeeSelect.addEventListener('change', (e) => fetchJabatanRates(e.target.value));
-        gajiDaysInput.addEventListener('input', recalcGaji);
-        gajiBonusInput.addEventListener('input', recalcGaji);
-
-        window.fillGajiModal = function(id, email, namaJabatan, periode, basic, days, totalBonus, kompensasi) {
-            resetGajiModal();
-            formGaji.action = `/gaji/update/${id}`;
-            formGaji.insertAdjacentHTML("beforeend", `<input type="hidden" name="_method" value="PUT">`);
-            document.getElementById("gaji_employee_select").innerHTML = `<option value="${email}">${namaJabatan}</option>`;
-            document.getElementById("gaji_employee_select").setAttribute("disabled", true);
-            document.getElementById("gaji_period_input").value = periode;
-            document.getElementById("gaji_days_input").value = days ?? 0;
-            document.getElementById("gaji_basic_auto").value = basic ?? 0;
-            document.getElementById("gaji_bonus_input").value = "";
-            document.getElementById("gaji_bonus_total").value = totalBonus ?? 0;
-            document.getElementById("gaji_kompensasi_input").value = kompensasi ?? 0;
-            fetchJabatanRates(email);
-            new bootstrap.Modal(document.getElementById('modalGaji')).show();
-        };
 
         // JADWAL
         const formJadwal = document.getElementById("formJadwal");
@@ -556,14 +523,14 @@
             if (method) method.remove();
         };
 
-        window.fillJabatanModal = (id, nama, gaji, bonus) => {
+        window.fillJabatanModal = (id, nama, upahJam, bonusCup) => {
             resetJabatanModal();
             const formJ = document.getElementById('formJabatan');
             formJ.action = `/jabatan/update/${encodeURIComponent(id)}`;
             formJ.insertAdjacentHTML("beforeend", `<input type="hidden" name="_method" value="PUT">`);
             document.getElementById('jabatan_nama').value = nama;
-            document.getElementById('jabatan_gaji').value = gaji;
-            document.getElementById('jabatan_bonus').value = bonus;
+            document.getElementById('jabatan_upah_jam').value = upahJam || 5000;
+            document.getElementById('jabatan_bonus_cup').value = bonusCup || 0;
             new bootstrap.Modal(document.getElementById('modalJabatan')).show();
         };
 

@@ -47,6 +47,9 @@
             <a href="{{ route('barista.absensi.index') }}" class="menu-item {{ request()->routeIs('barista.absensi.*') ? 'active' : '' }}">
                 <i class="fas fa-clipboard-check"></i> Presensi
             </a>
+            <a href="{{ route('barista.gaji.index') }}" class="menu-item {{ request()->routeIs('barista.gaji.*') ? 'active' : '' }}">
+                <i class="fas fa-money-bill-wave"></i> Gaji
+            </a>
             <a href="{{ route('barista.riwayat') }}" class="menu-item {{ request()->routeIs('barista.riwayat') ? 'active' : '' }}">
                 <i class="fas fa-history"></i> Riwayat Transaksi
             </a>

@@ -58,15 +58,21 @@ class Absensi extends Model
      */
     public static function calculateStatus($jamMasuk, $absenTime)
     {
-        $jamMasuk = Carbon::parse($jamMasuk);
-        $absenTime = Carbon::parse($absenTime);
+        // Parse scheduled time and check-in time as Carbon objects
+        // We set the date components to be identical to compare times accurately
+        $jamMasukParsed = Carbon::parse($jamMasuk);
+        $absenTimeParsed = Carbon::parse($absenTime);
+        
+        $jamMasukTimeOnly = Carbon::createFromTime($jamMasukParsed->hour, $jamMasukParsed->minute, $jamMasukParsed->second);
+        $absenTimeOnly = Carbon::createFromTime($absenTimeParsed->hour, $absenTimeParsed->minute, $absenTimeParsed->second);
 
-        $diffMinutes = $jamMasuk->diffInMinutes($absenTime);
-
-        if ($diffMinutes > 20) {
+        if ($absenTimeOnly->greaterThan($jamMasukTimeOnly)) {
+            $diffMinutes = $jamMasukTimeOnly->diffInMinutes($absenTimeOnly);
+            // Approximate penalty for check-in response, will be overridden by GajiService
+            $potongan = $diffMinutes <= 15 ? -$diffMinutes * 1000 : 0;
             return [
                 'status' => 'TERLAMBAT',
-                'kompensasi' => -10000
+                'kompensasi' => $potongan
             ];
         }
 

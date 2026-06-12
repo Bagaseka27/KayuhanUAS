@@ -57,7 +57,7 @@
         @endif
     </div>
 
-    <div class="card-custom p-0 overflow-hidden">
+    <div class="card-custom p-0 overflow-hidden mt-4">
         <div class="table-responsive">
             <table class="table table-custom mb-0">
                 <thead>
@@ -99,11 +99,10 @@
                         </tr>
                     @endif
                 </tbody>
-
-
             </table>
         </div>
     </div>
+
 @endsection
 
 @push('scripts')

@@ -6,25 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jabatan extends Model
 {
-    public function indexPage()
-    {
-        $jabatan = Jabatan::all();
-        return view('pages.jabatan.index', compact('jabatan'));
-    }
-
     protected $table = 'jabatan';
     protected $primaryKey = 'ID_JABATAN';
 
     public $timestamps = false;
 
+    protected $casts = [
+        'UPAH_PER_JAM' => 'decimal:2',
+        'BONUS_PENJUALAN_PER_CUP' => 'decimal:2',
+    ];
+
     protected $fillable = [
         'NAMA_JABATAN',
-        'GAJI_POKOK_PER_HARI',
-        'BONUS_PER_CUP'
+        'UPAH_PER_JAM',
+        'BONUS_PENJUALAN_PER_CUP'
     ];
 
     public function karyawan()
     {
         return $this->hasMany(Karyawan::class, 'ID_JABATAN');
+    }
+
+    // Bonus tetap per CUP berdasarkan jabatan
+    public function getBonusPerCupAttribute()
+    {
+        return $this->BONUS_PENJUALAN_PER_CUP ?? 0;
     }
 }

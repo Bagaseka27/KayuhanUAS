@@ -76,9 +76,24 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/employee/{email}', [KaryawanController::class, 'destroy'])->name('employee.destroy');
 
     // GAJI
-    Route::post('/gaji/store', [GajiController::class, 'store'])->name('gaji.store');
+    Route::get('/gaji', [GajiController::class, 'index'])->name('gaji.index');
+    Route::post('/gaji/hitung-otomatis', [GajiController::class, 'hitungOtomatis'])->name('gaji.hitungOtomatis');
+    Route::post('/gaji/hitung-karyawan/{email}', [GajiController::class, 'hitungKaryawan'])->name('gaji.hitungKaryawan');
+    Route::get('/gaji/{id}', [GajiController::class, 'show'])->name('gaji.show');
+    Route::get('/gaji/detail/{email}', [GajiController::class, 'detail'])->name('gaji.detail');
+    Route::post('/gaji/hitung-harian/{email}', [GajiController::class, 'hitungHarian'])->name('gaji.hitungHarian');
     Route::put('/gaji/update/{id}', [GajiController::class, 'update'])->name('gaji.update');
     Route::delete('/gaji/{id}', [GajiController::class, 'destroy'])->name('gaji.destroy');
+
+    // Pengambilan Gaji - Admin
+    Route::get('/gaji/pengambilan/daftar', [GajiController::class, 'daftarPengambilan'])->name('gaji.daftarPengambilan');
+    Route::post('/gaji/pengambilan/{id}/terima', [GajiController::class, 'terimaPengambilan'])->name('gaji.terimaPengambilan');
+    Route::post('/gaji/pengambilan/{id}/tolak', [GajiController::class, 'tolakPengambilan'])->name('gaji.tolakPengambilan');
+
+    // Penyimpanan Gaji - Admin
+    Route::get('/gaji/penyimpanan/daftar', [GajiController::class, 'daftarPenyimpanan'])->name('gaji.daftarPenyimpanan');
+    Route::post('/gaji/penyimpanan/{id}/terima', [GajiController::class, 'terimaPenyimpanan'])->name('gaji.terimaPenyimpanan');
+    Route::post('/gaji/penyimpanan/{id}/tolak', [GajiController::class, 'tolakPenyimpanan'])->name('gaji.tolakPenyimpanan');
 
     // JABATAN
     Route::get('/jabatan', [JabatanController::class, 'indexPage'])->name('jabatan.index');
@@ -92,15 +107,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/jadwal/update/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
     Route::delete('/jadwal/delete/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
 
-    // API helper: ambil gaji_per_hari dan bonus_per_cup berdasarkan EMAIL karyawan
+    // API helper: ambil upah_per_jam dan bonus_penjualan_per_cup berdasarkan EMAIL karyawan
     Route::get('/api/jabatan-karyawan/{email}', function($email) {
         $k = \App\Models\Karyawan::with('jabatan')->find($email);
         if (!$k || !$k->jabatan) {
-            return response()->json(['gaji_per_hari' => 0, 'bonus_per_cup' => 0]);
+            return response()->json(['upah_per_jam' => 5000, 'bonus_penjualan_per_cup' => 0]);
         }
         return response()->json([
-            'gaji_per_hari' => $k->jabatan->GAJI_POKOK_PER_HARI,
-            'bonus_per_cup' => $k->jabatan->BONUS_PER_CUP,
+            'upah_per_jam' => $k->jabatan->UPAH_PER_JAM,
+            'bonus_penjualan_per_cup' => $k->jabatan->BONUS_PENJUALAN_PER_CUP,
         ]);
     });
 
@@ -204,6 +219,16 @@ Route::middleware(['auth', 'barista'])
 
     Route::get('/riwayat', [TransaksiController::class, 'indexRiwayatBarista'])
          ->name('riwayat');
+
+    // ==================== GAJI BARISTA ====================
+    Route::get('/gaji', [GajiController::class, 'baristaIndex'])->name('gaji.index');
+    Route::get('/gaji/form-pengambilan', [GajiController::class, 'formPengambilan'])->name('gaji.formPengambilan');
+    Route::post('/gaji/store-pengambilan', [GajiController::class, 'storePengambilan'])->name('gaji.storePengambilan');
+    Route::get('/gaji/lihat-pengambilan', [GajiController::class, 'lihatPengambilan'])->name('gaji.lihatPengambilan');
+
+    Route::get('/gaji/form-penyimpanan', [GajiController::class, 'formPenyimpanan'])->name('gaji.formPenyimpanan');
+    Route::post('/gaji/store-penyimpanan', [GajiController::class, 'storePenyimpanan'])->name('gaji.storePenyimpanan');
+    Route::get('/gaji/lihat-penyimpanan', [GajiController::class, 'lihatPenyimpanan'])->name('gaji.lihatPenyimpanan');
 });
 
 /*

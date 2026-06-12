@@ -144,6 +144,21 @@
                         <i class="fas fa-boxes"></i> Cek Stok Gudang
                     </a>
                 </div>
+                <div class="col-md-3 col-6">
+                    <a href="{{ url('/employee#tab-gaji') }}" class="quick-action-btn text-decoration-none">
+                        <i class="fas fa-calculator"></i> Data Gaji
+                    </a>
+                </div>
+                <div class="col-md-3 col-6">
+                    <a href="{{ route('gaji.daftarPengambilan') }}" class="quick-action-btn text-decoration-none">
+                        <i class="fas fa-money-bill-wave"></i> Pengambilan Gaji
+                    </a>
+                </div>
+                <div class="col-md-3 col-6">
+                    <a href="{{ route('gaji.daftarPenyimpanan') }}" class="quick-action-btn text-decoration-none">
+                        <i class="fas fa-piggy-bank"></i> Penyimpanan Gaji
+                    </a>
+                </div>
             </div>
         </div>
     </div>

@@ -216,6 +216,14 @@ class AbsensiNewController extends Controller
             $absensi->LNG_PULANG = $request->lng;
             $absensi->save();
 
+            // Hitung gaji harian otomatis
+            try {
+                $gajiService = app(\App\Services\GajiService::class);
+                $gajiService->hitungGajiHarian($email, $today);
+            } catch (\Exception $e) {
+                \Log::error('Gagal hitung gaji harian otomatis saat pulang: ' . $e->getMessage());
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Absen pulang berhasil'
@@ -266,6 +274,14 @@ class AbsensiNewController extends Controller
             $absensi->ALASAN_TIDAK_HADIR = $request->alasan;
             $absensi->SURAT_IZIN = $request->surat;
             $absensi->save();
+
+            // Hitung gaji harian otomatis
+            try {
+                $gajiService = app(\App\Services\GajiService::class);
+                $gajiService->hitungGajiHarian($email, $today);
+            } catch (\Exception $e) {
+                \Log::error('Gagal hitung gaji harian otomatis saat tidak hadir: ' . $e->getMessage());
+            }
 
             return response()->json([
                 'success' => true,

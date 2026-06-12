@@ -6,7 +6,7 @@ use App\Models\Jabatan;
 use App\Models\Cabang;
 use App\Models\Rombong;
 use App\Models\Jadwal;
-use App\Models\Gaji;
+use App\Models\GajiHarian;
 
 use Illuminate\Http\Request;
 
@@ -14,7 +14,31 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $payrollsData = Gaji::with('karyawan')->get();
+        // Trigger weekly auto-savings check to keep everything updated
+        try {
+            app(\App\Services\GajiService::class)->autoSaveUnclaimedSalaries();
+        } catch (\Exception $e) {
+            \Log::error("Failed to run auto-save in employee index: " . $e->getMessage());
+        }
+
+        $gajiHarian = GajiHarian::with('karyawan', 'karyawan.jabatan')->get();
+        $payrollsData = $gajiHarian->groupBy(function($item) {
+            return $item->EMAIL . '_' . \Carbon\Carbon::parse($item->TANGGAL)->format('Y-m');
+        })->map(function ($items) {
+            $karyawan = $items->first()->karyawan;
+            $periode = \Carbon\Carbon::parse($items->first()->TANGGAL)->format('Y-m');
+            return (object)[
+                'EMAIL' => $items->first()->EMAIL,
+                'karyawan' => $karyawan,
+                'PERIODE' => $periode,
+                'TOTAL_GAJI_POKOK' => $items->sum('GAJI_POKOK_HARIAN'),
+                'TOTAL_BONUS' => $items->sum('BONUS_HARIAN'),
+                'TOTAL_KOMPENSASI' => $items->sum('POTONGAN_TERLAMBAT'),
+                'TOTAL_GAJI_AKHIR' => $items->sum('TOTAL_GAJI_HARIAN'),
+                'ID_GAJI' => $items->first()->id, // Mock ID using the first daily salary ID
+                'TABUNGAN' => \App\Models\Tabungan::where('EMAIL', $items->first()->EMAIL)->value('SALDO') ?? 0,
+            ];
+        })->values();
         $jadwals = Jadwal::with(['karyawan','cabang'])->get();
 
         $karyawanData = Karyawan::with(['jabatan','cabang','rombong'])->get()->map(function($k){
