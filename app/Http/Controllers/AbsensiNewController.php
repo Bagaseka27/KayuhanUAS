@@ -321,13 +321,16 @@ class AbsensiNewController extends Controller
     }
     public function monitoring(Request $request)
     {
-        $tanggalFilter = $request->input('tanggal', Carbon::today()->toDateString());
+        // 1. Ambil tanggal dari filter atau default ke hari ini
+        $tanggalFilter = $request->input('tanggal', \Carbon\Carbon::today()->toDateString());
         $lokasiFilterId = $request->input('lokasi');
 
+        // 2. Ambil data pilihan cabang untuk filter dropdown
         $lokasiFilter = Cabang::select('ID_CABANG as id', 'NAMA_LOKASI as nama')
             ->get()
             ->map(fn($c) => ['id' => $c->id, 'nama' => $c->nama]);
 
+        // 3. Bangun query karyawan dengan kondisi eager loading absensi pada tanggal filter
         $query = Karyawan::with([
             'cabang',
             'rombong',
@@ -336,6 +339,7 @@ class AbsensiNewController extends Controller
             }
         ]);
 
+        // 4. Filter berdasarkan Lokasi Kerja jika dipilih
         if ($lokasiFilterId) {
             if (str_starts_with($lokasiFilterId, 'C')) {
                 $query->where('ID_CABANG', $lokasiFilterId);
@@ -346,6 +350,7 @@ class AbsensiNewController extends Controller
 
         $karyawanList = $query->get();
 
+        // 5. Kembalikan ke view
         return view('pages.absensi_monitoring', compact('karyawanList', 'lokasiFilter', 'tanggalFilter'));
     }
 }
