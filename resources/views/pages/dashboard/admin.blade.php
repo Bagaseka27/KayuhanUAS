@@ -4,7 +4,6 @@
 
 @section('content')
 
-    <!-- 1. Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold text-primary-custom mb-0">Dashboard Overview</h3>
@@ -18,19 +17,57 @@
         </div>
     </div>
 
-    <!-- 2. Statistik Cards (Lengkap) -->
+    <div class="col-12 mb-4">
+        <h5 class="fw-bold text-primary-custom mb-3">Aksi Cepat</h5>
+        <div class="row g-3">
+            <div class="col-md-3 col-6">
+                <a href="{{ url('/employee') }}" class="quick-action-btn text-decoration-none">
+                    <i class="fas fa-user-plus"></i> Kelola Karyawan
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="{{ url('/menu') }}" class="quick-action-btn text-decoration-none">
+                    <i class="fas fa-coffee"></i> Update Menu
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="{{ url('/history') }}" class="quick-action-btn text-decoration-none">
+                    <i class="fas fa-file-invoice"></i> Laporan Keuangan
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="{{ url('/inventory') }}" class="quick-action-btn text-decoration-none">
+                    <i class="fas fa-boxes"></i> Cek Stok Gudang
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="{{ url('/employee#tab-gaji') }}" class="quick-action-btn text-decoration-none">
+                    <i class="fas fa-calculator"></i> Data Gaji
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="{{ route('gaji.daftarPengambilan') }}" class="quick-action-btn text-decoration-none">
+                    <i class="fas fa-money-bill-wave"></i> Pengambilan Gaji
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="{{ route('gaji.daftarPenyimpanan') }}" class="quick-action-btn text-decoration-none">
+                    <i class="fas fa-piggy-bank"></i> Penyimpanan Gaji
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-md-4">
             <div class="stat-card bg-gradient-primary text-white">
                 <h6 class="text-white-50">Total Omset Bulan Ini</h6>
-                {{-- PERBAIKAN: Menambahkan guard ?? 0 --}}
                 <h3 class="fw-bold">Rp {{ number_format($totalOmset ?? 0, 0, ',', '.') }}</h3>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stat-card">
                 <h6 class="text-muted">Profit Bersih</h6>
-                {{-- PERBAIKAN: Menambahkan guard ?? 0 --}}
                 <h3 class="fw-bold text-success">Rp {{ number_format($profitBersih ?? 0, 0, ',', '.') }}</h3>
             </div>
         </div>
@@ -38,72 +75,54 @@
             <div class="stat-card">
                 <h6 class="text-muted">Karyawan Aktif</h6>
                 <h3 class="fw-bold text-primary-custom">{{ $activeStaff ?? 0 }} Staff</h3>
-                {{-- PERBAIKAN: Menghitung Barista dengan guard --}}
                 <small class="text-muted">
                     {{ $adminCount }} Admin, {{ $baristaCount }} Barista
                 </small>
             </div>
         </div>
 
-        <!-- Menu Terlaris Harian -->
-        <div class="card-custom mt-4">
-
-            <p class="text-muted mb-3">Menu Terjual Hari Ini</p>
-
-            @if($menu_hari_ini->count() > 0)
-
-                @foreach($menu_hari_ini as $menu)
-                <div class="d-flex justify-content-between py-2 border-bottom">
-                    <span>{{ $menu->NAMA_PRODUK }}</span>
-                    <span class="badge bg-success">
-                        {{ $menu->total_terjual }} cup
-                    </span>
-                </div>
-                @endforeach
-
-            @else
-                <p class="text-muted">Belum ada penjualan hari ini.</p>
-            @endif
-
+        <div class="col-12 mt-4">
+            <div class="card-custom">
+                <p class="text-muted mb-3">Menu Terjual Hari Ini</p>
+                @if($menu_hari_ini->count() > 0)
+                    @foreach($menu_hari_ini as $menu)
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span>{{ $menu->NAMA_PRODUK }}</span>
+                        <span class="badge bg-success">
+                            {{ $menu->total_terjual }} cup
+                        </span>
+                    </div>
+                    @endforeach
+                @else
+                    <p class="text-muted">Belum ada penjualan hari ini.</p>
+                @endif
+            </div>
         </div>
 
-        <!-- Menu Terlaris Bulanan-->
-        <div class="card-custom mt-4 mb-4">
-
-            <p class="text-muted mb-3">Top 5 Menu Terlaris Bulan Ini</p>
-
-            @foreach($menu_terlaris as $menu)
-
-            <div class="mb-3">
-
-                <div class="d-flex justify-content-between">
-                    <span>{{ $menu->NAMA_PRODUK }}</span>
-                    <span>{{ $menu->total_terjual }} cup</span>
-                </div>
-
-                <div class="progress mt-1" style="height:8px;">
-                    <div 
-                        class="progress-bar bg-success"
-                        style="width: {{ ($menu->total_terjual / $menu_terlaris[0]->total_terjual) * 100 }}%">
+        <div class="col-12 mt-4">
+            <div class="card-custom">
+                <p class="text-muted mb-3">Top 5 Menu Terlaris Bulan Ini</p>
+                @foreach($menu_terlaris as $menu)
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>{{ $menu->NAMA_PRODUK }}</span>
+                        <span>{{ $menu->total_terjual }} cup</span>
+                    </div>
+                    <div class="progress mt-1" style="height:8px;">
+                        <div 
+                            class="progress-bar bg-success"
+                            style="width: {{ ($menu->total_terjual / $menu_terlaris[0]->total_terjual) * 100 }}%">
+                        </div>
                     </div>
                 </div>
-
+                @endforeach
             </div>
-
-            @endforeach
-
         </div>
 
-        <!-- 3. Grafik Penjualan (Memanfaatkan Chart.js) -->
-        <div class="col-12 mt-4">
+        <div class="col-12 mt-4 mb-4">
             <div class="stat-card p-4">
-                
-                {{-- KOTAK CHART: Chart area yang baru --}}
                 <div class="card-header py-3 d-flex justify-content-between align-items-center mb-3 p-0 border-0">
-                    {{-- PERBAIKAN: Menambahkan guard ?? Carbon\Carbon::now()->year --}}
                     <h5 class="fw-bold text-primary-custom m-0">Tren Penjualan (Tahun {{ $selectedYear ?? Carbon\Carbon::now()->year }})</h5>
-                    {{-- Form Filter Tahun --}}
-                    {{-- PERBAIKAN KRITIS: Mengganti admin.dashboard dengan dashboard --}}
                     <form action="{{ route('dashboard') }}" method="GET" class="d-flex">
                         <select name="tahun" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
                             @for ($y = Carbon\Carbon::now()->year; $y >= 2020; $y--)
@@ -116,69 +135,22 @@
                 <div class="chart-container" style="position: relative; height: 350px;">
                     <canvas id="salesTrendChart"></canvas>
                 </div>
-
-            </div>
-        </div>
-
-        <!-- 4. Aksi Cepat Admin -->
-        <div class="col-12 mt-4">
-            <h5 class="fw-bold text-primary-custom mb-3">Aksi Cepat</h5>
-            <div class="row g-3">
-                <div class="col-md-3 col-6">
-                    <a href="{{ url('/employee') }}" class="quick-action-btn text-decoration-none">
-                        <i class="fas fa-user-plus"></i> Kelola Karyawan
-                    </a>
-                </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ url('/menu') }}" class="quick-action-btn text-decoration-none">
-                        <i class="fas fa-coffee"></i> Update Menu
-                    </a>
-                </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ url('/history') }}" class="quick-action-btn text-decoration-none">
-                        <i class="fas fa-file-invoice"></i> Laporan Keuangan
-                    </a>
-                </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ url('/inventory') }}" class="quick-action-btn text-decoration-none">
-                        <i class="fas fa-boxes"></i> Cek Stok Gudang
-                    </a>
-                </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ url('/employee#tab-gaji') }}" class="quick-action-btn text-decoration-none">
-                        <i class="fas fa-calculator"></i> Data Gaji
-                    </a>
-                </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ route('gaji.daftarPengambilan') }}" class="quick-action-btn text-decoration-none">
-                        <i class="fas fa-money-bill-wave"></i> Pengambilan Gaji
-                    </a>
-                </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ route('gaji.daftarPenyimpanan') }}" class="quick-action-btn text-decoration-none">
-                        <i class="fas fa-piggy-bank"></i> Penyimpanan Gaji
-                    </a>
-                </div>
             </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-{{-- Memastikan Chart.js dimuat --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script> 
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
     const salesData = {
         labels: @json($salesTrendData['labels']),
         data: @json($salesTrendData['data'])
     };
 
     const ctx = document.getElementById('salesTrendChart').getContext('2d');
-
-    // 👉 Tambahkan di sini
     console.log("CTX:", ctx);
     console.log("Sales Data:", salesData);
 
@@ -209,21 +181,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateTime() {
         const now = new Date();
-
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
-
         timeElement.textContent = `${hours}:${minutes}:${seconds}`;
     }
-
-    // Update pertama kali
     updateTime();
-
-    // Update setiap 1 detik
     setInterval(updateTime, 1000);
 });
 </script>
-
-
 @endpush
