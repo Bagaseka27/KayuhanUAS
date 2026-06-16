@@ -42,7 +42,7 @@
 2. Bisa menyesuaikan potongan jika diperlukan
 3. Klik **Simpan**
 
-### 5. Manage Pengambilan Gaji (Kamis)
+### 5. Manage Pengambilan Gaji (Kapan saja)
 1. Buka menu **Pengambilan Gaji** dari dashboard atau sidebar
 2. Filter berdasarkan status: Menunggu, Disetujui, Ditolak
 3. Untuk pengajuan "Menunggu":
@@ -50,7 +50,7 @@
    - Tambahkan catatan jika diperlukan
 4. Lihat riwayat semua pengambilan
 
-### 6. Manage Penyimpanan Gaji (Kamis)
+### 6. Manage Penyimpanan Gaji (Kapan saja)
 - Sama seperti Pengambilan Gaji
 - Buka menu **Penyimpanan Gaji**
 
@@ -58,9 +58,9 @@
 
 ## Cara Menggunakan (Karyawan/Barista)
 
-### 1. Ambil Gaji (Setiap Kamis)
+### 1. Ambil Gaji (Kapan saja)
 1. Masuk ke dashboard barista
-2. Cari section **Ambil Gaji** (hanya tampil di hari Kamis)
+2. Cari section **Ambil Gaji** (aktif sepanjang waktu)
 3. Klik **Form Pengambilan**
 4. Isi nominal yang ingin diambil:
    - Lihat sisa gaji yang bisa diambil
@@ -70,7 +70,7 @@
 6. Tunggu admin memproses (biasanya 1-2 jam kerja)
 7. Cek status di **Lihat Riwayat Pengambilan**
 
-### 2. Simpan Gaji (Setiap Kamis)
+### 2. Simpan Gaji (Kapan saja)
 1. Di dashboard barista, klik **Form Penyimpanan**
 2. Isi nominal yang ingin disimpan (max = sisa gaji)
 3. Klik **Kirim Penyimpanan Gaji**
@@ -157,7 +157,7 @@
 - Terlambat >15 menit: Potong 50% dari total (gaji pokok + bonus)
 
 ### Q: Kapan bisa ambil gaji?
-**A:** Hanya bisa diakses pada hari **KAMIS** jam kerja
+**A:** Dapat diajukan kapan saja sepanjang saldo Anda mencukupi.
 
 ### Q: Berapa lama admin memproses pengambilan gaji?
 **A:** Biasanya 1-2 jam kerja

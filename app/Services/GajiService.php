@@ -257,13 +257,16 @@ class GajiService
             $email = $barista->EMAIL;
             
             foreach ($targetFridays as $fridayDate) {
-                // Check if they made any request on this Friday date
+                // Check if they made any request in the week of this Friday date (Monday to Sunday)
+                $startOfWeek = Carbon::parse($fridayDate)->startOfWeek()->toDateTimeString();
+                $endOfWeek = Carbon::parse($fridayDate)->endOfWeek()->toDateTimeString();
+
                 $hasPengambilan = \App\Models\GajiPengambilan::where('EMAIL', $email)
-                    ->whereDate('created_at', $fridayDate)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->exists();
                     
                 $hasPenyimpanan = \App\Models\GajiDisimpan::where('EMAIL', $email)
-                    ->whereDate('created_at', $fridayDate)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->exists();
                     
                 // Check if already auto-saved for this Friday

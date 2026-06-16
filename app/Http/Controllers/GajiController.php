@@ -167,24 +167,6 @@ class GajiController extends Controller
         ]);
 
         $email = auth()->user()->email;
-        $hariIni = now()->format('l');
-
-        if ($hariIni !== 'Friday') {
-            return redirect()->back()->with('error', 'Fitur pengambilan gaji hanya bisa diakses pada hari Jumat');
-        }
-
-        // Cek apakah sudah mengajukan klaim minggu ini (Senin - Minggu)
-        $startOfWeek = now()->startOfWeek();
-        $endOfWeek = now()->endOfWeek();
-        $hasRequestedThisWeek = GajiPengambilan::where('EMAIL', $email)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->exists() || GajiDisimpan::where('EMAIL', $email)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->exists();
-
-        if ($hasRequestedThisWeek) {
-            return redirect()->back()->with('error', 'Anda sudah mengajukan pengambilan/penyimpanan gaji minggu ini.');
-        }
 
         // Hitung sisa gaji tersedia (harian + tabungan)
         $totalGajiHarian = GajiHarian::where('EMAIL', $email)->sum('TOTAL_GAJI_HARIAN');
@@ -231,24 +213,6 @@ class GajiController extends Controller
     public function storePenyimpanan(Request $request)
     {
         $email = auth()->user()->email;
-        $hariIni = now()->format('l');
-
-        if ($hariIni !== 'Friday') {
-            return redirect()->back()->with('error', 'Fitur penyimpanan gaji hanya bisa diakses pada hari Jumat');
-        }
-
-        // Cek klaim minggu ini
-        $startOfWeek = now()->startOfWeek();
-        $endOfWeek = now()->endOfWeek();
-        $hasRequestedThisWeek = GajiPengambilan::where('EMAIL', $email)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->exists() || GajiDisimpan::where('EMAIL', $email)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->exists();
-
-        if ($hasRequestedThisWeek) {
-            return redirect()->back()->with('error', 'Anda sudah mengajukan pengambilan/penyimpanan gaji minggu ini.');
-        }
 
         // Hitung sisa gaji
         $totalGajiHarian = GajiHarian::where('EMAIL', $email)->sum('TOTAL_GAJI_HARIAN');
@@ -327,16 +291,6 @@ class GajiController extends Controller
         $totalTabungan = \App\Models\Tabungan::where('EMAIL', $email)->value('SALDO') ?? 0;
         $sisaGaji = $sisaGajiHarian + $totalTabungan; // Sisa harian + tabungan, yaitu saldo yang dapat ditarik
 
-        // Cek syarat hari Jumat & klaim mingguan
-        $isFriday = ($hariIni === 'Friday');
-        $startOfWeek = now()->startOfWeek();
-        $endOfWeek = now()->endOfWeek();
-        $hasRequestedThisWeek = GajiPengambilan::where('EMAIL', $email)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->exists() || GajiDisimpan::where('EMAIL', $email)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->exists();
-
         // Get riwayat
         $riwayatPengambilan = GajiPengambilan::where('EMAIL', $email)->latest()->take(10)->get();
         $riwayatPenyimpanan = GajiDisimpan::where('EMAIL', $email)->latest()->take(10)->get();
@@ -353,8 +307,6 @@ class GajiController extends Controller
             'totalTabungan',
             'periode',
             'hariIni',
-            'isFriday',
-            'hasRequestedThisWeek',
             'riwayatPengambilan',
             'riwayatPenyimpanan'
         ));

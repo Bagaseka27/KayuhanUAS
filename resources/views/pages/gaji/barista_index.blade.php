@@ -111,28 +111,12 @@
             </h5>
 
             <!-- Status Alert Lock Pengambilan -->
-            @if(!$isFriday)
-            <div class="alert alert-warning border-0 rounded-3 d-flex align-items-center mb-4" style="background-color: #fff8e1; border-left: 4px solid #ffb300;">
-                <i class="fas fa-lock text-warning me-3" style="font-size: 1.2rem;"></i>
-                <div class="text-dark small">
-                    <strong>Fitur Terkunci:</strong> Saat ini adalah hari <strong>{{ now()->translatedFormat('l') }}</strong>. Pengambilan dan penyimpanan gaji hanya dapat diakses pada hari <strong>Jumat</strong>.
-                </div>
-            </div>
-            @elseif($hasRequestedThisWeek)
-            <div class="alert alert-info border-0 rounded-3 d-flex align-items-center mb-4" style="background-color: #e3f2fd; border-left: 4px solid #1e88e5;">
-                <i class="fas fa-info-circle text-info me-3" style="font-size: 1.2rem;"></i>
-                <div class="text-dark small">
-                    <strong>Pengajuan Terkunci:</strong> Anda sudah mengajukan pengambilan atau penyimpanan gaji untuk minggu ini. Sesuai aturan, klaim hanya dapat dilakukan 1 kali dalam seminggu.
-                </div>
-            </div>
-            @else
             <div class="alert alert-success border-0 rounded-3 d-flex align-items-center mb-4" style="background-color: #e8f5e9; border-left: 4px solid #43a047;">
                 <i class="fas fa-lock-open text-success me-3" style="font-size: 1.2rem;"></i>
                 <div class="text-dark small">
-                    <strong>Fitur Terbuka:</strong> Hari ini adalah hari Jumat! Silakan ajukan penarikan nominal atau simpan sisa gaji Anda ke tabungan.
+                    <strong>Fitur Aktif:</strong> Anda dapat mengajukan pengambilan nominal atau simpan sisa gaji Anda ke tabungan kapan saja. Pengajuan Anda akan ditinjau dan diproses oleh Admin.
                 </div>
             </div>
-            @endif
 
             <!-- Buttons Grid -->
             <div class="row g-3">
@@ -140,7 +124,7 @@
                     <button type="button" 
                             class="btn btn-lg w-100 py-3 rounded-3 fw-bold text-white d-flex align-items-center justify-content-center shadow-sm" 
                             style="background-color: #003d2e; border: none; transition: all 0.3s;"
-                            @if(!$isFriday || $hasRequestedThisWeek || $sisaGaji <= 0) disabled @endif
+                            @if($sisaGaji <= 0) disabled @endif
                             data-bs-toggle="modal" 
                             data-bs-target="#modalAmbilGaji">
                         <i class="fas fa-hand-holding-usd me-3" style="font-size: 1.3rem;"></i>
@@ -151,7 +135,7 @@
                     <button type="button" 
                             class="btn btn-lg w-100 py-3 rounded-3 fw-bold text-white d-flex align-items-center justify-content-center shadow-sm" 
                             style="background-color: #2a9d8f; border: none; transition: all 0.3s;"
-                            @if(!$isFriday || $hasRequestedThisWeek || $sisaGajiHarian <= 0) disabled @endif
+                            @if($sisaGajiHarian <= 0) disabled @endif
                             data-bs-toggle="modal" 
                             data-bs-target="#modalSimpanGaji">
                         <i class="fas fa-piggy-bank me-3" style="font-size: 1.3rem;"></i>
